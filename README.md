@@ -21,8 +21,6 @@ Este projeto tem como objetivo ensinar os participantes a:
 - Consumir APIs protegidas
 - Construir telas baseadas em um layout do **Figma**
 
----
-
 ## 🧱 Visão Geral da Arquitetura
 
 ```text
@@ -76,8 +74,6 @@ O backend consiste em uma única aplicação NestJS, projetada com mentalidade d
 - Modal de cadastro/edição
 - Logout do sistema
 
----
-
 ## 🛠️ Stack Tecnológica
 
 ### Backend
@@ -96,8 +92,6 @@ O backend consiste em uma única aplicação NestJS, projetada com mentalidade d
 - Gerenciamento de estado
 - UI baseada em layout do Figma
 
----
-
 ## 📚 Estrutura do Curso
 
 O projeto é construído ao longo de vários módulos:
@@ -115,8 +109,6 @@ O projeto é construído ao longo de vários módulos:
 
 Cada módulo evolui a partir do anterior, simulando o ciclo real de desenvolvimento de um produto.
 
----
-
 ## 🚀 Como Começar (Visão Geral)
 
 > As instruções detalhadas de setup serão apresentadas durante o curso.
@@ -127,15 +119,11 @@ Requisitos gerais:
 - npm ou yarn
 - Git
 
----
-
 ## 📌 Observações
 
 - Este repositório tem fins educacionais.
 - O projeto prioriza clareza e aprendizado, não otimizações de nível produtivo.
 - A arquitetura foi pensada para facilitar extensões futuras (ex: aplicativos mobile).
-
----
 
 ## 🦄 Sobre o Tema
 
