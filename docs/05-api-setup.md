@@ -321,6 +321,34 @@ Criar as entidades (tabelas) do domínio da aplicação.
 
 ---
 
+## Comando para gerar os módulos
+
+```shell
+nest generate module <name>
+# or
+nest g mo <name>
+```
+
+Comando para gerar os controllers
+
+```shell
+nest generate controller <name>
+# or
+nest g co <name>
+```
+
+Comando para gerar os serviços
+
+```shell
+nest generate service <name>
+# or
+nest g s <name>
+```
+
+> ref: https://docs.nestjs.com/cli/usages
+
+---
+
 ## 🏗️ Arquitetura de Módulos
 
 Vamos criar 3 módulos principais:
@@ -577,7 +605,7 @@ export class AppModule {}
 ┌──────────┐         ┌──────────────┐         ┌──────────┐
 │   User   │         │   Favorite   │         │   Pony   │
 │──────────│         │──────────────│         │──────────│
-│ id (PK)  │◄───────│ userId (FK)  │         │ id (PK)  │
+│ id (PK)  │◄────────│ userId (FK)  │         │ id (PK)  │
 │ name     │         │ ponyId (FK)  │────────►│ name     │
 │ email    │         │ createdAt    │         │ element  │
 │ password │         └──────────────┘         │ ...      │
@@ -622,6 +650,7 @@ Um arquivo `database.sqlite` será criado na raiz do projeto. Você pode visuali
 
 ## ✅ Resultado
 
+✔️ Banco criado automaticamente
 ✔️ 3 entidades criadas (User, Pony, Favorite)  
 ✔️ Relacionamento N:N configurado  
 ✔️ Migrations geradas e executadas  
@@ -645,6 +674,31 @@ Implementar o registro de usuários com senha criptografada usando bcrypt.
 - **Salt**: Valor aleatório adicionado ao hash
 - **Repository Pattern**: Acesso aos dados via TypeORM
 - **Injeção de Dependência**: `@InjectRepository`
+
+---
+
+## 🌐 Implementar o UsersController
+
+Edite `src/users/users.controller.ts`:
+
+```ts
+import { Controller, Post, Body } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+
+@ApiTags('Users')
+@Controller('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  @Post('register')
+  @ApiOperation({ summary: 'Cadastrar novo usuário' })
+  async register(@Body() dto: CreateUserDto) {
+    return this.usersService.create(dto);
+  }
+}
+```
 
 ---
 
@@ -696,31 +750,6 @@ export class UsersService {
 
   async findById(id: string): Promise<User | null> {
     return this.repository.findOne({ where: { id } });
-  }
-}
-```
-
----
-
-## 🌐 Implementar o UsersController
-
-Edite `src/users/users.controller.ts`:
-
-```ts
-import { Controller, Post, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-
-@ApiTags('Users')
-@Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
-
-  @Post('register')
-  @ApiOperation({ summary: 'Cadastrar novo usuário' })
-  async register(@Body() dto: CreateUserDto) {
-    return this.usersService.create(dto);
   }
 }
 ```
@@ -801,209 +830,3 @@ export class CreateUserDto {
 ✔️ Senha criptografada com bcrypt  
 ✔️ Repository injetado via DI  
 ✔️ Endpoint documentado no Swagger
-
----
-├── database/
-│   └── sqlite.config.ts
-│
-├── app.module.ts
-└── main.ts
-```
-
-Configuração por módulo.
-
-```ts
-import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm/dist/typeorm.module";
-import { Pony } from "./pony.entity";
-
-@Module({
-  imports: [TypeOrmModule.forFeature([Pony])],
-  controllers: [PoniesController],
-  providers: [PoniesService],
-})
-export class PoniesModule {}
-```
-
-Comando para gerar os módulos
-
-```shell
-nest generate module <name>
-# or
-nest g mo <name>
-```
-
-Comando para gerar os controllers
-
-```shell
-nest generate controller <name>
-# or
-nest g co <name>
-```
-
-Comando para gerar os serviços
-
-```shell
-nest generate service <name>
-# or
-nest g s <name>
-```
-
-> ref: https://docs.nestjs.com/cli/usages
-
----
-
-## 🧑 User Entity
-
-```ts
-@Entity("users")
-export class User {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
-  @Column()
-  name: string;
-
-  @Column({ unique: true })
-  email: string;
-
-  @Column()
-  password: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-}
-```
-
----
-
-## 🦄 Pony Entity
-
-```ts
-@Entity("ponies")
-export class Pony {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
-  @Column()
-  name: string;
-
-  @Column()
-  element: string;
-
-  @Column()
-  personality: string;
-
-  @Column()
-  talent: string;
-
-  @Column({ type: "text" })
-  summary: string;
-
-  @Column()
-  imageUrl: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-}
-```
-
----
-
-## ⭐ Favorite Entity
-
-```ts
-@Entity("favorites")
-export class Favorite {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
-  @ManyToOne(() => User)
-  user: User;
-
-  @ManyToOne(() => Pony)
-  pony: Pony;
-
-  @CreateDateColumn()
-  createdAt: Date;
-}
-```
-
----
-
-## ✅ Resultado
-
-✔️ Banco criado automaticamente
-✔️ Relacionamentos definidos
-
----
-
-# 📘 Aula 4 — Cadastro de Usuário e Hash de Senha
-
-## 🎯 Objetivo
-
-Criar usuários com senha segura.
-
----
-
-## 🧠 Conceitos
-
-- DTO
-- bcrypt
-- Service vs Controller
-
----
-
-## 📦 Dependência
-
-```bash
-npm install bcrypt
-npm install -D @types/bcrypt
-```
-
----
-
-## 📄 DTO
-
-```ts
-export class CreateUserDto {
-  name: string;
-  email: string;
-  password: string;
-}
-```
-
----
-
-## ⚙️ Service
-
-```ts
-async create(dto: CreateUserDto) {
-  const hash = await bcrypt.hash(dto.password, 10);
-
-  const user = this.repo.create({
-    ...dto,
-    password: hash,
-  });
-
-  return this.repo.save(user);
-}
-```
-
----
-
-## 🌐 Controller
-
-```ts
-@Post('register')
-register(@Body() dto: CreateUserDto) {
-  return this.usersService.create(dto);
-}
-```
-
----
-
-## ✅ Resultado
-
-✔️ Cadastro funcionando
-✔️ Senha criptografada
