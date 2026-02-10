@@ -9,6 +9,7 @@ async function bootstrap() {
     .setTitle('Pony Collection API')
     .setDescription('API para gerenciar coleção de poneis')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

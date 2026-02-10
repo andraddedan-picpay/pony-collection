@@ -22,4 +22,12 @@ export class UsersService {
 
     return this.repository.save(user);
   }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.repository.findOne({ where: { email } });
+  }
+
+  async findById(id: string): Promise<User | null> {
+    return this.repository.findOne({ where: { id } });
+  }
 }
