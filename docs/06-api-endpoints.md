@@ -48,23 +48,32 @@ Edite `src/auth/auth.module.ts`:
 ```ts
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
     UsersModule,
+    PassportModule,
     JwtModule.register({
       secret: 'sua-chave-secreta-aqui', // ⚠️ Em produção, usar variável de ambiente
       signOptions: { expiresIn: '1d' }, // Token expira em 1 dia
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
+  exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}
 ```
+
+**Importante:**
+- ✅ `PassportModule` importado
+- ✅ `JwtStrategy` registrado nos providers
+- ✅ `JwtStrategy` e `PassportModule` exportados para outros módulos usarem
 
 ---
 
@@ -679,11 +688,11 @@ Parabéns! 🎉 Você completou a implementação do backend:
 ✅ Autenticação JWT  
 ✅ Guards e proteção de rotas  
 ✅ CRUD completo de Ponies  
-✅ Documentação Swagger
+✅ Documentação Swagger  
 
 **Próximos passos:**
-<!-- 1. Implementar validação com class-validator -->
-1. Adicionar testes unitários e E2E
-3. Criar e integrar o frontend
+1. Adicionar validação com class-validator
+3. Adicionar testes unitários e E2E
+4. Criar e integrar o frontend
 
 🦄✨
