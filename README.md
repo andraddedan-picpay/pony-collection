@@ -33,7 +33,6 @@ Backend (NestJS)
 - Auth (JWT)
 - Users
 - Ponies
-- Favorites
 - Guards
    │
    ▼
@@ -62,7 +61,6 @@ O backend consiste em uma única aplicação NestJS, projetada com mentalidade d
 
 - Favoritar e desfavoritar poneys
 - Listagem de favoritos por usuário
-- Relacionamento entre usuários e personagens
 
 ### 🖥️ Frontend
 
@@ -98,11 +96,11 @@ O projeto é construído ao longo de vários módulos:
 
 1. Visão geral do projeto e arquitetura
 1. Setup do backend com NestJS e SQLite
-1. Modelagem de domínio (Users, Ponies, Favorites)
+1. Modelagem de domínio (Users, Ponies)
 1. Autenticação e autorização com JWT
 1. Operações de CRUD
-1. Funcionalidade de favoritos
 1. Desenvolvimento do frontend com Angular
+1. Funcionalidade de favoritos
 1. Gerenciamento de estado
 1. Integração da UI com o Figma
 1. Revisão final e melhorias
