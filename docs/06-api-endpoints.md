@@ -251,6 +251,20 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
+export interface JwtPayload {
+  sub: string; // User ID
+  email: string;
+  name: string;
+  iat?: number; // Issued at
+  exp?: number; // Expiration
+}
+
+export interface AuthenticatedUser {
+  id: string;
+  email: string;
+  name: string;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
@@ -263,7 +277,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // Este método é chamado após o token ser validado
   // O retorno é injetado em req.user
-  async validate(payload) {
+  async validate(payload: JwtPayload): Promise<AuthenticatedUser> {
     return { 
       id: payload.sub, 
       email: payload.email,
@@ -328,8 +342,11 @@ Agora você pode proteger qualquer rota usando o decorator `@UseGuards()`:
 
 ```ts
 import { Controller, Get, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@ApiTags('Ponies')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard) // Todas as rotas deste controller são protegidas
 @Controller('ponies')
 export class PoniesController {
@@ -343,15 +360,21 @@ export class PoniesController {
 ### Exemplo 2: Proteger rotas específicas
 
 ```ts
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   @Post('register')
+  @ApiOperation({ summary: 'Cadastro de usuário' })
   register() {
     return 'Rota pública';
   }
 
   @UseGuards(JwtAuthGuard) // Apenas esta rota é protegida
+  @ApiBearerAuth()
   @Get('profile')
+  @ApiOperation({ summary: 'Obter perfil' })
   getProfile() {
     return 'Rota protegida!';
   }
@@ -366,13 +389,18 @@ Use o decorator `@Request()` para acessar os dados do usuário autenticado:
 
 ```ts
 import { Controller, Get, UseGuards, Request } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AuthenticatedUser } from '../auth/strategies/jwt.strategy';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get('me')
-  getProfile(@Request() req) {
+  @ApiOperation({ summary: 'Obter perfil do usuário autenticado' })
+  getProfile(@Request() req: { user: AuthenticatedUser }) {
     return req.user; // { id, email, name }
   }
 }
@@ -384,10 +412,15 @@ Crie `src/auth/decorators/current-user.decorator.ts`:
 
 ```ts
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { AuthenticatedUser } from '../strategies/jwt.strategy';
+
+interface RequestWithUser {
+  user: AuthenticatedUser;
+}
 
 export const CurrentUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
+  (_data, ctx: ExecutionContext): AuthenticatedUser => {
+    const request = ctx.switchToHttp().getRequest<RequestWithUser>();
     return request.user;
   },
 );
@@ -397,10 +430,13 @@ Uso:
 
 ```ts
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { AuthenticatedUser } from '../auth/strategies/jwt.strategy';
 
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 @Get('me')
-getProfile(@CurrentUser() user) {
+@ApiOperation({ summary: 'Obter perfil do usuário autenticado' })
+getProfile(@CurrentUser() user: AuthenticatedUser) {
   return user; // { id, email, name }
 }
 ```
@@ -749,6 +785,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { FavoritesService } from './favorites.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { AuthenticatedUser } from '../auth/strategies/jwt.strategy';
 
 @ApiTags('Favorites')
 @ApiBearerAuth()
@@ -759,20 +796,20 @@ export class FavoritesController {
 
   @Get()
   @ApiOperation({ summary: 'Listar meus favoritos' })
-  findMyFavorites(@CurrentUser() user) {
+  findMyFavorites(@CurrentUser() user: AuthenticatedUser) {
     return this.favoritesService.findByUser(user.id);
   }
 
   @Post(':ponyId')
   @ApiOperation({ summary: 'Favoritar um pony' })
-  create(@CurrentUser() user, @Param('ponyId') ponyId: string) {
+  create(@CurrentUser() user: AuthenticatedUser, @Param('ponyId') ponyId: string) {
     return this.favoritesService.create(user.id, ponyId);
   }
 
   @Delete(':ponyId')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Desfavoritar um pony' })
-  remove(@CurrentUser() user, @Param('ponyId') ponyId: string) {
+  remove(@CurrentUser() user: AuthenticatedUser, @Param('ponyId') ponyId: string) {
     return this.favoritesService.remove(user.id, ponyId);
   }
 }
