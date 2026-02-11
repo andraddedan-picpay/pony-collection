@@ -263,7 +263,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // Este método é chamado após o token ser validado
   // O retorno é injetado em req.user
-  async validate(payload: any) {
+  async validate(payload) {
     return { 
       id: payload.sub, 
       email: payload.email,
@@ -688,8 +688,8 @@ export class FavoritesService {
 
     // Criar favorito
     const favorite = this.repository.create({
-      user: { id: userId } as any,
-      pony: { id: ponyId } as any,
+      user: { id: userId },
+      pony: { id: ponyId },
     });
 
     return this.repository.save(favorite);
@@ -859,8 +859,8 @@ Parabéns! 🎉 Você completou a implementação do backend:
 ✅ Documentação Swagger
 
 **Próximos passos:**
-1. Implementar validação com class-validator
-2. Adicionar testes unitários e E2E
+<!-- 1. Implementar validação com class-validator -->
+1. Adicionar testes unitários e E2E
 3. Criar o frontend Angular
 4. Integrar API com o frontend
 

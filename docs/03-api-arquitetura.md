@@ -169,7 +169,7 @@ api/
 - **@nestjs/passport** - Estratégias de autenticação
 - **bcrypt** - Hash de senhas
 - **@nestjs/swagger** - Documentação automática
-- **class-validator** - Validação de DTOs
+<!-- - **class-validator** - Validação de DTOs -->
 - **class-transformer** - Transformação de dados
 
 ---
