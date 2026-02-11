@@ -41,88 +41,6 @@ nest generate controller auth
 
 ---
 
-## 📝 Criar DTO de Login
-
-Crie o arquivo `src/auth/dto/login.dto.ts`:
-
-```ts
-export class LoginDto {
-  email: string;
-  password: string;
-}
-```
-
----
-
-## ⚙️ Implementar o AuthService
-
-Edite `src/auth/auth.service.ts`:
-
-```ts
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
-import { LoginDto } from './dto/login.dto';
-import * as bcrypt from 'bcrypt';
-
-@Injectable()
-export class AuthService {
-  constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
-
-  async login(dto: LoginDto) {
-    // 1. Buscar usuário pelo email
-    const user = await this.usersService.findByEmail(dto.email);
-
-    // 2. Verificar se usuário existe e se a senha está correta
-    if (!user || !(await bcrypt.compare(dto.password, user.password))) {
-      throw new UnauthorizedException('Credenciais inválidas');
-    }
-
-    // 3. Criar payload do token
-    const payload = { 
-      sub: user.id,      // 'sub' é convenção JWT para ID
-      email: user.email,
-      name: user.name 
-    };
-
-    // 4. Gerar e retornar o token
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
-}
-```
-
----
-
-## 🌐 Implementar o AuthController
-
-Edite `src/auth/auth.controller.ts`:
-
-```ts
-import { Controller, Post, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-
-@ApiTags('Auth')
-@Controller('auth')
-export class AuthController {
-  constructor(private readonly authService: AuthService) {}
-
-  @Post('login')
-  @ApiOperation({ summary: 'Login de usuário' })
-  login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
-  }
-}
-```
-
----
-
 ## 🔧 Configurar o AuthModule
 
 Edite `src/auth/auth.module.ts`:
@@ -173,6 +91,89 @@ import { FavoritesModule } from './favorites/favorites.module';
   ],
 })
 export class AppModule {}
+```
+
+---
+
+## 📝 Criar DTO de Login
+
+Crie o arquivo `src/auth/dto/login.dto.ts`:
+
+```ts
+export class LoginDto {
+  email: string;
+  password: string;
+}
+```
+
+---
+
+## 🌐 Implementar o AuthController
+
+Edite `src/auth/auth.controller.ts`:
+
+```ts
+import { Controller, Post, Body } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { AuthService } from './auth.service';
+import { LoginDto } from './dto/login.dto';
+
+@ApiTags('Auth')
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
+
+  @Post('login')
+  @ApiOperation({ summary: 'Login de usuário' })
+  login(@Body() dto: LoginDto) {
+    return this.authService.login(dto);
+  }
+}
+```
+
+
+---
+
+## ⚙️ Implementar o AuthService
+
+Edite `src/auth/auth.service.ts`:
+
+```ts
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { UsersService } from '../users/users.service';
+import { LoginDto } from './dto/login.dto';
+import * as bcrypt from 'bcrypt';
+
+@Injectable()
+export class AuthService {
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
+
+  async login(dto: LoginDto) {
+    // 1. Buscar usuário pelo email
+    const user = await this.usersService.findByEmail(dto.email);
+
+    // 2. Verificar se usuário existe e se a senha está correta
+    if (!user || !(await bcrypt.compare(dto.password, user.password))) {
+      throw new UnauthorizedException('Credenciais inválidas');
+    }
+
+    // 3. Criar payload do token
+    const payload = { 
+      sub: user.id,      // 'sub' é convenção JWT para ID
+      email: user.email,
+      name: user.name 
+    };
+
+    // 4. Gerar e retornar o token
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+}
 ```
 
 ---
