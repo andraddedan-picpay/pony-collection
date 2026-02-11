@@ -6,6 +6,7 @@ import { sqliteConfig } from './database/sqlite.config';
 import { UsersModule } from './users/users.module';
 import { PoniesModule } from './ponies/ponies.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     UsersModule,
     PoniesModule,
     FavoritesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
