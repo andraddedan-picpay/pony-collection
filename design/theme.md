@@ -10,22 +10,22 @@ Design system com paleta de cores, tipografia e estilos visuais do projeto.
 
 | Variável SCSS | Valor | Preview | Uso |
 |---------------|-------|:------:|-----|
-| `$primary-color` | `#E669EA` | <span style="display:inline-block;width:30px;height:20px;background-color:#E669EA;border:1px solid #666;border-radius:3px;"></span> | Cor principal do app, elementos interativos |
-| `$secondary-color` | `#3B5162` | <span style="display:inline-block;width:30px;height:20px;background-color:#3B5162;border:1px solid #666;border-radius:3px;"></span> | Cor secundária, complementos |
-| `$text-color` | `#FFFFFF` | <span style="display:inline-block;width:30px;height:20px;background-color:#FFFFFF;border:1px solid #666;border-radius:3px;"></span> | Cor do texto principal |
+| `$primary-color` | `#E669EA` | <span style="display:inline-block;width:25px;height:20px;background-color:#E669EA;border:1px solid #666;border-radius:3px;"></span> | Cor principal do app, elementos interativos |
+| `$secondary-color` | `#3B5162` | <span style="display:inline-block;width:25px;height:20px;background-color:#3B5162;border:1px solid #666;border-radius:3px;"></span> | Cor secundária, complementos |
+| `$text-color` | `#FFFFFF` | <span style="display:inline-block;width:25px;height:20px;background-color:#FFFFFF;border:1px solid #666;border-radius:3px;"></span> | Cor do texto principal |
 
 ### Cores de Feedback
 
 | Variável SCSS | Valor | Preview | Uso |
 |---------------|-------|:------:|-----|
-| `$critical-color` | `#FF7CA3` | <span style="display:inline-block;width:30px;height:20px;background-color:#FF7CA3;border:1px solid #666;border-radius:3px;"></span> | Erros, alertas críticos |
-| `$success-color` | `#50D1AA` | <span style="display:inline-block;width:30px;height:20px;background-color:#50D1AA;border:1px solid #666;border-radius:3px;"></span> | Sucesso, confirmações |
+| `$critical-color` | `#FF7CA3` | <span style="display:inline-block;width:25px;height:20px;background-color:#FF7CA3;border:1px solid #666;border-radius:3px;"></span> | Erros, alertas críticos |
+| `$success-color` | `#50D1AA` | <span style="display:inline-block;width:25px;height:20px;background-color:#50D1AA;border:1px solid #666;border-radius:3px;"></span> | Sucesso, confirmações |
 
 ### Grayscale
 
 | Variável SCSS | Valor | Preview | Uso |
 |---------------|-------|:------:|-----|
-| `$grayscale-03` | `#828282` | <span style="display:inline-block;width:30px;height:20px;background-color:#828282;border:1px solid #666;border-radius:3px;"></span> | Cinza médio |
+| `$grayscale-03` | `#828282` | <span style="display:inline-block;width:25px;height:20px;background-color:#828282;border:1px solid #666;border-radius:3px;"></span> | Cinza médio |
 
 ---
 
@@ -33,10 +33,10 @@ Design system com paleta de cores, tipografia e estilos visuais do projeto.
 
 | Variável SCSS | Valor | Preview | Uso |
 |---------------|-------|:------:|-----|
-| `$base-dark-1` | `#1F1D2B` | <span style="display:inline-block;width:30px;height:20px;background-color:#1F1D2B;border:1px solid #666;border-radius:3px;"></span> | Fundo principal |
-| `$base-dark-2` | `#252836` | <span style="display:inline-block;width:30px;height:20px;background-color:#252836;border:1px solid #666;border-radius:3px;"></span> | Fundo secundário |
-| `$base-dark-3` | `#393C49` | <span style="display:inline-block;width:30px;height:20px;background-color:#393C49;border:1px solid #666;border-radius:3px;"></span> | Fundo terciário |
-| `$base-form` | `#2D303E` | <span style="display:inline-block;width:30px;height:20px;background-color:#2D303E;border:1px solid #666;border-radius:3px;"></span> | Fundo de formulários |
+| `$base-dark-01` | `#1F1D2B` | <span style="display:inline-block;width:25px;height:20px;background-color:#1F1D2B;border:1px solid #666;border-radius:3px;"></span> | Fundo principal |
+| `$base-dark-02` | `#252836` | <span style="display:inline-block;width:25px;height:20px;background-color:#252836;border:1px solid #666;border-radius:3px;"></span> | Fundo secundário |
+| `$base-dark-03` | `#393C49` | <span style="display:inline-block;width:25px;height:20px;background-color:#393C49;border:1px solid #666;border-radius:3px;"></span> | Fundo terciário |
+| `$base-form` | `#2D303E` | <span style="display:inline-block;width:25px;height:20px;background-color:#2D303E;border:1px solid #666;border-radius:3px;"></span> | Fundo de formulários |
 
 ---
 
