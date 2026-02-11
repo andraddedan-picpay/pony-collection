@@ -8,10 +8,9 @@
 ## Módulo 1 — Backend API com NestJS + SQLite
 1. Criação do projeto NestJS
 2. Configuração do SQLite e TypeORM/Prisma
-3. Modelagem das entidades (User, Pony, Favorite)
+3. Modelagem das entidades (User e Pony)
 4. CRUD de personagens (Poneys)
 5. Listagem e detalhe de personagens
-6. Favoritar e desfavoritar personagens
 
 ---
 
@@ -35,7 +34,6 @@
 6. Tela de listagem de personagens
 7. Sidesheet de detalhes
 8. Sidesheet de cadastro/edição
-9. Favoritar e remover personagens
 9. Fluxo de feedback para erro, loading e lista vazia.
 10. Logout do sistema
 
@@ -45,7 +43,6 @@
 1. Conceitos de estado no frontend
 2. Serviço de autenticação
 3. Controle de usuário logado
-4. Sincronização de favoritos
 5. Boas práticas de state management
 
 ---

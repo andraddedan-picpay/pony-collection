@@ -20,7 +20,6 @@
 
 * Criar entidade User
 * Criar entidade Pony
-* Criar entidade Favorite
 * Relacionamentos
 * Migrações
 
@@ -68,20 +67,7 @@
 
 ---
 
-### 📘 Aula 6 — Favoritos
-
-**Objetivo:** Relacionamento User x Pony
-
-* Favoritar Pony
-* Desfavoritar
-* Listar favoritos do usuário
-* Otimização de queries
-
-✔️ Resultado: Favoritos funcionando
-
----
-
-### 📘 Aula 7 — Logout
+### 📘 Aula 6 — Logout
 
 **Objetivo:** Encerrar sessão
 

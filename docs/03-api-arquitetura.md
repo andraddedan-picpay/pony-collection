@@ -28,7 +28,6 @@
 * Autenticação (login/logout)
 * Guards de rota
 * Listagem de pôneis
-* Favoritos
 * Sidesheet de detalhes
 * UI (Figma)
 
@@ -71,24 +70,6 @@ Pony
 - createdAt (datetime)
 ```
 
-### ⭐ Favorite
-
-```ts
-Favorite
-- id (uuid)
-- userId (uuid, FK -> User)
-- ponyId (uuid, FK -> Pony)
-- createdAt (datetime)
-```
-
-### 🔗 Relacionamentos
-
-* User 1:N Favorite
-* Pony 1:N Favorite
-* User N:N Pony (via Favorite)
-
----
-
 ## 3️⃣ Estrutura de Pastas — Backend (NestJS)
 
 ```text
@@ -130,12 +111,6 @@ api/
 │   │   ├── ponies.service.ts
 │   │   └── ponies.module.ts
 │   │
-│   └── favorites/
-│       ├── favorite.entity.ts
-│       ├── favorites.controller.ts
-│       ├── favorites.service.ts
-│       └── favorites.module.ts
-│
 ├── database.sqlite          # Banco SQLite
 ├── package.json
 ├── tsconfig.json
@@ -150,14 +125,13 @@ api/
 
 1. **Setup inicial** - Criar projeto NestJS
 2. **Database** - Configurar SQLite + TypeORM
-3. **Entidades** - Criar User, Pony, Favorite
+3. **Entidades** - Criar User e Pony
 4. **Migrations** - Gerar e executar migrations
 5. **Users** - CRUD básico + registro
 6. **Auth** - Login + JWT
 7. **Guards** - Proteção de rotas
 8. **Ponies** - CRUD completo
-9. **Favorites** - Relacionamento User x Pony
-10. **Swagger** - Documentação da API
+9. **Swagger** - Documentação da API
 
 ### Tecnologias e Bibliotecas
 
@@ -200,14 +174,6 @@ PUT    /ponies/:id       - Atualizar pony (admin)
 DELETE /ponies/:id       - Remover pony (admin)
 ```
 
-### Favoritos (Protegidas)
-
-```
-GET    /favorites        - Listar favoritos do usuário logado
-POST   /favorites/:ponyId - Favoritar um pony
-DELETE /favorites/:ponyId - Desfavoritar um pony
-```
-
 ---
 
 ## 6️⃣ Swagger / Documentação
@@ -225,12 +191,6 @@ Permite testar todos os endpoints diretamente pelo navegador, com suporte a aute
 │   ├── ponies.service.ts
 │   ├── ponies.module.ts
 │   └── pony.entity.ts
-│
-├── favorites/
-│   ├── favorites.controller.ts
-│   ├── favorites.service.ts
-│   ├── favorites.module.ts
-│   └── favorite.entity.ts
 │
 ├── database/
 │   └── sqlite.config.ts

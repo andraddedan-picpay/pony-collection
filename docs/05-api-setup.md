@@ -215,12 +215,11 @@ Crie o arquivo `src/database/data-source.ts`:
 import { DataSource } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Pony } from '../ponies/pony.entity';
-import { Favorite } from '../favorites/favorite.entity';
 
 export const AppDataSource = new DataSource({
   type: 'sqlite',
   database: 'database.sqlite',
-  entities: [User, Pony, Favorite],
+  entities: [User, Pony],
   migrations: ['src/database/migrations/*.ts'],
   synchronize: false,
   logging: true, // Log de queries SQL
@@ -357,7 +356,6 @@ Vamos criar 3 módulos principais:
 src/
 ├── users/      # Gerenciamento de usuários
 ├── ponies/     # Gerenciamento de personagens
-└── favorites/  # Relacionamento User x Pony
 ```
 
 ---
@@ -515,61 +513,6 @@ export class PoniesModule {}
 
 ---
 
-## ⭐ Módulo Favorites
-
-### 1. Gerar o módulo
-
-```bash
-nest generate module favorites
-```
-
-### 2. Criar a entidade Favorite
-
-Crie o arquivo `src/favorites/favorite.entity.ts`:
-
-```ts
-import { User } from '../users/user.entity';
-import { Pony } from '../ponies/pony.entity';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  ManyToOne,
-} from 'typeorm';
-
-@Entity('favorites')
-export class Favorite {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @ManyToOne(() => User)
-  user: User;
-
-  @ManyToOne(() => Pony)
-  pony: Pony;
-
-  @CreateDateColumn()
-  createdAt: Date;
-}
-```
-
-### 3. Configurar o módulo
-
-Edite `src/favorites/favorites.module.ts`:
-
-```ts
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Favorite } from './favorite.entity';
-
-@Module({
-  imports: [TypeOrmModule.forFeature([Favorite])],
-})
-export class FavoritesModule {}
-```
-
----
-
 ## 🔄 Atualizar o AppModule
 
 Edite `src/app.module.ts` para importar os novos módulos:
@@ -582,34 +525,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { sqliteConfig } from './database/sqlite.config';
 import { UsersModule } from './users/users.module';
 import { PoniesModule } from './ponies/ponies.module';
-import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(sqliteConfig),
     UsersModule,
     PoniesModule,
-    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
-```
-
----
-
-## 📊 Diagrama de Relacionamentos
-
-```
-┌──────────┐         ┌──────────────┐         ┌──────────┐
-│   User   │         │   Favorite   │         │   Pony   │
-│──────────│         │──────────────│         │──────────│
-│ id (PK)  │◄────────│ userId (FK)  │         │ id (PK)  │
-│ name     │         │ ponyId (FK)  │────────►│ name     │
-│ email    │         │ createdAt    │         │ element  │
-│ password │         └──────────────┘         │ ...      │
-└──────────┘                                  └──────────┘
 ```
 
 ---
@@ -640,7 +566,7 @@ Este comando irá:
 npm run migration:run
 ```
 
-Isso criará as tabelas `users`, `ponies` e `favorites` com todos os relacionamentos.
+Isso criará as tabelas `users`, `ponies` com todos os relacionamentos.
 
 ### 4. Verificar o banco
 
@@ -651,8 +577,7 @@ Um arquivo `database.sqlite` será criado na raiz do projeto. Você pode visuali
 ## ✅ Resultado
 
 ✔️ Banco criado automaticamente
-✔️ 3 entidades criadas (User, Pony, Favorite)  
-✔️ Relacionamento N:N configurado  
+✔️ 2 entidades criadas (User, Pony)  
 ✔️ Migrations geradas e executadas  
 ✔️ Banco de dados criado com todas as tabelas  
 ✔️ Módulos organizados e desacoplados

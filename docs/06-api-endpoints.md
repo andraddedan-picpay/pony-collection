@@ -79,7 +79,6 @@ import { sqliteConfig } from './database/sqlite.config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PoniesModule } from './ponies/ponies.module';
-import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
@@ -87,7 +86,6 @@ import { FavoritesModule } from './favorites/favorites.module';
     UsersModule,
     AuthModule,
     PoniesModule,
-    FavoritesModule,
   ],
 })
 export class AppModule {}
@@ -511,68 +509,6 @@ export class UpdatePonyDto {
 
 ---
 
-## ⚙️ Implementar o PoniesService
-
-Edite `src/ponies/ponies.service.ts`:
-
-```ts
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Pony } from './pony.entity';
-import { CreatePonyDto } from './dto/create-pony.dto';
-import { UpdatePonyDto } from './dto/update-pony.dto';
-
-@Injectable()
-export class PoniesService {
-  constructor(
-    @InjectRepository(Pony)
-    private repository: Repository<Pony>,
-  ) {}
-
-  // Criar
-  async create(dto: CreatePonyDto): Promise<Pony> {
-    const pony = this.repository.create(dto);
-    return this.repository.save(pony);
-  }
-
-  // Listar todos
-  async findAll(): Promise<Pony[]> {
-    return this.repository.find({
-      order: { name: 'ASC' },
-    });
-  }
-
-  // Buscar por ID
-  async findOne(id: string): Promise<Pony> {
-    const pony = await this.repository.findOne({ where: { id } });
-    
-    if (!pony) {
-      throw new NotFoundException(`Pony #${id} não encontrado`);
-    }
-    
-    return pony;
-  }
-
-  // Atualizar
-  async update(id: string, dto: UpdatePonyDto): Promise<Pony> {
-    const pony = await this.findOne(id);
-    
-    Object.assign(pony, dto);
-    
-    return this.repository.save(pony);
-  }
-
-  // Remover
-  async remove(id: string): Promise<void> {
-    const pony = await this.findOne(id);
-    await this.repository.remove(pony);
-  }
-}
-```
-
----
-
 ## 🌐 Implementar o PoniesController
 
 Edite `src/ponies/ponies.controller.ts`:
@@ -638,6 +574,68 @@ export class PoniesController {
 
 ---
 
+## ⚙️ Implementar o PoniesService
+
+Edite `src/ponies/ponies.service.ts`:
+
+```ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Pony } from './pony.entity';
+import { CreatePonyDto } from './dto/create-pony.dto';
+import { UpdatePonyDto } from './dto/update-pony.dto';
+
+@Injectable()
+export class PoniesService {
+  constructor(
+    @InjectRepository(Pony)
+    private repository: Repository<Pony>,
+  ) {}
+
+  // Criar
+  async create(dto: CreatePonyDto): Promise<Pony> {
+    const pony = this.repository.create(dto);
+    return this.repository.save(pony);
+  }
+
+  // Listar todos
+  async findAll(): Promise<Pony[]> {
+    return this.repository.find({
+      order: { name: 'ASC' },
+    });
+  }
+
+  // Buscar por ID
+  async findOne(id: string): Promise<Pony> {
+    const pony = await this.repository.findOne({ where: { id } });
+    
+    if (!pony) {
+      throw new NotFoundException(`Pony #${id} não encontrado`);
+    }
+    
+    return pony;
+  }
+
+  // Atualizar
+  async update(id: string, dto: UpdatePonyDto): Promise<Pony> {
+    const pony = await this.findOne(id);
+    
+    Object.assign(pony, dto);
+    
+    return this.repository.save(pony);
+  }
+
+  // Remover
+  async remove(id: string): Promise<void> {
+    const pony = await this.findOne(id);
+    await this.repository.remove(pony);
+  }
+}
+```
+
+---
+
 ## 🧪 Testar no Swagger
 
 ### 1. Criar um Pony (POST /ponies)
@@ -672,217 +670,6 @@ export class PoniesController {
 
 ---
 
-# 📘 Aula 8 — Sistema de Favoritos
-
-## 🎯 Objetivo
-
-Implementar o relacionamento N:N entre User e Pony através de Favorites.
-
----
-
-## 🧠 Conceitos
-
-- **Relacionamento N:N**: Muitos usuários podem favoritar muitos ponies
-- **Tabela de junção**: Favorite conecta User e Pony
-- **Query com relations**: Carregar dados relacionados
-- **Validação de duplicação**: Não permitir favoritar duas vezes
-
----
-
-## ⚙️ Criar FavoritesService
-
-Crie `src/favorites/favorites.service.ts`:
-
-```ts
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Favorite } from './favorite.entity';
-import { PoniesService } from '../ponies/ponies.service';
-
-@Injectable()
-export class FavoritesService {
-  constructor(
-    @InjectRepository(Favorite)
-    private repository: Repository<Favorite>,
-    private poniesService: PoniesService,
-  ) {}
-
-  // Favoritar um pony
-  async create(userId: string, ponyId: string): Promise<Favorite> {
-    // Verificar se o pony existe
-    await this.poniesService.findOne(ponyId);
-
-    // Verificar se já está favoritado
-    const existing = await this.repository.findOne({
-      where: { user: { id: userId }, pony: { id: ponyId } },
-    });
-
-    if (existing) {
-      throw new ConflictException('Pony já está favoritado');
-    }
-
-    // Criar favorito
-    const favorite = this.repository.create({
-      user: { id: userId },
-      pony: { id: ponyId },
-    });
-
-    return this.repository.save(favorite);
-  }
-
-  // Listar favoritos do usuário
-  async findByUser(userId: string): Promise<Favorite[]> {
-    return this.repository.find({
-      where: { user: { id: userId } },
-      relations: ['pony'],
-      order: { createdAt: 'DESC' },
-    });
-  }
-
-  // Desfavoritar
-  async remove(userId: string, ponyId: string): Promise<void> {
-    const favorite = await this.repository.findOne({
-      where: { user: { id: userId }, pony: { id: ponyId } },
-    });
-
-    if (!favorite) {
-      throw new NotFoundException('Favorito não encontrado');
-    }
-
-    await this.repository.remove(favorite);
-  }
-
-  // Verificar se um pony é favorito do usuário
-  async isFavorite(userId: string, ponyId: string): Promise<boolean> {
-    const count = await this.repository.count({
-      where: { user: { id: userId }, pony: { id: ponyId } },
-    });
-
-    return count > 0;
-  }
-}
-```
-
----
-
-## 🌐 Criar FavoritesController
-
-Crie `src/favorites/favorites.controller.ts`:
-
-```ts
-import {
-  Controller,
-  Get,
-  Post,
-  Delete,
-  Param,
-  UseGuards,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { FavoritesService } from './favorites.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { AuthenticatedUser } from '../auth/strategies/jwt.strategy';
-
-@ApiTags('Favorites')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
-@Controller('favorites')
-export class FavoritesController {
-  constructor(private readonly favoritesService: FavoritesService) {}
-
-  @Get()
-  @ApiOperation({ summary: 'Listar meus favoritos' })
-  findMyFavorites(@CurrentUser() user: AuthenticatedUser) {
-    return this.favoritesService.findByUser(user.id);
-  }
-
-  @Post(':ponyId')
-  @ApiOperation({ summary: 'Favoritar um pony' })
-  create(@CurrentUser() user: AuthenticatedUser, @Param('ponyId') ponyId: string) {
-    return this.favoritesService.create(user.id, ponyId);
-  }
-
-  @Delete(':ponyId')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Desfavoritar um pony' })
-  remove(@CurrentUser() user: AuthenticatedUser, @Param('ponyId') ponyId: string) {
-    return this.favoritesService.remove(user.id, ponyId);
-  }
-}
-```
-
----
-
-## 🔧 Configurar FavoritesModule
-
-Edite `src/favorites/favorites.module.ts`:
-
-```ts
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Favorite } from './favorite.entity';
-import { FavoritesController } from './favorites.controller';
-import { FavoritesService } from './favorites.service';
-import { PoniesModule } from '../ponies/ponies.module';
-
-@Module({
-  imports: [
-    TypeOrmModule.forFeature([Favorite]),
-    PoniesModule, // Importar para validar se pony existe
-  ],
-  controllers: [FavoritesController],
-  providers: [FavoritesService],
-  exports: [FavoritesService],
-})
-export class FavoritesModule {}
-```
-
----
-
-## 🔧 Exportar PoniesService
-
-Edite `src/ponies/ponies.module.ts`:
-
-```ts
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Pony } from './pony.entity';
-import { PoniesController } from './ponies.controller';
-import { PoniesService } from './ponies.service';
-
-@Module({
-  imports: [TypeOrmModule.forFeature([Pony])],
-  controllers: [PoniesController],
-  providers: [PoniesService],
-  exports: [PoniesService], // Adicionar export
-})
-export class PoniesModule {}
-```
-
----
-
-## 🧪 Testar Favoritos
-
-1. **Favoritar**: POST /favorites/:ponyId
-2. **Listar favoritos**: GET /favorites
-3. **Desfavoritar**: DELETE /favorites/:ponyId
-
----
-
-## ✅ Resultado
-
-✔️ Sistema de favoritos funcionando  
-✔️ Relacionamento N:N implementado  
-✔️ Validação de duplicação  
-✔️ Query otimizada com relations  
-✔️ Integração pronta para o frontend
-
----
-
 # 🎓 Conclusão do Backend
 
 Parabéns! 🎉 Você completou a implementação do backend:
@@ -892,13 +679,11 @@ Parabéns! 🎉 Você completou a implementação do backend:
 ✅ Autenticação JWT  
 ✅ Guards e proteção de rotas  
 ✅ CRUD completo de Ponies  
-✅ Sistema de Favoritos  
 ✅ Documentação Swagger
 
 **Próximos passos:**
 <!-- 1. Implementar validação com class-validator -->
 1. Adicionar testes unitários e E2E
-3. Criar o frontend Angular
-4. Integrar API com o frontend
+3. Criar e integrar o frontend
 
 🦄✨
