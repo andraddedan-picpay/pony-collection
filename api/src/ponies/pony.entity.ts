@@ -14,6 +14,9 @@ export class Pony {
   name: string;
 
   @Column()
+  isFavorite: boolean;
+
+  @Column()
   element: string;
 
   @Column()

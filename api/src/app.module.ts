@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { sqliteConfig } from './database/sqlite.config';
 import { UsersModule } from './users/users.module';
 import { PoniesModule } from './ponies/ponies.module';
-import { FavoritesModule } from './favorites/favorites.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -13,7 +12,6 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRoot(sqliteConfig),
     UsersModule,
     PoniesModule,
-    FavoritesModule,
     AuthModule,
   ],
   controllers: [AppController],
