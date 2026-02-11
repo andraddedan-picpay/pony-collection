@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload } from '../types/jwt-payload';
-import { UserData } from '../types/user-data';
+import { AuthUser } from '../types/auth-user';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // Este método é chamado após o token ser validado
   // O retorno é injetado em req.user
-  validate(payload: JwtPayload): UserData {
+  validate(payload: JwtPayload): AuthUser {
     return {
       id: payload.sub,
       email: payload.email,
