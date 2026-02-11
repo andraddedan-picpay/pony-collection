@@ -5,6 +5,7 @@
 1. 🏗️ Arquitetura geral do sistema
 2. 📐 Diagrama e modelagem das entidades
 3. 🧱 Estrutura de pastas (Backend)
+4. 📚 Sumário do Curso de Backend
 
 ---
 
@@ -181,20 +182,82 @@ DELETE /ponies/:id       - Remover pony (admin)
 Acessível em: **http://localhost:3000/swagger**
 
 Permite testar todos os endpoints diretamente pelo navegador, com suporte a autenticação Bearer Token.
-│   ├── users.controller.ts
-│   ├── users.service.ts
-│   ├── users.module.ts
-│   └── user.entity.ts
-│
-├── ponies/
-│   ├── ponies.controller.ts
-│   ├── ponies.service.ts
-│   ├── ponies.module.ts
-│   └── pony.entity.ts
-│
-├── database/
-│   └── sqlite.config.ts
-│
-├── app.module.ts
-└── main.ts
-```
+
+---
+
+# Backend com NestJS + SQLite (Sumário)
+
+### 📘 Aula 1 — Setup do Projeto
+
+**Objetivo:** Criar a base do backend
+
+* Criar projeto NestJS
+* Estrutura inicial
+* Configurar Swagger
+* Explicar arquitetura de módulos
+
+✔️ Resultado: API rodando com Swagger
+
+---
+
+### 📘 Aula 2 — Banco de Dados e Entidades
+
+**Objetivo:** Configurar SQLite e criar o domínio da aplicação
+
+* Configurar SQLite + TypeORM
+* Criar entidade User
+* Criar entidade Pony
+* Sistema de Migrations
+
+✔️ Resultado: Banco modelado e migrations configuradas
+
+---
+
+### 📘 Aula 3 — Cadastro de Usuários
+
+**Objetivo:** Implementar registro de usuários
+
+* Cadastro de usuário
+* Hash de senha com bcrypt
+* DTOs e validação
+
+✔️ Resultado: Cadastro funcional
+
+---
+
+### 📘 Aula 4 — Autenticação JWT
+
+**Objetivo:** Autenticar usuários
+
+* Login
+* Geração de JWT
+* Conceitos de autenticação stateless
+
+✔️ Resultado: Login funcional com JWT
+
+---
+
+### 📘 Aula 5 — Guards e Segurança
+
+**Objetivo:** Proteger a API
+
+* JWT Strategy
+* AuthGuard
+* Rotas públicas vs privadas
+* Contexto do usuário
+
+✔️ Resultado: API segura
+
+---
+
+### 📘 Aula 6 — CRUD de Ponies
+
+**Objetivo:** Gerenciar personagens
+
+* Criar Pony
+* Listar todos
+* Detalhar por ID
+* Atualizar
+* Remover
+
+✔️ Resultado: CRUD completo

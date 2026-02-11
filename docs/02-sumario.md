@@ -2,30 +2,45 @@
 
 ## Visão Geral e Arquitetura
 1. Apresentação do projeto e objetivos
+2. Arquitetura da API e overview do curso
 
 ---
 
 ## Módulo 1 — Backend API com NestJS + SQLite
-1. Criação do projeto NestJS
-2. Configuração do SQLite e TypeORM/Prisma
-3. Modelagem das entidades (User e Pony)
-4. CRUD de personagens (Poneys)
-5. Listagem e detalhe de personagens
+
+### Aula 1 — Setup do Projeto
+- Criação do projeto NestJS
+- Configuração do Swagger
+- Estrutura inicial
+
+### Aula 2 — Banco de Dados e Entidades
+- Configuração do SQLite e TypeORM
+- Criação de entidades (User e Pony)
+- Sistema de Migrations
+
+### Aula 3 — Cadastro de Usuários
+- Cadastro de usuários
+- Hash de senha com bcrypt
+
+### Aula 4 — Autenticação JWT
+- Login de usuários
+- Geração de tokens JWT
+- Conceitos de autenticação stateless
+
+### Aula 5 — Guards e Segurança
+- JWT Strategy
+- Guards para proteção de rotas
+- Rotas públicas vs protegidas
+- Decorator customizado para usuário atual
+
+### Aula 6 — CRUD de Poneis
+- CRUD completo de personagens
+- Listagem e detalhamento
+- Criação, atualização e remoção
 
 ---
 
-## Módulo 2 — Autenticação e Segurança
-1. Cadastro e login de usuários
-2. Hash de senha
-3. JWT: access token
-3. Gerenciamento de sessão via JWT
-4. Guards e rotas protegidas
-5. Endpoint de logout
-6. Boas práticas de segurança
-
----
-
-## Módulo 3 — Frontend com Angular
+## Módulo 2 — Frontend com Angular
 1. Criação do projeto Angular (última versão)
 2. Estrutura de pastas e módulos
 3. Integração com layout do Figma
@@ -36,10 +51,6 @@
 8. Sidesheet de cadastro/edição
 9. Fluxo de feedback para erro, loading e lista vazia.
 10. Logout do sistema
-
----
-
-## Módulo 4 — Gerenciamento de Estado
 1. Conceitos de estado no frontend
 2. Serviço de autenticação
 3. Controle de usuário logado
