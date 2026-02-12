@@ -1,0 +1,82 @@
+// ========================================
+// Importações
+// ========================================
+@use './styles/variables' as *;
+@use './styles/mixins' as *;
+
+// ========================================
+// Reset Global
+// ========================================
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+// ========================================
+// Estilos Base
+// ========================================
+body {
+    font-family: $text-family;
+    font-size: $font-size-base;
+    color: $text-color;
+    background-color: $base-dark-1;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+input,
+textarea,
+select {
+    font-family: inherit;
+    outline: none;
+}
+
+// ========================================
+// Utilitários
+// ========================================
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-primary {
+    color: $primary-color;
+}
+
+.text-critical {
+    color: $critical-color;
+}
+
+.text-success {
+    color: $success-color;
+}
