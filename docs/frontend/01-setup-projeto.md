@@ -302,6 +302,18 @@ input, textarea, select {
 
 ---
 
+### 7. Criar Favicon
+
+**public/favicon.svg**
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <text y="0.9em" font-size="90">🦄</text>
+</svg>
+```
+
+---
+
 ### 7. Configurar Fontes
 
 **src/index.html**
@@ -313,7 +325,9 @@ input, textarea, select {
   <title>Pony Collection</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
