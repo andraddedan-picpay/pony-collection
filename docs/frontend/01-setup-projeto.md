@@ -33,54 +33,42 @@ cd web
 
 Remover conteúdo padrão do Angular:
 
-**src/app/app.component.html**
+**src/app/app.html**
 ```html
 <router-outlet />
 ```
 
-**src/app/app.component.scss**
+**src/app/app.scss**
 ```scss
 // Arquivo vazio por enquanto
 ```
 
-**src/app/app.component.ts**
+**src/app/app.ts**
 ```typescript
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  templateUrl: './app.html',
+  styleUrl: './app.scss'
 })
-export class AppComponent {
-  title = 'Pony Collection';
+export class App {
+  protected readonly title = signal('Pony Collection 🦄');
 }
 ```
 
 ---
 
-### 3. Criar Estrutura de Pastas
+### 3. Criar Pasta de Estilos Globais
 
 ```bash
-# Dentro de src/app/
-mkdir -p core/guards
-mkdir -p core/interceptors
-mkdir -p core/services
-mkdir -p shared/components
-mkdir -p shared/models
-mkdir -p features/auth/pages/login
-mkdir -p features/auth/services
-mkdir -p features/ponies/pages/ponies-list
-mkdir -p features/ponies/components
-mkdir -p features/ponies/services
-mkdir -p layouts/main-layout
-
 # Criar pasta de estilos globais
 mkdir -p src/styles
 ```
+
+> **Nota:** A estrutura de pastas para features (core, shared, features, layouts) será criada conforme necessário nas próximas aulas.
 
 ---
 
@@ -154,7 +142,25 @@ $font-size-xs: 0.75rem;
 
 ---
 
-### 5. Criar Arquivo de Mixins
+### 5. Adicionar Fontes Locais
+
+Baixar as fontes do diretório `/design/fonts/` e copiar para `src/assets/fonts/`:
+
+```bash
+# Copiar fontes Barlow
+cp ../../design/fonts/Barlow/Barlow-Regular.ttf src/assets/fonts/
+cp ../../design/fonts/Barlow/Barlow-Medium.ttf src/assets/fonts/
+cp ../../design/fonts/Barlow/Barlow-SemiBold.ttf src/assets/fonts/
+cp ../../design/fonts/Barlow/Barlow-Bold.ttf src/assets/fonts/
+
+# Copiar fontes BigShouldersInlineDisplay
+cp ../../design/fonts/BigShouldersInlineDisplay/BigShouldersInlineDisplay-Regular.ttf src/assets/fonts/
+cp ../../design/fonts/BigShouldersInlineDisplay/BigShouldersInlineDisplay-Bold.ttf src/assets/fonts/
+```
+
+---
+
+### 6. Criar Arquivo de Mixins
 
 **src/styles/_mixins.scss**
 ```scss
@@ -219,7 +225,7 @@ $font-size-xs: 0.75rem;
 
 ---
 
-### 6. Configurar Estilos Globais
+### 7. Configurar Estilos Globais
 
 **src/styles.scss**
 ```scss
@@ -228,6 +234,57 @@ $font-size-xs: 0.75rem;
 // ========================================
 @use './styles/variables' as *;
 @use './styles/mixins' as *;
+
+// ========================================
+// Fontes
+// ========================================
+@font-face {
+    font-family: 'Barlow';
+    src: url('/assets/fonts/Barlow-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Barlow';
+    src: url('/assets/fonts/Barlow-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Barlow';
+    src: url('/assets/fonts/Barlow-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Barlow';
+    src: url('/assets/fonts/Barlow-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'BigShouldersInlineDisplay';
+    src: url('/assets/fonts/BigShouldersInlineDisplay-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'BigShouldersInlineDisplay';
+    src: url('/assets/fonts/BigShouldersInlineDisplay-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
 
 // ========================================
 // Reset Global
@@ -302,92 +359,55 @@ input, textarea, select {
 
 ---
 
-### 7. Criar Favicon
+### 8. Criar Favicon
 
 **public/favicon.svg**
 
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <text y="0.9em" font-size="90">🦄</text>
+    <text y="0.9em" font-size="90">🦄</text>
 </svg>
 ```
 
 ---
 
-### 7. Configurar Fontes
+### 9. Configurar HTML Base
 
 **src/index.html**
 ```html
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="utf-8">
   <title>Pony Collection</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Big+Shoulders+Inline+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Big+Shoulders+Inline+Display:wght@400;700&display=swap"
+    rel="stylesheet">
 </head>
+
 <body>
   <app-root></app-root>
 </body>
+
 </html>
 ```
 
----
-
-<!-- ### 8. Configurar Ambiente
-
-**src/environments/environment.development.ts**
-```typescript
-export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:3000'
-};
-```
-
-**src/environments/environment.ts**
-```typescript
-export const environment = {
-  production: true,
-  apiUrl: 'http://localhost:3000' // Alterar em produção
-};
-```
-
---- -->
-
-<!-- ### 9. Atualizar angular.json
-
-Adicionar o caminho de estilos no `angular.json`:
-
-```json
-{
-  "projects": {
-    "web": {
-      "architect": {
-        "build": {
-          "options": {
-            "stylePreprocessorOptions": {
-              "includePaths": ["src/styles"]
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
+> **Nota:** Os links do Google Fonts servem como fallback. As fontes principais são carregadas localmente via `@font-face` no `styles.scss`.
 
 ---
--->
 
-### 9. Testar o Projeto
+---
+
+### 10. Testar o Projeto
 
 ```bash
 npm start
@@ -402,15 +422,16 @@ Deve aparecer uma página em branco com fundo escuro (`$base-dark-1`).
 ## ✅ Resultado Esperado
 
 - ✅ Projeto Angular criado e rodando
-- ✅ SCSS configurado
-- ✅ Estrutura de pastas organizada (core, shared, features)
+- ✅ SCSS configurado com variáveis e mixins
+- ✅ Pasta de estilos globais criada (`src/styles/`)
 - ✅ Variáveis do theme.md configuradas
-- ✅ Fontes importadas (Barlow e BigShouldersInlineDisplay)
+- ✅ Fontes locais configuradas (Barlow e BigShouldersInlineDisplay)
 - ✅ Estilos globais aplicados
-- ✅ Ambiente de desenvolvimento configurado
+- ✅ Favicon unicórnio configurado
+- ✅ Componente App com sintaxe moderna (signals)
 
 ---
 
 ## 📝 Próximos Passos
 
-Na próxima aula, vamos criar o Design System com componentes base (Button, Input, Card) usando as variáveis configuradas.
+- Criar a tela de login
