@@ -15,7 +15,7 @@ O projeto será desenvolvido em **etapas**, simulando um ambiente real de produt
 
 ---
 
-## 🎯 Objetivos do Workshop
+## 🎯 Objetivos do Curso
 
 Ao final do workshop, o participante será capaz de:
 

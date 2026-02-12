@@ -1,0 +1,536 @@
+# Apresentação da Arquitetura Frontend 🎨
+
+## Índice
+
+1. 🏗️ Arquitetura geral do frontend
+2. 📐 Estrutura de componentes e features
+3. 🧱 Estrutura de pastas (Frontend)
+4. 🎯 Fluxo de navegação e autenticação
+5. 📚 Sumário do Curso de Frontend
+
+---
+
+## 1️⃣ Arquitetura Geral do Frontend
+
+```text
+    [ Angular SPA ]
+          |
+          ├── Auth Module (Login/Logout)
+          ├── Ponies Module (Lista/Detalhes/Edição)
+          ├── Core (Guards, Interceptors, Services)
+          └── Shared (Componentes reutilizáveis)
+          |
+          | HTTP + JWT Bearer Token
+          v
+    [ NestJS API ]
+```
+
+### Responsabilidades
+
+#### Angular SPA
+
+* **Autenticação**
+  - Tela de login
+  - Gerenciamento de token JWT
+  - Logout e limpeza de sessão
+  
+* **Guards de Rota**
+  - Proteção de rotas privadas
+  - Redirecionamento para login
+  - Verificação de token
+
+* **Listagem de Pôneis**
+  - Grid responsivo
+  - Loading states
+  - Empty states
+  - Integração com API
+
+* **Sidesheet de Detalhes**
+  - Visualização completa
+  - Design system do Figma
+  - Animações suaves
+
+* **Sidesheet de Cadastro/Edição**
+  - Formulários reativos
+  - Validação
+  - Feedback de erro/sucesso
+
+* **State Management**
+  - Gerenciamento de estado do usuário
+  - Estado da lista de ponies
+  - Loading e error states
+
+---
+
+## 2️⃣ Estrutura de Componentes e Features
+
+### 🔐 Auth Feature
+
+```ts
+Auth
+├── Login Component
+├── Auth Service (login, logout, isAuthenticated)
+├── Auth Guard (proteção de rotas)
+└── Auth Interceptor (adiciona JWT)
+```
+
+### 🦄 Ponies Feature
+
+```ts
+Ponies
+├── Ponies List Component
+├── Pony Details Sidesheet
+├── Pony Form Sidesheet (Create/Edit)
+├── Ponies Service (CRUD operations)
+└── States (loading, error, empty)
+```
+
+### 🧩 Shared Components
+
+```ts
+Shared
+├── Button Component
+├── Input Component
+├── Card Component
+├── Sidesheet Component
+├── Loading Spinner
+└── Empty State Component
+```
+
+---
+
+## 3️⃣ Estrutura de Pastas — Frontend (Angular)
+
+```text
+web/
+├── src/
+│   ├── app/
+│   │   ├── app.component.ts          # Componente raiz
+│   │   ├── app.routes.ts             # Configuração de rotas
+│   │   ├── app.config.ts             # Configuração da aplicação
+│   │   │
+│   │   ├── core/                     # Serviços e configurações core
+│   │   │   ├── guards/
+│   │   │   │   └── auth.guard.ts     # Guard de autenticação
+│   │   │   ├── interceptors/
+│   │   │   │   └── jwt.interceptor.ts # Interceptor JWT
+│   │   │   └── services/
+│   │   │       └── api.service.ts    # Serviço base para HTTP
+│   │   │
+│   │   ├── shared/                   # Componentes compartilhados
+│   │   │   ├── components/
+│   │   │   │   ├── button/
+│   │   │   │   ├── input/
+│   │   │   │   ├── card/
+│   │   │   │   ├── sidesheet/
+│   │   │   │   ├── loading/
+│   │   │   │   └── empty-state/
+│   │   │   └── models/               # Interfaces e tipos
+│   │   │       ├── user.model.ts
+│   │   │       └── pony.model.ts
+│   │   │
+│   │   ├── features/                 # Funcionalidades principais
+│   │   │   │
+│   │   │   ├── auth/                 # Módulo de autenticação
+│   │   │   │   ├── pages/
+│   │   │   │   │   └── login/
+│   │   │   │   │       ├── login.component.ts
+│   │   │   │   │       ├── login.component.html
+│   │   │   │   │       └── login.component.scss
+│   │   │   │   ├── services/
+│   │   │   │   │   └── auth.service.ts
+│   │   │   │   └── auth.routes.ts
+│   │   │   │
+│   │   │   └── ponies/               # Módulo de ponies
+│   │   │       ├── pages/
+│   │   │       │   └── ponies-list/
+│   │   │       │       ├── ponies-list.component.ts
+│   │   │       │       ├── ponies-list.component.html
+│   │   │       │       └── ponies-list.component.scss
+│   │   │       ├── components/
+│   │   │       │   ├── pony-card/
+│   │   │       │   ├── pony-details-sidesheet/
+│   │   │       │   └── pony-form-sidesheet/
+│   │   │       ├── services/
+│   │   │       │   └── ponies.service.ts
+│   │   │       └── ponies.routes.ts
+│   │   │
+│   │   └── layouts/                  # Layouts da aplicação
+│   │       └── main-layout/
+│   │           ├── main-layout.component.ts
+│   │           └── sidebar/
+│   │
+│   ├── assets/                       # Arquivos estáticos
+│   │   ├── fonts/
+│   │   ├── images/
+│   │   └── icons/
+│   │
+│   ├── styles/                       # Estilos globais
+│   │   ├── _variables.scss           # Variáveis do theme.md
+│   │   ├── _mixins.scss
+│   │   └── styles.scss
+│   │
+│   ├── environments/                 # Configurações de ambiente
+│   │   ├── environment.ts
+│   │   └── environment.development.ts
+│   │
+│   ├── index.html
+│   └── main.ts
+│
+├── angular.json
+├── package.json
+├── tsconfig.json
+└── tsconfig.app.json
+```
+
+---
+
+## 4️⃣ Fluxo de Navegação e Autenticação
+
+### Fluxo de Login
+
+```text
+1. Usuário acessa /login
+2. Preenche credenciais
+3. AuthService.login() chama API
+4. Recebe JWT
+5. Armazena token no localStorage
+6. Redireciona para /ponies
+```
+
+### Fluxo de Proteção de Rotas
+
+```text
+1. Usuário tenta acessar /ponies
+2. AuthGuard intercepta
+3. Verifica token no localStorage
+4. Se válido: permite acesso
+5. Se inválido: redireciona para /login
+```
+
+### Fluxo de Requisições HTTP
+
+```text
+1. Componente chama Service
+2. JwtInterceptor adiciona token no header
+3. Requisição é enviada para API
+4. API valida JWT
+5. Resposta retorna ao componente
+6. Atualiza UI com loading/error/success states
+```
+
+---
+
+## 5️⃣ Tecnologias e Bibliotecas
+
+### Core
+
+- **Angular 19+** - Framework frontend
+- **RxJS** - Programação reativa
+- **TypeScript** - Tipagem estática
+
+### Roteamento e Segurança
+
+- **Angular Router** - Navegação
+- **Auth Guards** - Proteção de rotas
+- **HTTP Interceptors** - Manipulação de requisições
+
+### Estilo
+
+- **SCSS** - Pré-processador CSS
+- **Design System** - Baseado no Figma
+- **Theme Variables** - Variáveis do theme.md
+
+### State Management
+
+- **Signals** (Angular 19+) - Estado reativo
+- **RxJS BehaviorSubject** - Estado compartilhado
+- **Services** - Gerenciamento de estado
+
+---
+
+## 6️⃣ Páginas e Rotas
+
+### Rotas Públicas
+
+```
+/login              - Tela de login
+```
+
+### Rotas Protegidas (requer autenticação)
+
+```
+/ponies             - Listagem de ponies
+/ponies/:id         - Detalhes do pony (sidesheet)
+/ponies/new         - Criar novo pony (sidesheet)
+/ponies/:id/edit    - Editar pony (sidesheet)
+```
+
+---
+
+## 7️⃣ Design System (Figma Integration)
+
+### Cores (theme.md)
+
+- Todas as cores do `theme.md` serão variáveis SCSS
+- Uso de `$primary-color`, `$base-dark-1`, etc.
+
+### Tipografia
+
+- Fonte principal: **Barlow**
+- Fonte da logo: **BigShouldersInlineDisplay**
+- Escalas de tamanho: xs, sm, base, lg, xl, 2xl, 3xl, 4xl, 5xl, 6xl, 7xl
+
+### Componentes
+
+- Buttons com variantes (primary, secondary, critical)
+- Inputs com validação visual
+- Cards com shadows
+- Sidesheets com animações
+- Loading states
+- Empty states
+
+---
+
+# Frontend com Angular (Sumário)
+
+### 📘 Aula 1 — Setup do Projeto Angular
+
+**Objetivo:** Criar a base do frontend
+
+* Criar projeto Angular (última versão)
+* Configurar SCSS
+* Estrutura de pastas (core, shared, features)
+* Configurar variáveis do theme.md
+
+✔️ Resultado: Projeto Angular estruturado e rodando
+
+---
+
+### 📘 Aula 2 — Integração com Figma e Design System
+
+**Objetivo:** Implementar o design system
+
+* Importar fontes (Barlow e BigShouldersInlineDisplay)
+* Criar variáveis SCSS do theme.md
+* Criar componentes base (Button, Input, Card)
+* Estabelecer padrões visuais
+
+✔️ Resultado: Design system implementado
+
+---
+
+### 📘 Aula 3 — Tela de Login
+
+**Objetivo:** Criar autenticação no frontend
+
+* Criar LoginComponent
+* Formulários reativos (ReactiveFormsModule)
+* Integrar com AuthService
+* Validação de campos
+* Feedback visual (loading, erro)
+
+✔️ Resultado: Tela de login funcional
+
+---
+
+### 📘 Aula 4 — Autenticação e Guards
+
+**Objetivo:** Proteger rotas e gerenciar sessão
+
+* Criar AuthService (login, logout, isAuthenticated)
+* Implementar AuthGuard
+* Criar JwtInterceptor
+* Armazenamento seguro do token
+* Redirecionamento automático
+
+✔️ Resultado: Sistema de autenticação completo
+
+---
+
+### 📘 Aula 5 — Listagem de Ponies
+
+**Objetivo:** Exibir lista de personagens
+
+* Criar PoniesListComponent
+* Criar PoniesService
+* Integrar com API
+* Criar PonyCard component
+* Implementar loading state
+* Implementar empty state
+* Grid responsivo
+
+✔️ Resultado: Lista de ponies funcional
+
+---
+
+### 📘 Aula 6 — Sidesheet de Detalhes
+
+**Objetivo:** Exibir detalhes do pony
+
+* Criar componente Sidesheet reutilizável
+* Criar PonyDetailsSidesheet
+* Navegação com parâmetros de rota
+* Animações de entrada/saída
+* Fechar sidesheet (overlay e botão)
+
+✔️ Resultado: Visualização de detalhes
+
+---
+
+### 📘 Aula 7 — Sidesheet de Cadastro/Edição
+
+**Objetivo:** Criar e editar ponies
+
+* Criar PonyFormSidesheet
+* Formulários reativos com validação
+* Modo create vs edit
+* Integrar com API (POST/PUT)
+* Feedback de sucesso/erro
+* Atualizar lista após operação
+
+✔️ Resultado: CRUD completo no frontend
+
+---
+
+### 📘 Aula 8 — State Management e Boas Práticas
+
+**Objetivo:** Gerenciar estado da aplicação
+
+* Conceitos de estado no frontend
+* Uso de Signals (Angular 19+)
+* BehaviorSubject para estado compartilhado
+* Pattern de Service com estado
+* Loading, error e success states
+* Otimização de performance
+
+✔️ Resultado: Estado gerenciado de forma eficiente
+
+---
+
+### 📘 Aula 9 — Logout e Melhorias Finais
+
+**Objetivo:** Finalizar autenticação e polish
+
+* Implementar logout
+* Header com informações do usuário
+* Confirmação antes de sair
+* Limpeza de estado ao deslogar
+* Melhorias de UX
+* Tratamento de erros HTTP
+* Mensagens de feedback
+
+✔️ Resultado: Aplicação completa e polida
+
+---
+
+## 8️⃣ Conceitos Importantes
+
+### Signals (Angular 19+)
+
+```ts
+// Estado reativo com Signals
+const ponies = signal<Pony[]>([]);
+const loading = signal<boolean>(false);
+
+// Computados
+const hasPonies = computed(() => ponies().length > 0);
+```
+
+### Services com Estado
+
+```ts
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private currentUser$ = new BehaviorSubject<User | null>(null);
+  
+  get user$() {
+    return this.currentUser$.asObservable();
+  }
+}
+```
+
+### Guards
+
+```ts
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  
+  if (authService.isAuthenticated()) {
+    return true;
+  }
+  
+  return router.createUrlTree(['/login']);
+};
+```
+
+### Interceptors
+
+```ts
+export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
+  const token = localStorage.getItem('token');
+  
+  if (token) {
+    req = req.clone({
+      setHeaders: { Authorization: `Bearer ${token}` }
+    });
+  }
+  
+  return next(req);
+};
+```
+
+---
+
+## 9️⃣ Boas Práticas
+
+### Estrutura de Componentes
+
+✅ **Smart Components** (Container)
+- Fazem requisições
+- Gerenciam estado
+- Lógica de negócio
+
+✅ **Dump Components** (Presentational)
+- Recebem dados via @Input
+- Emitem eventos via @Output
+- Apenas apresentação
+
+### Gerenciamento de Subscriptions
+
+```ts
+// Use takeUntilDestroyed (Angular 16+)
+constructor() {
+  this.service.data$
+    .pipe(takeUntilDestroyed())
+    .subscribe(data => {
+      // handle data
+    });
+}
+```
+
+### Error Handling
+
+```ts
+this.poniesService.getPonies()
+  .pipe(
+    catchError(error => {
+      this.errorMessage.set('Erro ao carregar ponies');
+      return of([]);
+    })
+  )
+  .subscribe(ponies => {
+    this.ponies.set(ponies);
+  });
+```
+
+---
+
+## 🎨 Referências de Design
+
+- **Theme:** `/design/theme.md`
+- **Figma:** `/design/figma.md`
+- **Fontes:** `/design/fonts/`
+- **Ícones:** `/design/icons/`
+- **Imagens:** `/design/images/`
