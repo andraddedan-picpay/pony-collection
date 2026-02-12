@@ -8,7 +8,7 @@ Implementar componentes base do design system (Button, Input, Card) usando as va
 
 ## Passos
 
-### 1. Criar Componente Button
+<!-- ### 1. Criar Componente Button
 
 ```bash
 ng generate component shared/components/button --skip-tests
@@ -266,7 +266,7 @@ export class InputComponent implements ControlValueAccessor {
 }
 ```
 
----
+--- -->
 
 ### 3. Criar Componente Card
 
@@ -492,115 +492,15 @@ export class EmptyStateComponent {
 
 ---
 
-### 6. Criar Página de Demonstração
-
-Para testar os componentes, vamos criar uma página temporária:
-
-**src/app/app.component.html**
-```html
-<div class="container" style="padding: 2rem;">
-  <h1 style="margin-bottom: 2rem;">Design System - Pony Collection</h1>
-  
-  <!-- Buttons -->
-  <section style="margin-bottom: 2rem;">
-    <h2 style="margin-bottom: 1rem;">Buttons</h2>
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-      <app-button variant="primary">Primary</app-button>
-      <app-button variant="secondary">Secondary</app-button>
-      <app-button variant="critical">Critical</app-button>
-      <app-button variant="primary" [disabled]="true">Disabled</app-button>
-    </div>
-  </section>
-
-  <!-- Inputs -->
-  <section style="margin-bottom: 2rem;">
-    <h2 style="margin-bottom: 1rem;">Inputs</h2>
-    <div style="max-width: 400px; display: flex; flex-direction: column; gap: 1rem;">
-      <app-input label="Nome" placeholder="Digite seu nome"></app-input>
-      <app-input label="Email" type="email" placeholder="seu@email.com"></app-input>
-      <app-input label="Senha" type="password" placeholder="••••••••"></app-input>
-      <app-input label="Com erro" error="Este campo é obrigatório"></app-input>
-    </div>
-  </section>
-
-  <!-- Cards -->
-  <section style="margin-bottom: 2rem;">
-    <h2 style="margin-bottom: 1rem;">Cards</h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-      <app-card>
-        <h3>Card Padrão</h3>
-        <p>Conteúdo do card</p>
-      </app-card>
-      <app-card [hoverable]="true">
-        <h3>Card Hoverable</h3>
-        <p>Passe o mouse aqui</p>
-      </app-card>
-    </div>
-  </section>
-
-  <!-- Loading -->
-  <section style="margin-bottom: 2rem;">
-    <h2 style="margin-bottom: 1rem;">Loading</h2>
-    <app-card>
-      <app-loading message="Carregando ponies..."></app-loading>
-    </app-card>
-  </section>
-
-  <!-- Empty State -->
-  <section>
-    <h2 style="margin-bottom: 1rem;">Empty State</h2>
-    <app-card>
-      <app-empty-state 
-        title="Nenhum pony encontrado" 
-        description="Tente adicionar novos ponies à sua coleção"
-        icon="🦄">
-        <app-button variant="primary">Adicionar Pony</app-button>
-      </app-empty-state>
-    </app-card>
-  </section>
-</div>
-```
-
-**src/app/app.component.ts**
-```typescript
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { ButtonComponent } from './shared/components/button/button.component';
-import { InputComponent } from './shared/components/input/input.component';
-import { CardComponent } from './shared/components/card/card.component';
-import { LoadingComponent } from './shared/components/loading/loading.component';
-import { EmptyStateComponent } from './shared/components/empty-state/empty-state.component';
-
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    ButtonComponent,
-    InputComponent,
-    CardComponent,
-    LoadingComponent,
-    EmptyStateComponent
-  ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
-})
-export class AppComponent {
-  title = 'Pony Collection';
-}
-```
-
----
-
 ## ✅ Resultado Esperado
 
-- ✅ Componente Button criado com variantes (primary, secondary, critical)
-- ✅ Componente Input criado com validação visual
+<!-- - ✅ Componente Button criado com variantes (primary, secondary, critical) -->
+<!-- - ✅ Componente Input criado com validação visual -->
 - ✅ Componente Card criado com hover effect
-- ✅ Componente Loading criado
+<!-- - ✅ Componente Loading criado -->
 - ✅ Componente Empty State criado
-- ✅ Todos usando variáveis do theme.md
-- ✅ Página de demonstração funcional
+<!-- - ✅ Todos usando variáveis do theme.md -->
+<!-- - ✅ Página de demonstração funcional -->
 
 ---
 

@@ -226,8 +226,8 @@ $font-size-xs: 0.75rem;
 // ========================================
 // Importações
 // ========================================
-@import './styles/variables';
-@import './styles/mixins';
+@use './styles/variables' as *;
+@use './styles/mixins' as *;
 
 // ========================================
 // Reset Global
@@ -328,7 +328,7 @@ input, textarea, select {
 
 ---
 
-### 8. Configurar Ambiente
+<!-- ### 8. Configurar Ambiente
 
 **src/environments/environment.development.ts**
 ```typescript
@@ -346,9 +346,9 @@ export const environment = {
 };
 ```
 
----
+--- -->
 
-### 9. Atualizar angular.json
+<!-- ### 9. Atualizar angular.json
 
 Adicionar o caminho de estilos no `angular.json`:
 
@@ -371,8 +371,9 @@ Adicionar o caminho de estilos no `angular.json`:
 ```
 
 ---
+-->
 
-### 10. Testar o Projeto
+### 9. Testar o Projeto
 
 ```bash
 npm start
