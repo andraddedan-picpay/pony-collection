@@ -7,6 +7,39 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Prefer type inference when the type is obvious
 - Avoid the `any` type; use `unknown` when type is uncertain
 
+## Path Aliases
+
+Use configured path aliases instead of relative imports:
+
+**TypeScript:**
+- `@app/*` → `src/app/*`
+- `@core/*` → `src/app/core/*`
+- `@shared/*` → `src/app/shared/*`
+- `@features/*` → `src/app/features/*`
+- `@environments/*` → `src/environments/*`
+- `@assets/*` → `src/assets/*`
+
+**SCSS:**
+- `@use 'styles/variables'` → `src/styles/_variables.scss`
+- `@use 'styles/mixins'` → `src/styles/_mixins.scss`
+
+Examples:
+```typescript
+// ❌ Bad
+import { AuthService } from '../../../../core/services/auth.service';
+
+// ✅ Good
+import { AuthService } from '@core/services/auth.service';
+```
+
+```scss
+// ❌ Bad
+@use '../../../../../styles/variables' as *;
+
+// ✅ Good
+@use 'styles/variables' as *;
+```
+
 ## Angular Best Practices
 
 - Always use standalone components over NgModules
