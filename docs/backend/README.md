@@ -149,6 +149,23 @@ api/
 
 ---
 
+### 📦 Versão do Node.js
+
+> **⚠️ Importante:** Este projeto requer Node.js **v24.13.1** (ou compatível).
+> 
+> **Recomendação:** Crie um arquivo `.nvmrc` na raiz do projeto `/api` com o conteúdo:
+> ```
+> v20.18.1
+> ```
+> 
+> Se você usa [nvm](https://github.com/nvm-sh/nvm), execute:
+> ```bash
+> cd api
+> nvm use
+> ```
+
+---
+
 ## 5️⃣ Endpoints da API
 
 ### Autenticação (Públicas)
