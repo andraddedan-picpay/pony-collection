@@ -71,6 +71,7 @@ Design system com paleta de cores, tipografia e estilos visuais do projeto.
 
 | Variável SCSS | Valor | Pixels (base 16px) |
 |---------------|-------|---------------------|
+| `$logo-size` | `4.688rem` | 75px |
 | `$heading-size` | `4rem` | 64px |
 | `$font-size-7xl` | `2.375rem` | 38px |
 | `$font-size-6xl` | `2.125rem` | 34px |
