@@ -1,4 +1,9 @@
 // ========================================
+// Importações
+// ========================================
+@use 'styles/variables' as *;
+
+// ========================================
 // Mixins Utilitários
 // ========================================
 
@@ -22,7 +27,7 @@
 
 // Sombra primária
 @mixin box-shadow-primary {
-    box-shadow: 0 4px 12px $primary-shadow;
+    box-shadow: 3px 3px 6px 3px $primary-shadow;
 }
 
 // Transição suave
