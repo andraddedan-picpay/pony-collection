@@ -1,0 +1,69 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+
+.btn {
+  display: inline-flex;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-family: $text-family;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  @include transition(all, 0.3s, ease);
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// Variants
+.btn-primary {
+  background: linear-gradient(135deg, $primary-color 0%, #C850D0 100%);
+  color: $text-color;
+
+  &:hover:not(:disabled) {
+    box-shadow: 0px 4px 12px 0px rgba($primary-shadow, 0.6);
+  }
+}
+
+.btn-secondary {
+  background-color: $secondary-color;
+  color: $text-color;
+  border: 1px solid rgba($grayscale-03, 0.3);
+  box-shadow: none;
+
+  &:hover:not(:disabled) {
+    border-color: $primary-color;
+    background-color: rgba($primary-color, 0.1);
+    box-shadow: 0 4px 12px rgba($primary-shadow, 0.3);
+  }
+}
+
+.btn-loading {
+  position: relative;
+  pointer-events: none;
+
+  .btn-loading-icon {
+    color: $text-color;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

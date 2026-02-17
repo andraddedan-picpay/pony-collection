@@ -1,0 +1,17 @@
+<button
+  [style.width]="width()"
+  [type]="type()"
+  class="btn"
+  [class]="[
+    'btn',
+    'btn-' + variant(),
+    loading() && 'btn-loading'
+  ]"
+  [disabled]="disabled() || loading()"
+  (click)="handleClick($event)">
+  @if (loading()) {
+    <svg-icon src="assets/icons/loading.svg" class="btn-loading-icon" [svgStyle]="{ 'width.px': 20, 'height.px': 20 }"></svg-icon>
+  } @else {
+    <ng-content></ng-content>
+  }
+</button>
