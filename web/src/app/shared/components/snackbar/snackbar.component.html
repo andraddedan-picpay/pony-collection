@@ -1,0 +1,14 @@
+<div class="snackbar-container">
+    @for (message of messages; track message.id) {
+    <div class="snackbar" [class]="'snackbar-' + message.type">
+        <div class="snackbar-icon">
+            <svg-icon src="assets/icons/info.svg"
+                [svgStyle]="{ 'width.px': 24, 'height.px': 24 }"></svg-icon>
+        </div>
+        <div class="snackbar-message">{{ message.message }}</div>
+        <button class="snackbar-close" (click)="removeMessage(message.id)" aria-label="Fechar">
+            ✕
+        </button>
+    </div>
+    }
+</div>

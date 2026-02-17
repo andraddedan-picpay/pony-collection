@@ -1,0 +1,45 @@
+<div class="login-page">
+    <div class="login-content">
+        <div class="login-card">
+            <div class="logo-container">
+                <h1> DEAR PONY </h1>
+
+                <img src="assets/images/logo.png" alt="Pony Collection" class="logo" />
+            </div>
+
+            <form class="login-form" (ngSubmit)="onSubmit()">
+                <div class="form-group">
+                    <pony-input
+                        type="email"
+                        placeholder="Email"
+                        name="email"
+                        [ngModel]="email()"
+                        (ngModelChange)="updateEmail($event)"
+                        [disabled]="isLoading()"
+                        [required]="true">
+                    </pony-input>
+                </div>
+
+                <div class="form-group">
+                    <pony-input
+                        type="password"
+                        placeholder="Senha"
+                        name="password"
+                        [ngModel]="password()"
+                        (ngModelChange)="updatePassword($event)"
+                        [disabled]="isLoading()"
+                        [required]="true">
+                    </pony-input>
+                </div>
+
+                <pony-button
+                    width="100%"
+                    type="submit"
+                    [loading]="isLoading()"
+                    variant="primary">
+                    Login
+                </pony-button>
+            </form>
+        </div>
+    </div>
+</div>

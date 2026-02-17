@@ -1,0 +1,104 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+
+.snackbar-container {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 400px;
+}
+
+.snackbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background-color: $base-dark-3;
+    color: $text-color;
+    box-shadow: 0 4px 12px rgba($base-shadow, 0.3);
+    animation: slideIn 0.3s ease-out;
+    min-width: 300px;
+    border-left: 4px solid transparent;
+}
+
+.snackbar-icon {
+    font-size: $font-size-xl;
+    font-weight: bold;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    color: $text-color;
+}
+
+.snackbar-message {
+    flex: 1;
+    font-family: $text-family;
+    font-size: $font-size-base;
+    line-height: 1.4;
+}
+
+.snackbar-close {
+    background: none;
+    border: none;
+    color: $text-color;
+    font-size: $font-size-lg;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    opacity: 0.7;
+    @include transition(opacity, 0.2s, ease);
+    flex-shrink: 0;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+// Variações de tipo
+.snackbar-success {
+    border-left-color: $success-color;
+    background-color: rgba($success-color, 0.25);
+
+    .snackbar-icon {
+        color: $success-color;
+    }
+}
+
+.snackbar-error {
+    border-left-color: $critical-color;
+    background-color: rgba($critical-color, 0.25);
+
+    .snackbar-icon {
+        color: $critical-color;
+    }
+}
+
+.snackbar-info {
+    border-left-color: $primary-color;
+
+    .snackbar-icon {
+        color: $primary-color;
+    }
+}
+
+// Responsive
+@media (max-width: 480px) {
+    .snackbar-container {
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+        max-width: none;
+    }
+
+    .snackbar {
+        min-width: auto;
+    }
+}

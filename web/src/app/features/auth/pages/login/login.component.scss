@@ -1,0 +1,80 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+
+.login-page {
+    height: 100vh;
+    width: 100vw;
+    background-color: $base-dark-2;
+    background-image: url('/assets/images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.login-content {
+    width: 100%;
+    height: 100%;
+    background: rgba($base-shadow, 0.75);
+    @include flex-center;
+    padding: 1rem;
+}
+
+.login-card {
+    background-color: $base-dark-1;
+    border-radius: 53px;
+    padding: 64px 50px;
+    width: 100%;
+    max-width: 390px;
+    @include box-shadow-primary;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    h1 {
+        color: $text-color;
+        font-family: $logo-family;
+        font-size: $logo-size;
+        font-weight: 400;
+        line-height: 100%;
+        letter-spacing: 11px;
+        vertical-align: middle;
+    }
+
+    .logo {
+        max-width: 140px;
+        width: 100%;
+        height: auto;
+    }
+}
+
+.login-form {
+    @include flex-column;
+    gap: 20px;
+}
+
+.form-group {
+    width: 100%;
+}
+
+// Responsive
+@media (max-width: 480px) {
+    .login-card {
+        padding: 2rem 1.5rem;
+        max-width: 290px;
+    }
+
+    .logo-container .logo {
+        max-width: 220px;
+    }
+
+    .btn-login {
+        font-size: $font-size-sm;
+    }
+
+    .logo {
+        display: none;
+    }
+}
