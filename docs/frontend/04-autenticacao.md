@@ -13,41 +13,58 @@ Integrar a tela de login com o backend NestJS, implementando autenticação comp
 
 ---
 
-## 📦 1. Criar Models no Frontend
+## 📦 1. Instalar Dependências
 
-### 1.1 Criar Interface de User
+Vamos instalar a biblioteca para decodificar tokens JWT:
+
+```bash
+cd web
+npm install jwt-decode
+```
+
+---
+
+## 📦 2. Criar Models no Frontend
+
+### 2.1 Criar Interface de User
 
 **src/app/core/models/user.model.ts**
 
 ```typescript
 export interface User {
-    id: string;
-    name: string;
-    email: string;
-    createdAt: string;
+  id: string;
+  name: string;
+  email: string;
 }
 
 export interface LoginRequest {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
 
 export interface LoginResponse {
-    access_token: string;
-    user: User;
+  access_token: string;
+  user: User;
 }
 
 export interface ErrorResponse {
-    message: string;
-    statusCode: number;
+  statusCode?: number;
+  message: string;
+  error?: string;
 }
 ```
 
+**💡 Explicação:**
+- `User`: Dados básicos do usuário (id, name, email)
+- `LoginRequest`: Dados necessários para login
+- `LoginResponse`: Resposta após login bem-sucedido (token + user decodificado)
+- `ErrorResponse`: Formato de erro da API
+
 ---
 
-## 🛠️ 2. Criar Helper de LocalStorage
+## 🛠️ 3. Criar Helper de LocalStorage
 
-### 2.1 LocalStorage Helper
+### 3.1 LocalStorage Helper
 
 **src/app/core/helpers/local-storage.helper.ts**
 
@@ -97,21 +114,23 @@ export class LocalStorageHelper {
 
 ---
 
-## 🔐 3. Criar Serviço de Autenticação
+## 🔐 4. Criar Serviço de Autenticação
 
-### 3.1 AuthService
+### 4.1 AuthService
 
 **src/app/core/services/auth.service.ts**
 
 ```typescript
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, catchError, throwError } from 'rxjs';
+import { Observable, catchError, throwError, map } from 'rxjs';
 import { LoginRequest, LoginResponse, User } from '@core/models/user.model';
-import { LocalStorageHelper, LocalStorageKeys } from '@core/helpers/local-storage.helper';
+import { LocalStorageHelper } from '@core/helpers/local-storage.helper';
+import { LocalStorageKeys } from '@core/helpers/local-storage.helper';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class AuthService {
     private apiUrl = 'http://localhost:3000';
@@ -119,16 +138,31 @@ export class AuthService {
     constructor(private http: HttpClient) {}
 
     login(loginData: LoginRequest): Observable<LoginResponse> {
-        return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, loginData).pipe(
-            tap(response => {
-                if (response.access_token && response.user) {
-                    LocalStorageHelper.set<string>(LocalStorageKeys.TOKEN, response.access_token);
-                    LocalStorageHelper.set<User>(LocalStorageKeys.USER, response.user);
+        return this.http.post<{ access_token: string }>(`${this.apiUrl}/auth/login`, loginData).pipe(
+            map(({ access_token }) => {
+                // Decodificar o JWT para extrair os dados do usuário
+                const data = jwtDecode<User & { sub: string }>(access_token);
+
+                const user = {
+                    id: data.sub,
+                    email: data.email,
+                    name: data.name,
+                };
+
+                // Salvar token e usuário no localStorage
+                if (access_token && data) {
+                    LocalStorageHelper.set<string>(LocalStorageKeys.TOKEN, access_token);
+                    LocalStorageHelper.set<User>(LocalStorageKeys.USER, user);
                 }
+
+                return {
+                    access_token,
+                    user,
+                };
             }),
-            catchError(error => {
+            catchError((error) => {
                 return throwError(() => error);
-            })
+            }),
         );
     }
 
@@ -151,11 +185,19 @@ export class AuthService {
 }
 ```
 
+**💡 Explicação:**
+- **Backend retorna apenas `{ access_token }`**: O usuário não vem na resposta
+- **jwtDecode**: Decodifica o token JWT para extrair os dados do usuário
+- **map ao invés de tap**: Transformamos a resposta antes de retorná-la
+- **Payload do JWT**: Contém `sub` (user.id), `email` e `name`
+- **LocalStorage**: Salvamos token e usuário decodificado
+- **Retorno**: Construímos manualmente o `LoginResponse` com token + user
+
 ---
 
-## 🔧 4. Configurar CORS no Backend
+## 🔧 5. Configurar CORS no Backend
 
-### 4.1 Adicionar CORS no main.ts
+### 5.1 Adicionar CORS no main.ts
 
 **api/src/main.ts**
 
@@ -199,7 +241,7 @@ npm run start:dev
 
 ---
 
-## � 5. Integrar Login com AuthService
+## 🔄 6. Integrar Login com AuthService
 
 **src/app/features/auth/pages/login/login.component.ts**
 
@@ -286,9 +328,9 @@ export class LoginComponent {
 
 ---
 
-## 🧪 6. Testar a Integração
+## 🧪 7. Testar a Integração
 
-### 6.1 Criar Usuário de Teste (via Swagger)
+### 7.1 Criar Usuário de Teste (via Swagger)
 
 1. Abra `http://localhost:3000/swagger`
 2. Vá em `/users` → POST
@@ -302,7 +344,7 @@ export class LoginComponent {
 }
 ```
 
-### 6.2 Testar Login
+### 7.2 Testar Login
 
 1. Abra `http://localhost:4200`
 2. Digite o email e senha criados
@@ -316,7 +358,7 @@ export class LoginComponent {
 
 ---
 
-## 🛡️ 7. Criar Guard de Autenticação (Opcional)
+## 🛡️ 8. Criar Guard de Autenticação (Opcional)
 
 **src/app/core/guards/auth.guard.ts**
 
@@ -355,7 +397,7 @@ export const routes: Routes = [
 
 ---
 
-## 🎯 8. Interceptor HTTP (Opcional)
+## 🎯 9. Interceptor HTTP (Opcional)
 
 Para adicionar automaticamente o token nas requisições:
 
@@ -402,12 +444,14 @@ export const appConfig: ApplicationConfig = {
 
 Nesta aula você aprendeu:
 
+✅ Instalar e usar `jwt-decode` para trabalhar com JWT  
 ✅ Configurar CORS no backend NestJS  
 ✅ Criar models TypeScript para API  
 ✅ Implementar LocalStorage helper para persistência  
-✅ Criar AuthService para autenticação  
+✅ Criar AuthService com decodificação de JWT  
 ✅ Integrar login com backend real  
-✅ Gerenciar tokens JWT  
+✅ Extrair dados do usuário do token JWT  
+✅ Gerenciar tokens JWT no frontend  
 ✅ Criar guards de autenticação  
 ✅ Implementar interceptors HTTP  
 ✅ Tratar erros de API básico (alert temporário)  
@@ -418,6 +462,9 @@ Nesta aula você aprendeu:
 
 - **CORS**: Cross-Origin Resource Sharing
 - **JWT**: JSON Web Tokens para autenticação
+- **jwt-decode**: Biblioteca para decodificar tokens JWT no frontend
+- **JWT Payload**: Estrutura dos dados dentro do token (sub, email, name)
+- **RxJS map**: Operador para transformar dados em Observables
 - **Observables**: RxJS para chamadas assíncronas
 - **Guards**: Proteção de rotas
 - **Interceptors**: Middleware para requisições HTTP

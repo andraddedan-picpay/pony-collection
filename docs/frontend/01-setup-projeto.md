@@ -434,4 +434,4 @@ Deve aparecer uma página em branco com fundo escuro (`$base-dark-1`).
 
 ## 📝 Próximos Passos
 
-- Criar a tela de login
+- Criar componentes compartilhados para uso na tela de login
