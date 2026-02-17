@@ -247,6 +247,21 @@ web/
 - **RxJS BehaviorSubject** - Estado compartilhado
 - **Services** - Gerenciamento de estado
 
+### 📦 Versão do Node.js
+
+> **⚠️ Importante:** Este projeto requer Node.js **v24.13.1** (ou compatível).
+> 
+> **Recomendação:** Crie um arquivo `.nvmrc` na raiz do projeto `/web` com o conteúdo:
+> ```
+> v24.13.1
+> ```
+> 
+> Se você usa [nvm](https://github.com/nvm-sh/nvm), execute:
+> ```bash
+> cd web
+> nvm use
+> ```
+
 ---
 
 ## 6️⃣ Páginas e Rotas
@@ -302,53 +317,86 @@ web/
 * Configurar SCSS
 * Estrutura de pastas (core, shared, features)
 * Configurar variáveis do theme.md
+* Importar fontes (Barlow e BigShouldersInlineDisplay)
 
 ✔️ Resultado: Projeto Angular estruturado e rodando
 
----
-
-### 📘 Aula 2 — Integração com Figma e Design System
-
-**Objetivo:** Implementar o design system
-
-* Importar fontes (Barlow e BigShouldersInlineDisplay)
-* Criar variáveis SCSS do theme.md
-* Criar componentes base (Button, Input, Card)
-* Estabelecer padrões visuais
-
-✔️ Resultado: Design system implementado
+**Arquivo:** [01-setup-projeto.md](01-setup-projeto.md)
 
 ---
 
-### 📘 Aula 3 — Tela de Login
+### 📘 Aula 2 — Componentes Reutilizáveis [Button & Input]
 
-**Objetivo:** Criar autenticação no frontend
+**Objetivo:** Implementar componentes compartilhados base
 
-* Criar LoginComponent
-* Formulários reativos (ReactiveFormsModule)
-* Integrar com AuthService
-* Validação de campos
-* Feedback visual (loading, erro)
+* Instalar angular-svg-icon
+* Criar componente pony-button com variantes
+* Criar componente pony-input com ControlValueAccessor
+* Implementar estados (loading, disabled, focus)
+* Aplicar design system do theme.md
+* Criar ícones SVG (loading, info)
 
-✔️ Resultado: Tela de login funcional
+✔️ Resultado: Biblioteca de componentes reutilizáveis
+
+**Arquivo:** [02-login.md](02-login.md)
 
 ---
 
-### 📘 Aula 4 — Autenticação e Guards
+### 📘 Aula 3 — Layout da Tela de Login
 
-**Objetivo:** Proteger rotas e gerenciar sessão
+**Objetivo:** Criar a interface visual da tela de login
 
-* Criar AuthService (login, logout, isAuthenticated)
-* Implementar AuthGuard
-* Criar JwtInterceptor
-* Armazenamento seguro do token
-* Redirecionamento automático
+* Criar estrutura de features/auth
+* Implementar LoginComponent com Signals API
+* Criar layout responsivo com background e card
+* Usar componentes pony-button e pony-input
+* Implementar validação básica de formulário
+* Configurar rotas
+
+✔️ Resultado: Tela de login visualmente completa
+
+**Arquivo:** [03-layout-tela-login.md](03-layout-tela-login.md)
+
+---
+
+### 📘 Aula 4 — Autenticação e Integração com Backend
+
+**Objetivo:** Integrar login com API real
+
+* Configurar CORS no backend NestJS
+* Criar models (User, LoginRequest, LoginResponse)
+* Implementar LocalStorage helper
+* Criar AuthService (login, logout, tokens)
+* Integrar login com backend real
+* Criar AuthGuard para proteção de rotas
+* Criar HTTP Interceptor para JWT
+* Tratamento básico de erros (alert temporário)
 
 ✔️ Resultado: Sistema de autenticação completo
 
+**Arquivo:** [04-autenticacao.md](04-autenticacao.md)
+
 ---
 
-### 📘 Aula 5 — Listagem de Ponies
+### 📘 Aula 5 — Sistema de Feedback com Snackbar
+
+**Objetivo:** Implementar notificações toast elegantes
+
+* Criar SnackbarService com Signals
+* Implementar componente Snackbar visual
+* Tipos de mensagens (success, error, warning, info)
+* Auto-dismiss configurável
+* Animações de entrada/saída
+* Integração global no app
+* Substituir alerts do login por snackbars
+
+✔️ Resultado: Sistema de notificações completo e reutilizável
+
+**Arquivo:** [05-sistema-feedback-snackbar.md](05-sistema-feedback-snackbar.md)
+
+---
+
+### 📘 Aula 6 — Listagem de Ponies
 
 **Objetivo:** Exibir lista de personagens
 
@@ -364,7 +412,7 @@ web/
 
 ---
 
-### 📘 Aula 6 — Sidesheet de Detalhes
+### 📘 Aula 7 — Sidesheet de Detalhes
 
 **Objetivo:** Exibir detalhes do pony
 
@@ -378,7 +426,7 @@ web/
 
 ---
 
-### 📘 Aula 7 — Sidesheet de Cadastro/Edição
+### 📘 Aula 8 — Sidesheet de Cadastro/Edição
 
 **Objetivo:** Criar e editar ponies
 
@@ -393,7 +441,7 @@ web/
 
 ---
 
-### 📘 Aula 8 — State Management e Boas Práticas
+### 📘 Aula 9 — State Management e Boas Práticas
 
 **Objetivo:** Gerenciar estado da aplicação
 
@@ -408,7 +456,7 @@ web/
 
 ---
 
-### 📘 Aula 9 — Logout e Melhorias Finais
+### 📘 Aula 10 — Logout e Melhorias Finais
 
 **Objetivo:** Finalizar autenticação e polish
 
