@@ -1,11 +1,20 @@
-<input
-    [type]="type"
-    [placeholder]="placeholder"
-    [disabled]="disabled"
-    [name]="name"
-    [required]="required"
-    [value]="value"
-    (input)="onInput($event)"
-    (blur)="onBlur()"
-    class="pony-input"
-/>
+<div class="pony-box">
+    @if (icon) {
+    <svg-icon
+        src="assets/icons/{{icon}}.svg"
+        class="pony-box__icon"
+        [svgStyle]="{ 'width.px': 20, 'height.px': 20 }" />
+    }
+
+    <input
+        [type]="type"
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [name]="name"
+        [required]="required"
+        [value]="value"
+        (input)="onInput($event)"
+        (blur)="onBlur()"
+        class="pony-box__input"
+    />
+</div>
