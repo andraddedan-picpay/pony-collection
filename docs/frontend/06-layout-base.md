@@ -808,10 +808,9 @@ export const routes: Routes = [
 
 **💡 Explicação:**
 
-- **Lazy Loading**: Carrega componente sob demanda
-- **Rota padrão**: Redireciona para login
+- **Lazy Loading**: Carrega componentes sob demanda
 
-### 5.2 Atualizar Redirecionamento do Login
+### 4.2 Atualizar Redirecionamento do Login
 
 **src/app/features/auth/pages/login/login.component.ts**
 
@@ -825,53 +824,16 @@ if (hasUserData) {
 
 ---
 
-## 📱 6. Responsividade
+## 🧪 5. Testar o Layout
 
-### 6.1 Breakpoints
-
-```scss
-// Tablets
-@media (max-width: 1024px) {
-  .ponies-layout {
-    grid-template-columns: 104px 1fr;
-  }
-
-  .header {
-    flex-direction: column;
-    gap: 16px;
-    align-items: flex-start;
-  }
-
-  .header-filter {
-    width: 100%;
-  }
-}
-
-// Mobile
-@media (max-width: 768px) {
-  .sidebar {
-    padding: 16px 0;
-    gap: 20px;
-  }
-
-  .header-title {
-    font-size: $font-size-2xl;
-  }
-}
-```
-
----
-
-## 🧪 7. Testar o Layout
-
-### 7.1 Executar Aplicação
+### 5.1 Executar Aplicação
 
 ```bash
 cd web
 npm start
 ```
 
-### 7.2 Verificar Funcionalidades
+### 5.2 Verificar Funcionalidades
 
 1. **Login**: Faça login e verifique redirecionamento para `/ponies`
 2. **Layout**: Confirme estrutura (sidebar + header + ng-content)
