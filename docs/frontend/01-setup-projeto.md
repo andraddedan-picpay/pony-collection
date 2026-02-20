@@ -126,6 +126,7 @@ $logo-family: 'BigShouldersInlineDisplay', cursive;
 // ========================================
 // Tipografia - Tamanhos
 // ========================================
+$logo-size: 4.688rem;
 $heading-size: 4rem;
 $font-size-7xl: 2.375rem;
 $font-size-6xl: 2.125rem;

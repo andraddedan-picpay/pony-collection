@@ -1,4 +1,4 @@
-# 📘 Aula 6 — Sidesheet de Detalhes
+# 📘 Aula 8 — Sidesheet de Detalhes
 
 ## Objetivo
 
