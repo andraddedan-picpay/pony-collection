@@ -1,7 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { SnackbarService } from '@core/services/snackbar.service';
 import { LoginRequest } from '@core/models/user.model';
@@ -22,7 +22,7 @@ export class LoginComponent {
 
     private authService = inject(AuthService);
     private snackbarService = inject(SnackbarService);
-    // private router = inject(Router);
+    private router = inject(Router);
 
     onSubmit(): void {
         if (!this.email() || !this.password()) {
@@ -44,7 +44,7 @@ export class LoginComponent {
 
                 if (hasUserData) {
                     this.snackbarService.success('Login realizado com sucesso!');
-                    // this.router.navigate(['/home']);
+                    this.router.navigate(['/']);
                     return;
                 }
 
