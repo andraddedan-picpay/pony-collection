@@ -1,0 +1,46 @@
+<div class="ponies-layout">
+    <!-- Menu Lateral -->
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <img src="assets/images/logo.png" alt="Pony Collection" class="logo" />
+        </div>
+
+        <div class="sidebar-menu">
+            <div class="sidebar-item active">
+                <button class="sidebar-item_button">
+                    <svg-icon src="assets/icons/home.svg" class="icon" [svgStyle]="{ 'width.px': 20 }" />
+                </button>
+            </div>
+
+            <div class="sidebar-item">
+                <button class="sidebar-item_button">
+                    <svg-icon src="assets/icons/heart.svg" class="icon" [svgStyle]="{ 'width.px': 20 }" />
+                </button>
+            </div>
+        </div>
+
+        <button class="sidebar-logout">
+            <svg-icon src="assets/icons/logout.svg" class="icon" [svgStyle]="{ 'width.px': 20 }" />
+        </button>
+    </nav>
+
+
+    <!-- Conteúdo Principal -->
+    <main class="content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-info">
+                <h1 class="header-title">DEAR PONY</h1>
+                <p class="header-date">{{ currentDate() }}</p>
+            </div>
+
+            <div class="header-filter">
+                <pony-input icon="search" placeholder="Filtre pelo nome" (inputChange)="onSearchChange($event)" />
+            </div>
+        </header>
+
+        <!-- Conteúdo -->
+        <ng-content></ng-content>
+
+    </main>
+</div>
