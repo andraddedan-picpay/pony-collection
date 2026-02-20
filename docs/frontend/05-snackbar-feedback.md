@@ -183,7 +183,7 @@ export class SnackbarComponent {
 .snackbar-container {
     position: fixed;
     bottom: 24px;
-    left: 24px;
+    left: 124px;
     z-index: 9999;
     display: flex;
     flex-direction: column;
