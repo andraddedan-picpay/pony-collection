@@ -121,6 +121,7 @@ $opacity-50: 0.50;
 // Tipografia - Famílias
 // ========================================
 $text-family: 'Barlow', sans-serif;
+$heading-family: 'BigShouldersDisplay', sans-serif;
 $logo-family: 'BigShouldersInlineDisplay', cursive;
 
 // ========================================
@@ -391,7 +392,7 @@ input, textarea, select {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Big+Shoulders+Inline+Display:wght@400;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Big+Shoulders+Inline+Display:wght@400;700&family=Big+Shoulders:opsz,wght@10..72,100..900&display=swap"
     rel="stylesheet">
 </head>
 

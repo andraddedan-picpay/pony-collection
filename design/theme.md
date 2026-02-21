@@ -65,7 +65,8 @@ Design system com paleta de cores, tipografia e estilos visuais do projeto.
 | Variável SCSS | Valor | Uso |
 |---------------|-------|-----|
 | `$text-family` | `'Barlow'` | Fonte do texto |
-| `$logo-family` | `'BigShouldersInlineDisplay'` | Fonte da logo |
+| `$heading-family` | `'BigShouldersDisplay'` | Títulos de destaque |
+| `$logo-family` | `'BigShouldersInlineDisplay'` | Fonte do logo |
 
 ### Tamanhos de Fonte
 
