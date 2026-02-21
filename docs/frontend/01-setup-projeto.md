@@ -160,9 +160,9 @@ cp ../../design/fonts/BigShouldersInlineDisplay/BigShouldersInlineDisplay-Regula
 cp ../../design/fonts/BigShouldersInlineDisplay/BigShouldersInlineDisplay-Bold.ttf src/assets/fonts/
 
 # Copiar fontes BigShouldersDisplay
-cp ../../design/fonts/BigShouldersDisplay/BigShouldersDisplay-Regular.ttf src/assets/fonts/
-cp ../../design/fonts/BigShouldersDisplay/BigShouldersDisplay-Bold.ttf src/assets/fonts/
-cp ../../design/fonts/BigShouldersDisplay/BigShouldersDisplay-ExtraBold.ttf src/assets/fonts/
+cp ../../design/fonts/BigShouldersDisplay/BigShoulders-Regular.ttf src/assets/fonts/
+cp ../../design/fonts/BigShouldersDisplay/BigShoulders-Bold.ttf src/assets/fonts/
+cp ../../design/fonts/BigShouldersDisplay/BigShoulders-ExtraBold.ttf src/assets/fonts/
 ```
 
 ---
