@@ -1,5 +1,3 @@
-# 📘 Aula 8 — Sidesheet de Detalhes
+# 📘 Aula 8 — Feedbacks de Erro e Lista Vazia
 
 ## Objetivo
-
-Criar um componente Sidesheet reutilizável e implementar a visualização detalhada de um pony com animações suaves.
