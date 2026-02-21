@@ -158,6 +158,11 @@ cp ../../design/fonts/Barlow/Barlow-Bold.ttf src/assets/fonts/
 # Copiar fontes BigShouldersInlineDisplay
 cp ../../design/fonts/BigShouldersInlineDisplay/BigShouldersInlineDisplay-Regular.ttf src/assets/fonts/
 cp ../../design/fonts/BigShouldersInlineDisplay/BigShouldersInlineDisplay-Bold.ttf src/assets/fonts/
+
+# Copiar fontes BigShouldersDisplay
+cp ../../design/fonts/BigShouldersDisplay/BigShouldersDisplay-Regular.ttf src/assets/fonts/
+cp ../../design/fonts/BigShouldersDisplay/BigShouldersDisplay-Bold.ttf src/assets/fonts/
+cp ../../design/fonts/BigShouldersDisplay/BigShouldersDisplay-ExtraBold.ttf src/assets/fonts/
 ```
 
 ---
@@ -284,6 +289,30 @@ cp ../../design/fonts/BigShouldersInlineDisplay/BigShouldersInlineDisplay-Bold.t
     font-family: 'BigShouldersInlineDisplay';
     src: url('/assets/fonts/BigShouldersInlineDisplay-Bold.ttf') format('truetype');
     font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'BigShouldersDisplay';
+    src: url('/assets/fonts/BigShouldersDisplay-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'BigShouldersDisplay';
+    src: url('/assets/fonts/BigShouldersDisplay-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'BigShouldersDisplay';
+    src: url('/assets/fonts/BigShouldersDisplay-ExtraBold.ttf') format('truetype');
+    font-weight: 900;
     font-style: normal;
     font-display: swap;
 }
