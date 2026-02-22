@@ -143,10 +143,10 @@ web/
 │   │   │   │
 │   │   │   └── ponies/               # Módulo de ponies
 │   │   │       ├── pages/
-│   │   │       │   └── ponies-list/
-│   │   │       │       ├── ponies-list.component.ts
-│   │   │       │       ├── ponies-list.component.html
-│   │   │       │       └── ponies-list.component.scss
+│   │   │       │   └── list/
+│   │   │       │       ├── list.component.ts
+│   │   │       │       ├── list.component.html
+│   │   │       │       └── list.component.scss
 │   │   │       ├── components/
 │   │   │       │   ├── pony-card/
 │   │   │       │   ├── pony-details-sidesheet/
@@ -400,7 +400,7 @@ web/
 
 **Objetivo:** Exibir lista de personagens
 
-* Criar PoniesListComponent
+* Criar ListComponent
 * Criar PoniesService
 * Integrar com API
 * Criar PonyCard component

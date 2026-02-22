@@ -29,7 +29,7 @@ O layout base segue uma arquitetura modular com **componentes reutilizáveis**:
          ↓ (onSearchEvent)
 ┌─────────────────────────────────────────┐
 │                                         │
-│  ponies-list (Smart Component)          │
+│  list (Smart Component)          │
 │  ├─ Gerencia estado (filter signal)     │
 │  └─ Conteúdo projetado no main-layout   │
 │                                         │
@@ -671,14 +671,14 @@ export class MainLayoutComponent {
 ### 3.1 Gerar o Componente
 
 ```bash
-ng generate component features/ponies/pages/list --name=ponies-list --skip-tests
+ng generate component features/ponies/pages/list --name=list --skip-tests
 ```
 
 ---
 
 ### 3.2 Implementar TypeScript
 
-**src/app/features/ponies/pages/list/ponies-list.component.ts**
+**src/app/features/ponies/pages/list/list.component.ts**
 
 ```typescript
 import { Component, signal } from "@angular/core";
@@ -687,12 +687,12 @@ import { FormsModule } from "@angular/forms";
 import { MainLayoutComponent } from "@app/core/layout/main-layout/main-layout.component";
 
 @Component({
-  selector: "app-ponies-list",
+  selector: "app-list",
   standalone: true,
   imports: [CommonModule, FormsModule, MainLayoutComponent],
-  templateUrl: "./ponies-list.component.html",
+  templateUrl: "./list.component.html",
 })
-export class PoniesListComponent {
+export class ListComponent {
   filter = signal("");
 
   updateFilter(value: string): void {
@@ -712,7 +712,7 @@ export class PoniesListComponent {
 
 ### 3.3 Implementar Template HTML
 
-**src/app/features/ponies/pages/list/ponies-list.component.html**
+**src/app/features/ponies/pages/list/list.component.html**
 
 ```html
 <main-layout (onSearchEvent)="updateFilter($event)">
@@ -799,8 +799,8 @@ export const routes: Routes = [
   {
     path: "ponies",
     loadComponent: () =>
-      import("./features/ponies/pages/list/ponies-list.component").then(
-        (m) => m.PoniesListComponent,
+      import("./features/ponies/pages/list/list.component").then(
+        (m) => m.ListComponent,
       ),
   },
 ];
@@ -871,7 +871,7 @@ Nesta aula você aprendeu:
 - **Flexbox**: Alinhamento de elementos
 - **Smart vs Dumb Components**: Separação de responsabilidades
   - **Dumb (main-layout)**: Apenas apresentação, emite eventos
-  - **Smart (ponies-list)**: Gerencia estado e lógica
+  - **Smart (list)**: Gerencia estado e lógica
 - **Content Projection**: `ng-content` para conteúdo dinâmico
 - **Signals**: Estado reativo com `signal()`
 - **Output Events**: Comunicação child → parent com `output()`

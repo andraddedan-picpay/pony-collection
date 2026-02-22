@@ -180,8 +180,8 @@ export const routes: Routes = [
     {
         path: '',
         loadComponent: () =>
-            import('./features/ponies/pages/list/ponies-list.component').then(
-                (m) => m.PoniesListComponent,
+            import('./features/ponies/pages/list/list.component').then(
+                (m) => m.ListComponent,
             ),
         canActivate: [authGuard],      // ← ADICIONAR
     },
