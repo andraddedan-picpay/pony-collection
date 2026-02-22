@@ -581,6 +581,7 @@ export class MainLayoutComponent {
   height: 100vh;
   padding: 24px;
   background-color: $base-dark-2;
+  overflow: scroll;
 }
 
 // ========================================
