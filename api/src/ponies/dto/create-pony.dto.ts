@@ -37,4 +37,12 @@ export class CreatePonyDto {
     example: 'https://example.com/rainbow-dash.png',
   })
   imageUrl: string;
+
+  @ApiProperty({
+    description: 'Se o pony é favorito (opcional, padrão: false)',
+    example: false,
+    required: false,
+    default: false,
+  })
+  isFavorite?: boolean;
 }

@@ -97,6 +97,12 @@ export class UpdatePonyDto {
 - **Create**: Precisa de todos os dados para criar
 - **Update**: Permite atualizar só 1 campo (PATCH semântico)
 
+> **💡 Nota sobre `isFavorite`:**  
+> No `CreatePonyDto`, `isFavorite` é **opcional** porque:  
+> - ✅ Tem default `false` na entidade: `@Column({ default: false })`  
+> - ✅ Banco aplica o default se não enviado  
+> - ✅ Melhora UX: usuário não precisa sempre enviar `false`
+
 ### PonySummary: Otimização de Performance
 
 **Problema**: Retornar entidade completa na listagem desperdiça banda:
@@ -179,6 +185,14 @@ export class CreatePonyDto {
     example: 'https://example.com/rainbow-dash.png',
   })
   imageUrl: string;
+
+  @ApiProperty({
+    description: 'Se o pony é favorito (opcional, padrão: false)',
+    example: false,
+    required: false,
+    default: false,
+  })
+  isFavorite?: boolean;
 }
 ```
 

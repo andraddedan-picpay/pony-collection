@@ -566,7 +566,7 @@ export class Pony {
     description: 'Se o pony é favorito',
     example: false,
   })
-  @Column()
+  @Column({ default: false })
   isFavorite: boolean;
 
   @ApiProperty({
@@ -611,6 +611,30 @@ export class Pony {
   @CreateDateColumn()
   createdAt: Date;
 }
+```
+
+**Destaque: Column com Default Value**
+```typescript
+@Column({ default: false })
+isFavorite: boolean;
+```
+
+**Por que usar default?**
+- ✅ **Integridade**: Garante valor mesmo se não enviado
+- ✅ **UX**: Campo opcional no DTO (não obriga usuário sempre enviar)
+- ✅ **Banco**: SQL `DEFAULT (0)` aplicado automaticamente
+- ✅ **Segurança**: Previne valores `null` indesejados
+
+**Outros exemplos de defaults:**
+```typescript
+@Column({ default: 'active' })
+status: string;
+
+@Column({ default: 0 })
+viewCount: number;
+
+@Column({ nullable: true })  // ← Permite NULL
+description?: string;
 ```
 
 ### 3. Configurar o módulo

@@ -26,7 +26,7 @@ export class Pony {
     description: 'Se o pony é favorito',
     example: false,
   })
-  @Column()
+  @Column({ default: false })
   isFavorite: boolean;
 
   @ApiProperty({
