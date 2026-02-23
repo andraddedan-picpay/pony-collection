@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Criar a interface visual completa da tela de login usando os componentes reutilizáveis (pony-button e pony-input), aplicando o design system e criando um layout responsivo e atraente.
+Criar a interface visual completa da tela de login usando os componentes reutilizáveis (pony-button e pony-input), aplicando o design system e criando um layout atraente.
 
 ---
 
@@ -342,17 +342,6 @@ Previne:
 .form-group {
     width: 100%;
 }
-
-// Responsive
-@media (max-width: 480px) {
-    .login-card {
-        padding: 2rem 1.5rem;
-    }
-
-    .logo-container .logo {
-        max-width: 220px;
-    }
-}
 ```
 
 **💡 Explicação dos Estilos:**
@@ -361,7 +350,6 @@ Previne:
 2. **login-content**: Overlay escuro com 75% de opacidade usando `rgba()`
 3. **login-card**: Card arredondado (`border-radius: 53px`) com sombra rosa
 4. **logo-container**: Flexbox com `space-between` para alinhar título e logo
-5. **@media**: Responsividade para mobile (ajusta padding e tamanho do logo)
 
 ### 📊 Comparação: Unidades de Viewport
 
@@ -386,7 +374,6 @@ Garante que o background cubra toda a tela, independente do tamanho.
 |---------|-----------------|------------------|
 | **Performance** | Mais pesado (carrega imagem) | Mais leve |
 | **Visual** | Rico, imersivo | Simples, flat |
-| **Responsividade** | `background-size: cover` | Não precisa |
 | **Fallback** | Precisa de cor de fallback | Já é fallback |
 | **Acessibilidade** | Precisa de overlay para contraste | Controle direto |
 
@@ -480,33 +467,6 @@ Benefícios:
 - Fácil ajuste global
 - Segue design system
 
-**5. Media Queries Responsivas**
-
-```scss
-@media (max-width: 480px) {  // Mobile devices
-    .login-card {
-        padding: 2rem 1.5rem;  // Menos padding
-    }
-}
-```
-
-**Breakpoints comuns:**
-- `480px` - Smartphones
-- `768px` - Tablets
-- `1024px` - Tablets landscape / pequenos laptops
-- `1440px` - Desktops
-
-**Mobile-first approach:**
-```scss
-// Base styles (mobile)
-.card { padding: 1rem; }
-
-// Desktop enhancements
-@media (min-width: 768px) {
-    .card { padding: 3rem; }
-}
-```
-
 ---
 
 ## 🛣️ 4. Configurar Rota
@@ -581,7 +541,6 @@ Abra o navegador em `http://localhost:4200`
 - [ ] Os inputs funcionam (digitação)
 - [ ] O botão muda para estado "loading" ao submeter
 - [ ] O formulário só envia se os campos estiverem preenchidos
-- [ ] Layout responsivo funciona em mobile
 
 ---
 
@@ -665,7 +624,7 @@ Nesta aula você aprendeu:
 ✅ Implementar um componente de login standalone (Angular 14+)  
 ✅ Usar `ngModel` com signals personalizados (Angular 17+)  
 ✅ Aplicar background com overlay usando técnica de múltiplas camadas  
-✅ Criar um card de login centralizado e responsivo com media queries  
+✅ Criar um card de login centralizado  
 ✅ Configurar rotas no Angular com redirectTo e pathMatch  
 ✅ Trabalhar com formulários template-driven (FormsModule)  
 ✅ Adicionar estados de loading nos botões para melhor UX  

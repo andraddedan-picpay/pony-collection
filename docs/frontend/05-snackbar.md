@@ -632,20 +632,6 @@ Resulta em:
         opacity: 1;
     }
 }
-
-// Responsive
-@media (max-width: 480px) {
-    .snackbar-container {
-        bottom: 16px;
-        left: 16px;
-        right: 16px;
-        max-width: none;
-    }
-
-    .snackbar {
-        min-width: auto;
-    }
-}
 ```
 
 **💡 Explicação dos Estilos:**
@@ -654,10 +640,9 @@ Resulta em:
 2. **Snackbar**: Card com border-left colorido (4px) e fundo semi-transparente usando `rgba()`
 3. **Tipos**: Cores diferentes por tipo (success verde, error vermelho, info azul/rosa)
 4. **Animação**: `slideIn` com slide da esquerda e fade-in para entrada suave
-5. **Responsivo**: Ajusta para mobile ocupando toda a largura disponível
-6. **Ícone**: `flex-shrink: 0` garante que o ícone não encolhe
-7. **Mensagem**: `flex: 1` faz texto ocupar espaço disponível
-8. **Botão**: Sem borda/fundo, apenas símbolo X com hover opacity
+5. **Ícone**: `flex-shrink: 0` garante que o ícone não encolhe
+6. **Mensagem**: `flex: 1` faz texto ocupar espaço disponível
+7. **Botão**: Sem borda/fundo, apenas símbolo X com hover opacity
 
 ### 📊 Comparação: Position Fixed vs Absolute
 
@@ -833,7 +818,6 @@ background-color: rgba($success-color, 0.25);
 2. **Snackbar**: Card com border-left colorido e fundo semi-transparente
 3. **Tipos**: Cores diferentes por tipo (success verde, error vermelho, info azul)
 4. **Animação**: `slideIn` com slide da esquerda e fade-in
-5. **Responsivo**: Ajusta para mobile ocupando toda a largura
 
 ---
 
@@ -1138,7 +1122,7 @@ Nesta aula você aprendeu:
 ✅ Usar em componentes (exemplo: login com feedback real)  
 ✅ Auto-dismiss configurável com setTimeout  
 ✅ Empilhamento de mensagens em array reativo  
-✅ Responsividade e acessibilidade (ARIA labels)  
+✅ Acessibilidade (ARIA labels)  
 ✅ Entender diferenças Toast vs Modal vs Alert  
 ✅ Position fixed para componentes globais  
 ✅ Z-index stacking context para sobrepor elementos  

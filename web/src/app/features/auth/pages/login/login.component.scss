@@ -58,23 +58,3 @@
 .form-group {
     width: 100%;
 }
-
-// Responsive
-@media (max-width: 480px) {
-    .login-card {
-        padding: 2rem 1.5rem;
-        max-width: 290px;
-    }
-
-    .logo-container .logo {
-        max-width: 220px;
-    }
-
-    .btn-login {
-        font-size: $font-size-sm;
-    }
-
-    .logo {
-        display: none;
-    }
-}

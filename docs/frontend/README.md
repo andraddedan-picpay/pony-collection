@@ -40,7 +40,7 @@
   - Verificação de token
 
 * **Listagem de Pôneis**
-  - Grid responsivo
+  - Grid layout
   - Loading states
   - Empty states
   - Integração com API
@@ -348,7 +348,7 @@ web/
 
 * Criar estrutura de features/auth
 * Implementar LoginComponent com Signals API
-* Criar layout responsivo com background e card
+* Criar layout com background e card
 * Usar componentes pony-button e pony-input
 * Implementar validação básica de formulário
 * Configurar rotas
@@ -406,7 +406,7 @@ web/
 * Criar PonyCard component
 * Implementar loading state
 * Implementar empty state
-* Grid responsivo
+* Grid layout
 
 ✔️ Resultado: Lista de ponies funcional
 

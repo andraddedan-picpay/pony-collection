@@ -492,25 +492,6 @@ cp ../../design/fonts/BigShouldersDisplay/BigShoulders-ExtraBold.ttf src/assets/
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-// Responsive breakpoints
-@mixin mobile {
-  @media (max-width: 768px) {
-    @content;
-  }
-}
-
-@mixin tablet {
-  @media (min-width: 769px) and (max-width: 1024px) {
-    @content;
-  }
-}
-
-@mixin desktop {
-  @media (min-width: 1025px) {
-    @content;
-  }
-}
 ```
 
 ### 📝 Explicação dos Mixins
@@ -552,25 +533,6 @@ Mixins são **funções SCSS reutilizáveis** que geram código CSS:
 .button {
   @include transition(background, 0.2s, ease-in-out);
   // Gera: transition: background 0.2s ease-in-out;
-}
-```
-
-**Mixins com `@content` (blocos dinâmicos):**
-
-```scss
-@mixin mobile {
-  @media (max-width: 768px) {
-    @content;  // Conteúdo passado pelo usuário
-  }
-}
-
-// Uso
-.header {
-  font-size: 1.5rem;
-  
-  @include mobile {
-    font-size: 1rem;  // Aplicado apenas em mobile
-  }
 }
 ```
 

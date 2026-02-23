@@ -41,22 +41,3 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
-// Responsive breakpoints
-@mixin mobile {
-    @media (max-width: 768px) {
-        @content;
-    }
-}
-
-@mixin tablet {
-    @media (min-width: 769px) and (max-width: 1024px) {
-        @content;
-    }
-}
-
-@mixin desktop {
-    @media (min-width: 1025px) {
-        @content;
-    }
-}

@@ -44,7 +44,6 @@ O layout base segue uma arquitetura modular com **componentes reutilizáveis**:
 - **Single Source of Truth**: Estado gerenciado apenas no smart component
 - **Sidebar**: Menu lateral fixo (104px) com efeitos visuais
 - **Header**: Título, data e campo de busca integrado
-- **Responsivo**: Adapta-se a diferentes tamanhos de tela
 
 ### 📊 Comparação: Smart vs Dumb Components
 
@@ -788,39 +787,6 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
   width: 100%;
   max-width: 259px;
 }
-
-// ========================================
-// RESPONSIVIDADE
-// ========================================
-
-// Tablets
-@media (max-width: 1024px) {
-  .ponies-layout {
-    grid-template-columns: 104px 1fr;
-  }
-
-  .header {
-    flex-direction: column;
-    gap: 16px;
-    align-items: flex-start;
-  }
-
-  .header-filter {
-    width: 100%;
-  }
-}
-
-// Mobile
-@media (max-width: 768px) {
-  .sidebar {
-    padding: 16px 0;
-    gap: 20px;
-  }
-
-  .header-title {
-    font-size: $font-size-2xl;
-  }
-}
 ```
 
 **💡 Destaques dos Estilos:**
@@ -830,14 +796,8 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
 - **Transform scaleY(-1)**: Inverte o efeito arredondado para o topo
 - **Transitions**: Animações suaves em hover
 - **Shadow effects**: Sombras com cor primária
-- **Responsivo**: Breakpoints para tablet e mobile
-
-### 📊 Comparação: Layout Techniques
-
-| Technique | Grid (sidebar + content) | Flexbox | Position (absolute/fixed) |
 |-----------|-------------------------|---------|---------------------------|
 | **Uso** | `grid-template-columns: 104px 1fr` | `display: flex` | `position: fixed; left: 0` |
-| **Responsividade** | Muito fácil | Média | Difícil (overlays) |
 | **Alinhamento** | Bidimensional (linhas + colunas) | Unidimensional | Manual |
 | **Performance** | Excelente | Excelente | Boa |
 | **Melhor para** | Layouts principais | Componentes internos | Overlays, modals |
@@ -1168,7 +1128,6 @@ npm start
    - Verifique no console: "Filtro atualizado: [valor]"
    - Veja o signal `filter()` atualizar no template
 4. **Comunicação**: Main layout emite evento → Ponies list recebe
-5. **Responsivo**: Redimensione a janela e veja adaptações
 
 ---
 
@@ -1187,7 +1146,6 @@ Nesta aula você aprendeu:
 ✅ Formatação de datas em português (custom formatter)  
 ✅ Lazy loading de componentes (loadComponent)  
 ✅ Animações e transitions suaves  
-✅ Responsividade com breakpoints  
 ✅ CSS Grid para layouts bidimensionais  
 ✅ :focus-within para efeitos de foco em containers  
 ✅ Pseudo-elements (:before/:after) para efeitos visuais complexos  
@@ -1207,7 +1165,6 @@ Nesta aula você aprendeu:
 - **Output Events**: Comunicação child → parent com `output()`
 - **Single Source of Truth**: Estado em um único lugar
 - **Lazy Loading**: Carregamento sob demanda
-- **Responsive Design**: Mobile-first approach
 - **CSS Pseudo-elements**: `:before` e `:after` para efeitos visuais
 
 ---
