@@ -52,7 +52,8 @@ export class Pony {
 
   @ApiProperty({
     description: 'Resumo sobre o pony',
-    example: 'Rainbow Dash is a brave pegasus pony who represents the element of loyalty.',
+    example:
+      'Rainbow Dash is a brave pegasus pony who represents the element of loyalty.',
   })
   @Column({ type: 'text' })
   summary: string;
