@@ -1,4 +1,4 @@
-# 📘 Aula 8 — Listagem de Poneis
+# 📘 Aula 13 — Favoritar um Pônei
 
 ## Objetivo
 
