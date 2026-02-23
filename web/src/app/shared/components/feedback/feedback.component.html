@@ -1,0 +1,15 @@
+<div class="feedback">
+    @if (imageName()) {
+    <img [src]="`assets/images/${imageName()}.png`" [alt]="title()" class="feedback__image" />
+    }
+
+    <h1 class="feedback__title">{{ title() }}</h1>
+
+    @if (message()) {
+    <p class="feedback__message">{{ message() }}</p>
+    }
+
+    <pony-button class="feedback__button" (click)="handleRetry()">
+        {{ buttonText() }}
+    </pony-button>
+</div>

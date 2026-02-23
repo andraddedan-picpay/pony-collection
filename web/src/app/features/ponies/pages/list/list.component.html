@@ -1,0 +1,26 @@
+<main-layout (onSearchEvent)="updateFilter($event)">
+
+    <div class="breadcrumb">
+        <span>Poneis</span>
+    </div>
+
+    <div class="container">
+        @switch (state()) {
+        @case (DataStateEnum.LOADING) {
+        <p>Carregando...</p>
+        }
+        @case (DataStateEnum.SUCCESS) {
+        <p>Dados</p>
+        }
+        @case (DataStateEnum.EMPTY) {
+        <feedback (onRetry)="getData()" imageName="empty" [title]="'SEM\nDADOS PARA EXIBIR.'"
+            buttonText="Tentar novamente" />
+        }
+        @case (DataStateEnum.ERROR) {
+        <feedback (onRetry)="getData()" imageName="error" [title]="'OPA!\nALGO DEU ERRADO.'"
+            buttonText="Tentar novamente"
+            message="Não foi possível carregar as informações esperadas. Aguarde alguns instantes e tente novamente." />
+        }
+        }
+    </div>
+</main-layout>

@@ -26,10 +26,10 @@ O layout base segue uma arquitetura modular com **componentes reutilizáveis**:
 │  └─ ng-content (conteúdo dinâmico)      │
 │                                         │
 └─────────────────────────────────────────┘
-         ↓ (onSearchEvent)
+             ↓ (onSearchEvent)
 ┌─────────────────────────────────────────┐
 │                                         │
-│  list (Smart Component)          │
+│  list (Smart Component)                 │
 │  ├─ Gerencia estado (filter signal)     │
 │  └─ Conteúdo projetado no main-layout   │
 │                                         │

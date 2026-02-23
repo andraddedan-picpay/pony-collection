@@ -1,0 +1,32 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, catchError, throwError } from 'rxjs';
+import { Pony } from '../models/pony.model';
+import { LocalStorageHelper, LocalStorageKeys } from '@app/core/helpers';
+
+@Injectable({
+    providedIn: 'root',
+})
+export class PonyService {
+    private apiUrl = 'http://localhost:3000';
+
+    constructor(private http: HttpClient) {}
+
+    getPonyList(): Observable<Pony[]> {
+        const endpoint = `${this.apiUrl}/ponies`;
+        const token = LocalStorageHelper.get<string>(LocalStorageKeys.TOKEN);
+        // const token = '';
+
+        const options = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        return this.http.get<Pony[]>(endpoint, options).pipe(
+            catchError((error) => {
+                return throwError(() => error);
+            }),
+        );
+    }
+}

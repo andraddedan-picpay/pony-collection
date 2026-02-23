@@ -1,0 +1,52 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+
+.feedback {
+    display: flex;
+    flex-direction: column;
+    padding-top: 187px;
+    padding-left: 87px;
+    width: 651px;
+    height: 484px;
+    background: $base-dark-1;
+    border-radius: 42px;
+    position: relative;
+
+    &__image {
+        position: absolute;
+        top: 17px;
+        left: 290px;
+        width: 145px;
+        height: auto;
+        object-fit: contain;
+    }
+
+    &__title {
+        font-family: $heading-family;
+        font-size: $heading-size;
+        font-weight: 700;
+        color: $text-color;
+        line-height: 100%;
+        margin: 0 0 21px 0;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        white-space: pre-line;
+    }
+
+    &__message {
+        font-family: $heading-family;
+        font-size: $font-size-base;
+        font-weight: 400;
+        color: $text-color;
+        line-height: 1.6;
+        max-width: 405px;
+        text-align: left;
+        opacity: 0.9;
+    }
+
+    &__button {
+        margin-top: 20px;
+        align-self: center;
+        transform: translateX(-43px);
+    }
+}
