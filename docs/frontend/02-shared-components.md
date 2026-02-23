@@ -6,6 +6,181 @@ Implementar componentes compartilhados base [Button e Input] com o tema, permiti
 
 ---
 
+## 🎯 O que vamos construir
+
+- **`PonyButtonComponent`**: Botão reutilizável com variantes (primary/secondary), estados (loading/disabled) e ícones SVG
+- **`PonyInputComponent`**: Input customizado compatível com Reactive Forms e Template-driven Forms
+- **Design System**: Componentes consistentes usando variáveis SCSS
+- **ControlValueAccessor**: Integração nativa com formulários Angular
+
+💡 **Na próxima aula**, usaremos esses componentes para construir a tela de login.
+
+---
+
+## 📋 Conceitos Importantes
+
+### Componentes Reutilizáveis vs Componentes de Página
+
+| Tipo | Responsabilidade | Onde fica | Exemplo |
+|------|------------------|-----------|---------|
+| **Shared Components** | UI genérica, sem lógica de negócio | `app/shared/components/` | Button, Input, Card |
+| **Feature Components** | Lógica específica de feature | `app/features/ponies/` | PonyCard, PonyForm |
+| **Page Components** | Orquestra múltiplos componentes | `app/features/ponies/pages/` | ListPage, DetailPage |
+
+**Características de componentes reutilizáveis:**
+- ✅ **Agnósticos**: Não sabem onde/como são usados
+- ✅ **Configuráveis**: Inputs para personalização
+- ✅ **Standalone**: Não dependem de contexto externo
+- ✅ **Documentados**: Props claras e bem definidas
+
+---
+
+### Signal Inputs vs @Input() Decorator
+
+| Feature | `@Input()` (Angular < 17) | `input()` (Angular 17+) |
+|---------|---------------------------|-------------------------|
+| **Sintaxe** | `@Input() name: string;` | `name = input<string>();` |
+| **Reatividade** | Change Detection manual | Signals (automático) |
+| **Type-safety** | ⚠️ Precisa inicializar | ✅ Type-safe por padrão |
+| **Performance** | ⚠️ Verifica sempre | ✅ Granular (só o que mudou) |
+| **Boilerplate** | ❌ Decorators, imports | ✅ Funções simples |
+| **Composição** | ❌ Limitada | ✅ Computed signals |
+
+**Sintaxe antiga:**
+```typescript
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+
+export class ButtonComponent {
+  @Input() variant: 'primary' | 'secondary' = 'primary';
+  @Input() disabled: boolean = false;
+  @Output() click = new EventEmitter<MouseEvent>();
+}
+```
+
+**Sintaxe moderna (nossa escolha):**
+```typescript
+import { Component, input, output } from '@angular/core';
+
+export class ButtonComponent {
+  variant = input<'primary' | 'secondary'>('primary');
+  disabled = input<boolean>(false);
+  click = output<MouseEvent>();
+}
+```
+
+**Vantagens dos Signal Inputs:**
+- ✅ **Performance**: Change detection só executa quando signal muda
+- ✅ **Composição**: Pode usar em `computed()` signals
+- ✅ **Type-safe**: Erros detectados em compile-time
+
+---
+
+### ViewEncapsulation: None vs Emulated
+
+Quando criamos componentes compartilhados que precisam ser estilizados externamente, usamos `ViewEncapsulation.None`:
+
+| Modo | Como funciona | Estilos | Quando usar |
+|------|---------------|---------|-------------|
+| **Emulated** (padrão) | Adiciona atributos únicos (`_ngcontent-xxx`) | ✅ Isolados | Componentes normais |
+| **None** | Estilos globais | ❌ Vazam | Shared components (button, input) |
+| **ShadowDom** | Shadow DOM nativo | ✅ Isolados (real) | Web Components |
+
+**Exemplo com Emulated:**
+```typescript
+@Component({
+  selector: 'app-card',
+  styleUrl: './card.component.scss',
+  encapsulation: ViewEncapsulation.Emulated  // Padrão
+})
+```
+
+```html
+<!-- Renderizado -->
+<div _ngcontent-ng-c123 class="card">...</div>
+
+<style>
+.card[_ngcontent-ng-c123] { ... }  /* Escopo isolado */
+</style>
+```
+
+**Nosso caso (PonyButton usa encapsulation padrão):**
+- Estilos isolados dentro do componente
+- Não vaza para outros componentes
+- Pode ser sobrescrito via `::ng-deep` (não recomendado)
+
+---
+
+### Design Tokens vs Hardcoded Values
+
+**❌ Hardcoded (difícil manter):**
+```scss
+.button {
+  background: #E669EA;
+  padding: 16px 32px;
+  border-radius: 12px;
+}
+.input {
+  background: #2D303E;
+  border-radius: 12px;  // Duplicado
+}
+```
+
+**✅ Design Tokens (single source of truth):**
+```scss
+.button {
+  background: $primary-color;
+  padding: 1rem 2rem;
+  border-radius: $border-radius-md;
+}
+.input {
+  background: $base-form;
+  border-radius: $border-radius-md;  // Consistente
+}
+```
+
+**Vantagens:**
+- ✅ **Consistência**: Mesmos valores em toda aplicação
+- ✅ **Manutenção**: Muda em um lugar, afeta tudo
+- ✅ **Escalabilidade**: Fácil adicionar dark mode, temas
+
+---
+
+### Fluxo de Dados Unidirecional
+
+```
+┌──────────────┐
+│ Parent (Page)│
+└───────┬──────┘
+        │ Props (input)
+        ▼
+┌─────────────────┐
+│ Child (Button)  │
+│                 │
+│  [variant]      │◄── Recebe dados do pai
+│  [disabled]     │
+│  (click)        │──► Emite eventos para o pai
+└─────────────────┘
+```
+
+**Regra de ouro:**
+- 📥 **Props down**: Pai passa dados via `@Input`/`input()`
+- 📤 **Events up**: Filho emite eventos via `@Output`/`output()`
+- ❌ **Nunca**: Filho modifica props diretamente
+
+**Exemplo:**
+```html
+<!-- Pai -->
+<pony-button 
+  [variant]="'primary'"           ← Props down
+  [disabled]="isLoading"          ← Props down
+  (click)="handleClick($event)"   ← Events up
+>
+  Enviar
+</pony-button>
+```
+
+---
+
 ## 📦 Instalação de Dependências
 
 Vamos instalar a biblioteca para trabalhar com ícones SVG:
@@ -33,6 +208,22 @@ export const appConfig: ApplicationConfig = {
   ],
 };
 ```
+
+### 📝 Explicação dos Providers
+
+**1. `provideHttpClient()`:**
+- Necessário para buscar SVGs via HTTP
+- Usado pela biblioteca `angular-svg-icon`
+- Também será usado para chamadas à API REST (próximas aulas)
+
+**2. `provideAngularSvgIcon()`:**
+- Configura a biblioteca de ícones SVG
+- Permite carregar SVGs dinamicamente
+- Cacheia SVGs para melhor performance
+
+**3. `provideZoneChangeDetection({ eventCoalescing: true })`:**
+- **eventCoalescing**: Agrupa múltiplas mudanças em uma única detecção
+- Melhora performance (menos ciclos de change detection)
 
 ---
 
@@ -84,6 +275,47 @@ export class PonyButtonComponent {
 - Suporta estados de `loading` e `disabled`
 - Emite eventos de click apenas quando habilitado
 
+### 📝 Explicação Detalhada do TypeScript
+
+**1. Type Safety com Union Types:**
+```typescript
+export type ButtonVariant = "primary" | "secondary";
+```
+- Define os valores possíveis para `variant`
+- TypeScript acusa erro se usar valor inválido
+- IDE oferece autocomplete
+
+**2. Signal Inputs:**
+```typescript
+width = input<string>("auto");
+variant = input<ButtonVariant>("primary");
+disabled = input<boolean>(false);
+```
+- **`input<T>(defaultValue)`**: Cria signal input com valor padrão
+- **Generic `<T>`**: Define o tipo esperado
+- **Acesso no template**: `width()`, `variant()`, `disabled()`
+
+**3. Signal Outputs:**
+```typescript
+click = output<MouseEvent>();
+```
+- **`output<T>()`**: Cria emitter tipado
+- **Generic `<MouseEvent>`**: Especifica tipo do evento
+- **Uso**: `this.click.emit(event)` no TypeScript, `(click)="handler($event)"` no template
+
+**4. Lógica de Click Condicional:**
+```typescript
+handleClick(event: MouseEvent): void {
+  const canClick = !this.disabled() && !this.loading();
+  if (canClick) this.click.emit(event);
+}
+```
+- **Guarda**: Só emite evento se não estiver `disabled` ou `loading`
+- **Por quê?**: Evita ações indesejadas durante requisições HTTP
+- **Segurança**: Lógica no componente, não apenas CSS
+
+---
+
 ### 1.3 Criar o Template
 
 **src/app/shared/components/pony-button/pony-button.component.html**
@@ -119,6 +351,49 @@ export class PonyButtonComponent {
 - Quando `loading` é true, exibe o ícone de loading
 - Caso contrário, exibe o conteúdo passado via `<ng-content>`
 - Classes dinâmicas aplicadas baseadas no estado
+
+### 📝 Explicação Detalhada do Template
+
+**1. Control Flow Syntax (Angular 17+):**
+```html
+@if (loading()) {
+  <svg-icon ... />
+} @else {
+  <ng-content></ng-content>
+}
+```
+- **`@if`**: Nova sintaxe (substitui `*ngIf`)
+- **Loading**: Mostra spinner animado
+- **Else**: Mostra conteúdo projetado
+
+**2. Class Binding Dinâmico:**
+```html
+[class]="[
+  'btn',
+  'btn-' + variant(),
+  loading() && 'btn-loading'
+]"
+```
+- **Array de classes**: Angular junta automaticamente
+- **`'btn-' + variant()`**: Gera `btn-primary` ou `btn-secondary`
+- **`loading() && 'btn-loading'`**: Adiciona classe se `loading` for true
+
+**3. Content Projection (`<ng-content>`):**
+```html
+<ng-content></ng-content>
+```
+- **O que é?**: Slot para conteúdo do pai
+- **Uso no pai**: `<pony-button>Texto aqui</pony-button>`
+- **Renderiza**: "Texto aqui" dentro do botão
+
+**Comparação: Slot vs Prop**
+
+| Abordagem | Sintaxe | Quando usar |
+|-----------|---------|-------------|
+| **Prop** | `<button [text]="'Enviar'">` | Texto simples |
+| **Slot** | `<button>Enviar <icon /></button>` | ✅ HTML complexo, ícones |
+
+---
 
 ### 1.4 Criar os Estilos
 
@@ -365,6 +640,348 @@ export class PonyInputComponent implements ControlValueAccessor {
 
 ---
 
+---
+
+## 🎓 Conceitos Avançados
+
+### 1. ControlValueAccessor Interface
+
+**O que é?**
+
+Interface que permite que componentes customizados funcionem com formulários Angular (Reactive e Template-driven):
+
+```typescript
+interface ControlValueAccessor {
+  writeValue(value: any): void;          // Angular → Component
+  registerOnChange(fn: any): void;       // Component → Angular
+  registerOnTouched(fn: any): void;      // Tracking blur event
+  setDisabledState?(isDisabled: boolean): void;  // Disabled state
+}
+```
+
+**Fluxo de dados:**
+
+```
+┌─────────────────┐
+│ Angular Forms   │
+│ (ngModel/FormControl)
+└────────┬────────┘
+         │ writeValue(value)
+         ▼
+┌─────────────────┐
+│ Custom Input    │
+│ (PonyInput)     │
+└────────┬────────┘
+         │ onChange(newValue)
+         ▼
+┌─────────────────┐
+│ Angular Forms   │
+│ (atualiza valor)│
+└─────────────────┘
+```
+
+**Por que implementar?**
+
+```html
+<!-- ✅ Com ControlValueAccessor -->
+<pony-input [(ngModel)]="username" />  <!-- Funciona! -->
+
+<!-- ❌ Sem ControlValueAccessor -->
+<pony-input [(ngModel)]="username" />  <!-- Erro! -->
+```
+
+---
+
+### 2. forwardRef() - Resolvendo Dependências Circulares
+
+**O que é?**
+
+Função que permite referenciar uma classe antes dela ser definida:
+
+```typescript
+providers: [
+  {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => PonyInputComponent),  // ← Referência futura
+    multi: true,
+  },
+]
+```
+
+**Por que precisa?**
+
+```typescript
+// Sem forwardRef (ERRO!)
+providers: [
+  {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: PonyInputComponent,  // ❌ Referência antes da definição
+    multi: true,
+  },
+]
+
+export class PonyInputComponent { ... }  // Definido depois
+```
+
+**O problema:**
+- JavaScript executa linha por linha
+- `@Component()` decorator executa **antes** da classe ser definida
+- `useExisting: PonyInputComponent` falha (classe não existe ainda)
+
+**Solução com forwardRef:**
+```typescript
+useExisting: forwardRef(() => PonyInputComponent)
+```
+- **`() =>`**: Arrow function adia a resolução
+- Angular resolve a referência quando precisar (não imediatamente)
+
+---
+
+### 3. `multi: true` em Providers
+
+**O que significa?**
+
+Permite que múltiplos providers forneçam o mesmo token:
+
+```typescript
+providers: [
+  {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => PonyInputComponent),
+    multi: true,  // ← Permite múltiplos NG_VALUE_ACCESSOR
+  },
+]
+```
+
+**Por que precisa?**
+
+Angular usa `NG_VALUE_ACCESSOR` para encontrar **todos** os controles de formulário na página:
+
+```html
+<!-- Múltiplos NG_VALUE_ACCESSOR na mesma página -->
+<pony-input [(ngModel)]="username" />  <!-- NG_VALUE_ACCESSOR #1 -->
+<pony-input [(ngModel)]="password" />  <!-- NG_VALUE_ACCESSOR #2 -->
+<pony-input [(ngModel)]="email" />     <!-- NG_VALUE_ACCESSOR #3 -->
+```
+
+**Sem `multi: true`:**
+- ❌ Só o último provider seria usado
+- ❌ Inputs anteriores não funcionariam
+
+**Com `multi: true`:**
+- ✅ Angular mantém array de providers
+- ✅ Cada input tem seu próprio NG_VALUE_ACCESSOR
+
+---
+
+### 4. @Input() vs input() - Migração
+
+| Feature | `@Input()` (Antigo) | `input()` (Novo) |
+|---------|---------------------|------------------|
+| **Sintaxe** | `@Input() name: string = '';` | `name = input<string>('');` |
+| **Required** | `@Input({ required: true })` | `name = input.required<string>();` |
+| **Alias** | `@Input('userName')` | `input({ alias: 'userName' })` |
+| **Transform** | `@Input({ transform: booleanAttribute })` | `input({ transform: booleanAttribute })` |
+| **Reatividade** | Change Detection | Signals (granular) |
+
+**Exemplo completo:**
+
+```typescript
+// ❌ Sintaxe antiga
+export class OldComponent {
+  @Input({ required: true, alias: 'userName' }) 
+  name!: string;
+  
+  @Input({ transform: booleanAttribute }) 
+  disabled: boolean = false;
+}
+
+// ✅ Sintaxe moderna
+export class NewComponent {
+  name = input.required<string>({ alias: 'userName' });
+  disabled = input<boolean, string | boolean>(false, {
+    transform: booleanAttribute
+  });
+}
+```
+
+---
+
+### 5. ng-content - Content Projection Avançado
+
+**Projeção simples (nossa escolha):**
+```html
+<!-- PonyButton template -->
+<button>
+  <ng-content></ng-content>  <!-- Projeta tudo -->
+</button>
+
+<!-- Uso -->
+<pony-button>
+  Enviar <span class="icon">→</span>
+</pony-button>
+```
+
+**Projeção com múltiplos slots:**
+```html
+<!-- CardComponent template -->
+<div class="card">
+  <header>
+    <ng-content select="[card-header]"></ng-content>
+  </header>
+  <main>
+    <ng-content select="[card-body]"></ng-content>
+  </main>
+  <footer>
+    <ng-content select="[card-footer]"></ng-content>
+  </footer>
+</div>
+
+<!-- Uso -->
+<app-card>
+  <h1 card-header>Título</h1>
+  <p card-body>Conteúdo</p>
+  <button card-footer>Ação</button>
+</app-card>
+```
+
+**Comparação: Angular vs React/Vue**
+
+| Framework | Sintaxe | Múltiplos slots |
+|-----------|---------|-----------------|
+| **Angular** | `<ng-content select="...">` | ✅ Sim |
+| **React** | `{props.children}` | ⚠️ Via props extras |
+| **Vue** | `<slot name="...">` | ✅ Sim |
+
+---
+
+### 6. SVG Icons: Inline vs External
+
+**Inline (embutido):**
+```html
+<svg xmlns="..." viewBox="...">
+  <circle cx="12" cy="12" r="10" ... />
+</svg>
+```
+- ✅ Sem requisição HTTP
+- ❌ HTML verboso
+- ❌ Difícil reusar
+
+**External via `angular-svg-icon` (nossa escolha):**
+```html
+<svg-icon src="assets/icons/loading.svg"></svg-icon>
+```
+- ✅ **Cache**: Busca 1x, reutiliza sempre
+- ✅ **Organizável**: Pasta de ícones centralizada
+- ✅ **Dinâmico**: `[src]="iconPath"`
+- ⚠️ Requisição HTTP inicial
+
+**Trade-off aceitável porque:**
+- Cache agressivo (carreg 1x por sessão)
+- Manutenção mais fácil (ícones em arquivos separados)
+- Pode otimizar com sprite sheets posteriormente
+
+---
+
+### 7. CSS Animations: @keyframes
+
+**Nossa animação de loading:**
+```scss
+.btn-loading-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+```
+
+**Anatomia:**
+- **`spin`**: Nome da animação
+- **`1s`**: Duração
+- **`linear`**: Timing function (velocidade constante)
+- **`infinite`**: Loop infinito
+
+**Timing functions:**
+
+| Valor | Curva | Quando usar |
+|-------|-------|-------------|
+| `linear` | Constante | ✅ Rotações, progress bars |
+| `ease` | Começa/termina suave | Transições gerais |
+| `ease-in` | Começa devagar | Saída de tela |
+| `ease-out` | Termina devagar | ✅ Entrada de tela |
+| `ease-in-out` | Ambos | Movimentos suaves |
+
+---
+
+### 8. SCSS Nesting vs BEM
+
+**SCSS Nesting (nossa escolha):**
+```scss
+.btn {
+  padding: 1rem;
+  
+  &-primary {  // .btn-primary
+    background: $primary-color;
+  }
+  
+  &:hover {  // .btn:hover
+    transform: translateY(-2px);
+  }
+  
+  &:disabled {  // .btn:disabled
+    opacity: 0.7;
+  }
+}
+```
+
+**BEM puro (alternativa):**
+```scss
+.btn { }
+.btn--primary { }
+.btn:hover { }
+.btn:disabled { }
+```
+
+**Comparação:**
+
+| Aspecto | SCSS Nesting | BEM Puro |
+|---------|--------------|----------|
+| **Legibilidade** | ✅ Hierarquia clara | ⚠️ Flat |
+| **Especificidade** | ✅ Controlada | ✅ Baixa |
+| **Refatoração** | ✅ Fácil (muda 1x) | ❌ Precisa find/replace |
+
+---
+
+## 📦 Resumo dos Arquivos Criados
+
+| Arquivo | Responsabilidade |
+|---------|------------------|
+| `pony-button.component.ts` | Lógica do botão (signals, outputs) |
+| `pony-button.component.html` | Template (ng-content, @if) |
+| `pony-button.component.scss` | Estilos (variantes, animações) |
+| `pony-input.component.ts` | Input customizado (ControlValueAccessor) |
+| `pony-input.component.html` | Template simplificado |
+| `pony-input.component.scss` | Estilos (focus, hover, disabled) |
+| `assets/icons/loading.svg` | Ícone de loading animado |
+
+---
+
+## 🎯 Checklist de Conclusão
+
+- ✅ `angular-svg-icon` instalado e configurado
+- ✅ `PonyButtonComponent` criado com variantes
+- ✅ Estados de loading e disabled implementados
+- ✅ `PonyInputComponent` criado com ControlValueAccessor
+- ✅ Componentes usam design tokens (variáveis SCSS)
+- ✅ Animações CSS (loading spinner)
+- ✅ Signal Inputs e Outputs funcionando
+- ✅ Content projection com `ng-content`
+- ✅ Compatível com formulários Angular
+
+---
+
 ## 📚 Resumo
 
 Nesta aula você aprendeu:
@@ -374,7 +991,19 @@ Nesta aula você aprendeu:
 ✅ Trabalhar com `angular-svg-icon` para ícones SVG  
 ✅ Aplicar variáveis do design system (theme.md)  
 ✅ Criar animações CSS (loading, hover, focus)  
-✅ Usar `ng-content` para projeção de conteúdo
+✅ Usar `ng-content` para projeção de conteúdo  
+✅ Diferenças entre Signal Inputs e @Input() decorator  
+✅ Conceitos de Content Projection e ControlValueAccessor
+
+---
+
+## 📚 Referências
+
+- [Angular Signals](https://angular.io/guide/signals)
+- [ControlValueAccessor](https://angular.io/api/forms/ControlValueAccessor)
+- [Angular SVG Icon](https://www.npmjs.com/package/angular-svg-icon)
+- [Content Projection](https://angular.io/guide/content-projection)
+- [CSS Animations](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations)
 
 ---
 

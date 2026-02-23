@@ -225,7 +225,7 @@ web/
 
 ### Core
 
-- **Angular 19+** - Framework frontend
+- **Angular 21+** - Framework frontend
 - **RxJS** - Programação reativa
 - **TypeScript** - Tipagem estática
 
@@ -243,7 +243,7 @@ web/
 
 ### State Management
 
-- **Signals** (Angular 19+) - Estado reativo
+- **Signals** (Angular 17+) - Estado reativo
 - **RxJS BehaviorSubject** - Estado compartilhado
 - **Services** - Gerenciamento de estado
 
@@ -446,7 +446,7 @@ web/
 **Objetivo:** Gerenciar estado da aplicação
 
 * Conceitos de estado no frontend
-* Uso de Signals (Angular 19+)
+* Uso de Signals (Angular 17+)
 * BehaviorSubject para estado compartilhado
 * Pattern de Service com estado
 * Loading, error e success states
@@ -474,7 +474,7 @@ web/
 
 ## 8️⃣ Conceitos Importantes
 
-### Signals (Angular 19+)
+### Signals (Angular 17+)
 
 ```ts
 // Estado reativo com Signals
