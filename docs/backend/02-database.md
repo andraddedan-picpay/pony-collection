@@ -241,9 +241,26 @@ export class User {
 Crie o arquivo `src/users/dto/create-user.dto.ts`:
 
 ```ts
+import { ApiProperty } from '@nestjs/swagger';
+
 export class CreateUserDto {
+  @ApiProperty({
+    description: 'Nome completo do usuário',
+    example: 'John Doe',
+  })
   name: string;
+
+  @ApiProperty({
+    description: 'Email do usuário',
+    example: 'john.doe@example.com',
+  })
   email: string;
+
+  @ApiProperty({
+    description: 'Senha do usuário',
+    example: 'password123',
+    minLength: 6,
+  })
   password: string;
 }
 ```
@@ -291,30 +308,70 @@ import {
   Column,
   CreateDateColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('ponies')
 export class Pony {
+  @ApiProperty({
+    description: 'ID único do pony',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @ApiProperty({
+    description: 'Nome do pony',
+    example: 'Rainbow Dash',
+  })
   @Column()
   name: string;
 
+  @ApiProperty({
+    description: 'Se o pony é favorito',
+    example: false,
+  })
   @Column()
-  element: string; // Ex: Magic, Loyalty, Kindness
+  isFavorite: boolean;
 
+  @ApiProperty({
+    description: 'Elemento de harmonia do pony',
+    example: 'Loyalty',
+  })
+  @Column()
+  element: string;
+
+  @ApiProperty({
+    description: 'Personalidade do pony',
+    example: 'Brave and loyal',
+  })
   @Column()
   personality: string;
 
+  @ApiProperty({
+    description: 'Talento especial do pony',
+    example: 'Flying at supersonic speeds',
+  })
   @Column()
   talent: string;
 
+  @ApiProperty({
+    description: 'Resumo sobre o pony',
+    example: 'Rainbow Dash is a brave pegasus pony who represents the element of loyalty.',
+  })
   @Column({ type: 'text' })
   summary: string;
 
+  @ApiProperty({
+    description: 'URL da imagem do pony',
+    example: 'https://example.com/rainbow-dash.png',
+  })
   @Column()
   imageUrl: string;
 
+  @ApiProperty({
+    description: 'Data de criação',
+    example: '2024-01-01T00:00:00.000Z',
+  })
   @CreateDateColumn()
   createdAt: Date;
 }

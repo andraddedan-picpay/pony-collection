@@ -63,6 +63,7 @@ User
 Pony
 - id (uuid)
 - name (string)
+- isFavorite (boolean)
 - element (string) 
 - personality (string)
 - talent (string)
