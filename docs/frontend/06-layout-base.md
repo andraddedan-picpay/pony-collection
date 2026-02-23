@@ -46,6 +46,45 @@ O layout base segue uma arquitetura modular com **componentes reutilizáveis**:
 - **Header**: Título, data e campo de busca integrado
 - **Responsivo**: Adapta-se a diferentes tamanhos de tela
 
+### 📊 Comparação: Smart vs Dumb Components
+
+| Aspecto | Smart Component (List) | Dumb Component (MainLayout) |
+|---------|----------------------|----------------------------|
+| **Responsabilidade** | Lógica de negócio, estado | Apenas apresentação |
+| **Estado** | Gerencia signals, dados | Não possui estado próprio |
+| **Dependências** | Services, APIs | Apenas inputs/outputs |
+| **Comunicação** | Recebe eventos | Emite eventos (output) |
+| **Reutilização** | Específico do contexto | Altamente reutilizável |
+| **Testabilidade** | Requer mocks de services | Testa apenas I/O |
+| **Exemplo** | `filter = signal('')` | `onSearchEvent = output()` |
+
+**Nossa implementação:**
+- **MainLayout (Dumb)**: Renderiza UI, emite `onSearchEvent`
+- **List (Smart)**: Recebe evento, atualiza `filter` signal, aplica lógica
+
+### 📊 Comparação: ng-content vs Template Outlet
+
+| Aspecto | ng-content (nossa escolha) | ng-template + Outlet |
+|---------|---------------------------|---------------------|
+| **Simplicidade** | Muito simples | Mais complexo |
+| **Uso** | `<ng-content></ng-content>` | `<ng-container *ngTemplateOutlet>` |
+| **Contexto** | Não passa dados | Pode passar contexto |
+| **Múltiplos slots** | `<ng-content select=".class">` | Vários outlets nomeados |
+| **Performance** | Melhor (menos overhead) | Ligeiramente mais lento |
+| **Quando usar** | Conteúdo simples, wrapper | Conteúdo dinâmico com dados |
+
+**Por que ng-content?**
+```html
+<!-- MainLayout (wrapper) -->
+<main-layout>
+  <h2>Conteúdo aqui</h2>  <!-- Projetado via ng-content -->
+</main-layout>
+
+<!-- Mais simples que: -->
+<main-layout [contentTemplate]="myTemplate"></main-layout>
+<ng-template #myTemplate>...</ng-template>
+```
+
 ---
 
 ## 📦 1.1 Atualizar o componente `pony-input`
@@ -136,10 +175,44 @@ export class PonyInputComponent implements ControlValueAccessor {
 
 **💡 Mudanças:**
 
-- `@Input() icon`: Aceita nome do ícone SVG
-- `@Output() inputChange`: Emite valor digitado
-- `SvgIconComponent` nos imports
-- `onInput()` agora emite dois eventos
+- `@Input() icon`: Aceita nome do ícone SVG (opcional)
+- `@Output() inputChange`: Emite valor digitado para comunicação direta
+- `SvgIconComponent` nos imports para renderizar ícones
+- `onInput()` agora emite dois eventos: `onChange()` (ControlValueAccessor) e `inputChange.emit()` (Output)
+
+### 🔍 Conceitos Importantes: Dual-Purpose Component
+
+**Por que dois eventos?**
+
+O `pony-input` agora suporta **dois padrões de uso**:
+
+```typescript
+// Padrão 1: ControlValueAccessor (Forms)
+this.onChange(this.value);        // Para ngModel/FormControl
+
+// Padrão 2: Event Emitter (Direct Communication)
+this.inputChange.emit(this.value); // Para (inputChange)="..."
+```
+
+**Vantagens:**
+- **Versátil**: Um componente, múltiplos casos de uso
+- **Sem conflito**: Os dois padrões coexistem harmoniosamente
+- **Flexível**: Desenvolvedor escolhe qual usar
+
+### 📊 Comparação: Event Patterns
+
+| Pattern | Formulários (ngModel) | Eventos Diretos (inputChange) |
+|---------|----------------------|------------------------------|
+| **Interface** | `ControlValueAccessor` | `@Output() EventEmitter` |
+| **Uso** | `[(ngModel)]="email"` | `(inputChange)="onSearch($event)"` |
+| **Validação** | Nativa do Angular Forms | Manual no componente |
+| **Two-way binding** | ✅ Sim (`[(ngModel)]`) | ❌ Não (apenas output) |
+| **Complexidade** | Mais setup (4 métodos) | Mais simples (1 método) |
+| **Quando usar** | Login, cadastro, forms completos | Busca, filtros, inputs simples |
+
+**Nosso uso:**
+- **Login**: `[(ngModel)]="email"` → Usa ControlValueAccessor
+- **Search**: `(inputChange)="onSearch($event)"` → Usa Output direto
 
 ---
 
@@ -237,10 +310,47 @@ Substitua o conteúdo completo:
 
 **💡 Mudanças:**
 
-- `.pony-box`: Container flexbox para alinhar ícone e input
-- `&__icon`: Estilo do ícone SVG (cor, flex-shrink)
-- `&__input`: Estilos movidos para dentro do wrapper
-- `:focus-within`: Efeito de foco no container
+- `.pony-box`: Container flexbox para alinhar ícone e input horizontalmente
+- `&__icon`: Estilo do ícone SVG (cor cinza, `flex-shrink: 0` evita encolhimento)
+- `&__input`: Estilos movidos para dentro do wrapper (background none, sem border)
+- `:focus-within`: Efeito de foco no container (borda azul + shadow)
+
+### 🎯 Conceitos Avançados: :focus-within
+
+**O que é `:focus-within`?**
+
+Pseudo-classe CSS que aplica estilos quando qualquer elemento filho recebe foco.
+
+```scss
+.pony-box {
+  border: 1px solid gray;
+  
+  &:focus-within {  // Ativa quando <input> dentro recebe foco
+    border-color: blue;
+    box-shadow: 0 0 0 3px rgba(blue, 0.2);
+  }
+}
+```
+
+**Por que não `:focus` no input?**
+
+```scss
+// ❌ Problema: Não consegue estilizar o container pai
+.pony-box__input:focus {
+  border-color: blue;  // Só afeta o input
+}
+
+// ✅ Solução: :focus-within estiliza o container
+.pony-box:focus-within {
+  border-color: blue;  // Afeta todo o container
+  box-shadow: ...;     // Pode adicionar shadow ao redor
+}
+```
+
+**Benefícios:**
+- Efeito visual unificado (ícone + input)
+- Border e shadow envolvem todo o componente
+- Melhor feedback visual para o usuário
 
 ---
 
@@ -351,10 +461,67 @@ export class MainLayoutComponent {
 
 **💡 Explicação:**
 
-- **Dumb Component**: Apenas apresentação, sem lógica de negócio
-- **output()**: Emite evento de busca para componente pai
+- **Dumb Component**: Apenas apresentação, sem lógica de negócio (não sabe o que fazer com o search, apenas repassa)
+- **output()**: Nova API do Angular 17+ para criar outputs (substitui `@Output()` decorators)
 - **formatDate()**: Formata data em português (ex: "Segunda-Feira, 20 Fevereiro 2026")
-- **onSearchChange()**: Método que repassa o evento do pony-input para o componente pai
+- **currentDate signal**: Armazena data formatada (poderia ser atualizado periodicamente)
+- **onSearchChange()**: Método que repassa o evento do pony-input para o componente pai (list)
+
+### 🔍 Conceitos Importantes: output() API
+
+**output() vs @Output():**
+
+```typescript
+// ❌ Abordagem antiga (ainda funciona)
+@Output() onSearchEvent = new EventEmitter<string>();
+
+// ✅ Abordagem moderna (Angular 17+)
+onSearchEvent = output<string>();
+```
+
+**Vantagens de output():**
+- Mais simples (sem decorator)
+- Melhor type inference
+- Alinhado com signals
+- Melhor performance (otimizações internas)
+
+### 📊 Comparação: Event Communication Patterns
+
+| Pattern | Uso | Vantagem | Desvantagem |
+|---------|-----|----------|------------|
+| **Output Events (nossa escolha)** | Parent-child direto | Simples, declarativo | Não funciona entre componentes distantes |
+| **Services com Subjects** | Comunicação global | Funciona entre qualquer componente | Mais complexo, precisa unsubscribe |
+| **State Management (NgRx/Signal Store)** | Apps grandes | Centralizado, previsível | Overhead grande para apps pequenos |
+| **Route Query Params** | Estado na URL | Compartilhável via link | Limitado a strings |
+
+**Por que Output Events aqui?**
+- MainLayout e List têm relação parent-child direta
+- Comunicação simples (apenas string de search)
+- Não precisa persistir estado globalmente
+
+### 🎯 Conceitos Avançados: Date Formatting
+
+**Por que não usar Intl.DateTimeFormat?**
+
+```typescript
+// Alternativa moderna (mas mais verbosa)
+const formatter = new Intl.DateTimeFormat('pt-BR', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric'
+});
+formatter.format(new Date()); // "segunda-feira, 20 de fevereiro de 2026"
+```
+
+**Nossa solução customizada:**
+- Controle total sobre formato (sem "de" entre palavras)
+- Arrays de dias/meses em português
+- Mais leve (sem i18n library)
+- Suficiente para nosso caso de uso
+
+**Para produção com múltiplos idiomas:**
+Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
 
 ---
 
@@ -658,12 +825,105 @@ export class MainLayoutComponent {
 
 **💡 Destaques dos Estilos:**
 
-- **Grid Layout**: Sidebar fixa + conteúdo fluido
+- **Grid Layout**: Sidebar fixa (104px) + conteúdo fluido (1fr)
 - **Efeitos arredondados**: Pseudo-elementos `:before` e `:after` criam os cantos arredondados no item ativo
 - **Transform scaleY(-1)**: Inverte o efeito arredondado para o topo
 - **Transitions**: Animações suaves em hover
 - **Shadow effects**: Sombras com cor primária
 - **Responsivo**: Breakpoints para tablet e mobile
+
+### 📊 Comparação: Layout Techniques
+
+| Technique | Grid (sidebar + content) | Flexbox | Position (absolute/fixed) |
+|-----------|-------------------------|---------|---------------------------|
+| **Uso** | `grid-template-columns: 104px 1fr` | `display: flex` | `position: fixed; left: 0` |
+| **Responsividade** | Muito fácil | Média | Difícil (overlays) |
+| **Alinhamento** | Bidimensional (linhas + colunas) | Unidimensional | Manual |
+| **Performance** | Excelente | Excelente | Boa |
+| **Melhor para** | Layouts principais | Componentes internos | Overlays, modals |
+
+**Nossa escolha (CSS Grid):**
+```scss
+.ponies-layout {
+  display: grid;
+  grid-template-columns: 104px 1fr;  // Sidebar fixa + Content flexível
+  height: 100vh;                      // Fullscreen
+}
+```
+
+**Alternativa (Flexbox):**
+```scss
+.ponies-layout {
+  display: flex;
+  .sidebar { width: 104px; flex-shrink: 0; }
+  .content { flex: 1; }
+}
+```
+
+### 🎯 Conceitos Avançados: Pseudo-elements para Efeitos Visuais
+
+**O que fazem os `:before` e `:after`?**
+
+Criam "cantos arredondados invertidos" ao redor do item ativo:
+
+```scss
+.sidebar-item.active {
+  background-color: $base-dark-2;  // Fundo do item
+  
+  // Canto superior arredondado
+  &:before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    border-top-right-radius: 25px;
+    box-shadow: 0 -25px 0 0 $base-dark-2;  // Shadow "preenche" área
+    transform: scaleY(-1);  // Inverte verticalmente
+  }
+  
+  // Canto inferior arredondado
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -50px;
+    border-top-right-radius: 25px;
+    box-shadow: 0 -25px 0 0 $base-dark-2;  // Shadow "preenche" área
+  }
+}
+```
+
+**Resultado visual:**
+```
+┌─────────┐     ← Pseudo-element :before
+│         │
+│  ATIVO  │     ← Item .active
+│         │
+└─────────┘     ← Pseudo-element :after
+```
+
+**Técnica avançada:**
+- Usa `box-shadow` grande para "preencher" área ao invés de background
+- `transform: scaleY(-1)` reutiliza mesmo estilo para ambos os lados
+- `border-radius` + `transparent background` cria efeito de "recorte"
+
+### 📊 Comparação: CSS Grid fr Unit vs Outros
+
+| Unit | Comportamento | Exemplo | Quando Usar |
+|------|--------------|---------|-------------|
+| **fr (nossa escolha)** | Fração do espaço disponível | `1fr` = 100% disponível | Layouts fluidos |
+| **%** | Porcentagem do container | `80%` = 80% do pai | Quando precisa de % específica |
+| **px** | Pixels fixos | `300px` = sempre 300px | Elementos de tamanho fixo |
+| **auto** | Baseado no conteúdo | `auto` = tamanho do conteúdo | Colunas que se ajustam |
+
+**Nossa implementação:**
+```scss
+grid-template-columns: 104px 1fr;
+//                      ↑      ↑
+//                   fixo  flexível
+```
+
+- `104px`: Sidebar sempre 104px
+- `1fr`: Content pega todo espaço restante
+- Resultado: `calc(100vw - 104px)` de largura para content
 
 ---
 
@@ -705,9 +965,74 @@ export class ListComponent {
 
 **💡 Explicação:**
 
-- **Smart Component**: Gerencia estado e lógica de negócio
+- **Smart Component**: Gerencia estado e lógica de negócio (aqui, apenas o filtro; futuramente, chamadas de API)
 - **Single Source of Truth**: Apenas este componente guarda o estado do filtro
 - **filter signal**: Armazena o termo de busca do usuário
+- **updateFilter()**: Recebe evento do main-layout e atualiza o signal
+
+### 🔍 Conceitos Importantes: Single Source of Truth
+
+**Problema comum: Estado duplicado**
+
+```typescript
+// ❌ RUIM - Estado em dois lugares
+// MainLayout
+filter = signal('');
+
+// List
+filter = signal('');  // Duplicado! Pode dessincronizar
+```
+
+**Solução: Estado apenas no Smart Component**
+
+```typescript
+// ✅ BOM - Estado apenas no List (Smart)
+// MainLayout (Dumb)
+onSearchEvent = output<string>();  // Apenas emite
+
+// List (Smart)
+filter = signal('');  // Única fonte de verdade
+updateFilter(value: string) {
+  this.filter.set(value);  // Único lugar que atualiza
+}
+```
+
+**Fluxo de dados unidirecional:**
+```
+┌─────────────────────────────────────────┐
+│  List (Smart Component)                 │
+│  - filter = signal('')                  │
+│  - Recebe: (onSearchEvent)="update()"   │
+└─────────────────┬───────────────────────┘
+                  │
+                  ↓ (state down)
+┌─────────────────────────────────────────┐
+│  MainLayout (Dumb Component)            │
+│  - Renderiza: <pony-input>              │
+│  - Emite: onSearchEvent.emit(value)     │
+└─────────────────────────────────────────┘
+                  │
+                  ↑ (events up)
+```
+
+### 📊 Comparação: State Management Approaches
+
+| Abordagem | Exemplo | Complexidade | Melhor Para |
+|-----------|---------|--------------|-------------|
+| **Local Signal (nossa escolha)** | `filter = signal('')` | Baixa | Estado de um componente |
+| **Service com Signal** | `filterService.filter()` | Média | Estado compartilhado entre poucos componentes |
+| **Signal Store** | `@ngrx/signals` | Média-Alta | Estado de feature (ex: ponies list + details) |
+| **NgRx Store** | `@ngrx/store` | Alta | Apps grandes, estado complexo |
+
+**Nossa escolha atual:**
+- Filtro é local à página de listagem
+- Não precisa ser compartilhado com outras features
+- Signal local é suficiente
+
+**Quando escalar:**
+- Se precisar compartilhar filtro entre múltiplas páginas → Service
+- Se adicionar sorting, paginação, seleção → Signal Store
+- Se app crescer muito → NgRx Store
 
 ---
 
@@ -852,17 +1177,21 @@ npm start
 Nesta aula você aprendeu:
 
 ✅ Criar componente de layout reutilizável (main-layout)  
-✅ Arquitetura Smart vs Dumb Components  
-✅ Implementar sidebar de navegação com efeitos arredondados  
+✅ Arquitetura Smart vs Dumb Components (separação de responsabilidades)  
+✅ Implementar sidebar de navegação com efeitos arredondados (pseudo-elements)  
 ✅ Header contextual com busca integrada  
-✅ Projeção de conteúdo com `ng-content`  
-✅ Comunicação de componentes via `output()`  
-✅ Single Source of Truth para estado  
-✅ Integração com pony-input usando `(inputChange)`  
-✅ Formatação de datas em português  
-✅ Lazy loading de componentes  
+✅ Projeção de conteúdo com `ng-content` (content projection)  
+✅ Comunicação de componentes via `output()` (Angular 17+)  
+✅ Single Source of Truth para estado (evitar duplicação)  
+✅ Integração com pony-input usando `(inputChange)` (dual-purpose component)  
+✅ Formatação de datas em português (custom formatter)  
+✅ Lazy loading de componentes (loadComponent)  
 ✅ Animações e transitions suaves  
-✅ Responsividade com breakpoints
+✅ Responsividade com breakpoints  
+✅ CSS Grid para layouts bidimensionais  
+✅ :focus-within para efeitos de foco em containers  
+✅ Pseudo-elements (:before/:after) para efeitos visuais complexos  
+✅ Fr units no CSS Grid para layouts fluidos
 
 ---
 
