@@ -6,18 +6,171 @@ Configurar persistência de dados com SQLite usando TypeORM e criar as entidades
 
 ---
 
-## 🧠 Conceitos
+## 🎯 O que vamos construir
 
-- **ORM (Object-Relational Mapping)**: Mapeia objetos para tabelas do banco
-- **TypeORM**: ORM popular para TypeScript
-- **SQLite**: Banco de dados leve baseado em arquivo
-- **Entidades**: Classes TypeScript que representam tabelas
-- **Migrations**: Controle de versão do schema do banco
-- **DataSource**: Configuração de conexão com o banco
-- **Decorators do TypeORM**: `@Entity`, `@Column`, `@PrimaryGeneratedColumn`, etc.
-- **UUID**: Identificador único universal
+- **Configuração do SQLite**: Banco de dados leve baseado em arquivo
+- **TypeORM**: ORM para mapear objetos TypeScript em tabelas SQL
+- **Sistema de Migrations**: Controle de versão do schema do banco
+- **Entidade User**: Representa usuários da aplicação
+- **Entidade Pony**: Representa os personagens
+- **DTOs com Swagger**: Documentação automática da API
 - **Módulos NestJS**: Organização em features isoladas
-- **DTO (Data Transfer Object)**: Objeto para validação e transferência de dados
+
+💡 **Próxima aula**: Implementaremos o cadastro de usuários com hash bcrypt.
+
+---
+
+## 📋 Conceitos Importantes
+
+### ORM (Object-Relational Mapping)
+
+Um **ORM** é uma técnica que permite manipular banco de dados usando objetos ao invés de SQL diretamente:
+
+```typescript
+// ❌ SQL puro (sem tipagem, propenso a erros)
+db.query('SELECT * FROM users WHERE email = ?', [email])
+
+// ✅ TypeORM (tipado, seguro, orientado a objetos)
+userRepository.findOne({ where: { email } })
+```
+
+**Vantagens do ORM:**
+- ✅ **Type-safe**: TypeScript garante tipos corretos
+- ✅ **Produtividade**: Menos código, mais legível
+- ✅ **Independência**: Funciona com MySQL, PostgreSQL, SQLite, etc
+- ✅ **Migrations**: Controle de versão do schema
+- ✅ **Relacionamentos**: Fácil gerenciar joins e foreign keys
+
+### TypeORM vs. Outros ORMs
+
+| Característica | TypeORM | Prisma | Sequelize |
+|----------------|---------|--------|-----------|
+| TypeScript nativo | ✅ | ✅ | ❌ (tem tipos) |
+| Decorators | ✅ `@Entity()` | ❌ (schema próprio) | ✅ |
+| Query Builder | ✅ | ❌ (client próprio) | ✅ |
+| Migrations | ✅ Auto + Manual | ✅ Auto | ✅ Manual |
+| Active Record | ✅ | ❌ | ✅ |
+
+### SQLite: Por que usar?
+
+**SQLite** é um banco de dados serverless armazenado em um único arquivo:
+
+```
+api/
+├── database.sqlite  ← Arquivo único com todo o banco
+├── src/
+└── package.json
+```
+
+**Quando usar SQLite:**
+- ✅ Desenvolvimento e testes locais
+- ✅ Aplicações pequenas/médias
+- ✅ Protótipos e estudos
+- ✅ Apps mobile/desktop
+
+**Quando NÃO usar:**
+- ❌ Alta concorrência (muitas escritas simultâneas)
+- ❌ Aplicações distribuídas
+- ❌ Grandes volumes de dados (> 1GB)
+
+> **💡 Dica**: Em produção, migre para PostgreSQL ou MySQL mantendo o mesmo código TypeORM!
+
+### Migrations: Controle de Versão do Banco
+
+**Migrations** são como um "Git para o banco de dados":
+
+```typescript
+// Migration gerada automaticamente
+export class InitialSchema {
+    async up(queryRunner) {
+        // ⬆️ Criar tabelas, adicionar colunas
+        await queryRunner.query(`CREATE TABLE "users" ...`)
+    }
+    
+    async down(queryRunner) {
+        // ⬇️ Reverter mudanças
+        await queryRunner.query(`DROP TABLE "users"`)
+    }
+}
+```
+
+**Por que usar migrations?**
+- ✅ **Rastreabilidade**: Histórico de mudanças no schema
+- ✅ **Reversível**: Pode desfazer mudanças (`migration:revert`)
+- ✅ **Colaboração**: Time sincronizado com mesmo schema
+- ✅ **Deploy seguro**: Aplicar mudanças em produção de forma controlada
+
+**Synchronize vs. Migrations:**
+
+| `synchronize: true` | Migrations |
+|---------------------|------------|
+| ❌ Auto-cria/atualiza tabelas | ✅ Controle manual do schema |
+| ❌ Pode perder dados | ✅ Seguro, reversível |
+| ⚠️ Apenas desenvolvimento | ✅ Produção e desenvolvimento |
+| ✅ Rápido para prototipar | ⏱️ Requer gerar migrations |
+
+### Entidades: Mapeamento Objeto-Relacional
+
+**Entidades** são classes TypeScript que representam tabelas do banco:
+
+```typescript
+@Entity('users')  // ← Nome da tabela
+export class User {
+    @PrimaryGeneratedColumn('uuid')  // ← Chave primária (UUID)
+    id: string;
+    
+    @Column()  // ← Coluna simples
+    name: string;
+    
+    @Column({ unique: true })  // ← Coluna com constraint
+    email: string;
+    
+    @CreateDateColumn()  // ← Timestamp automático
+    createdAt: Date;
+}
+```
+
+**Decorators principais:**
+- `@Entity()`: Define que é uma tabela
+- `@PrimaryGeneratedColumn()`: Chave primária auto-gerada
+- `@Column()`: Coluna normal
+- `@CreateDateColumn()`: Timestamp de criação (automático)
+- `@UpdateDateColumn()`: Timestamp de atualização (automático)
+
+### UUID vs. Auto-increment
+
+| Auto-increment | UUID |
+|----------------|------|
+| `1, 2, 3, 4...` | `550e8400-e29b-41d4-a716...` |
+| ⚠️ Previsível | ✅ Imprevisível |
+| ✅ Menor espaço | ❌ 36 caracteres |
+| ❌ Conflito em merge | ✅ Único globalmente |
+| ✅ Sequencial | ❌ Aleatório |
+
+**Use UUID quando:**
+- ✅ APIs públicas (não expor quantidade de registros)
+- ✅ Sistemas distribuídos
+- ✅ Segurança (IDs não previsíveis)
+
+### DTOs e Swagger
+
+**DTOs** (Data Transfer Objects) definem a estrutura de dados da API:
+
+```typescript
+export class CreateUserDto {
+  @ApiProperty({
+    description: 'Email do usuário',
+    example: 'john@example.com'
+  })
+  email: string;
+}
+```
+
+**Por que usar DTOs?**
+- ✅ **Documentação automática**: Swagger lê os decorators
+- ✅ **Validação**: `class-validator` valida os dados
+- ✅ **Type-safety**: TypeScript garante tipos
+- ✅ **Separação de responsabilidades**: DTO ≠ Entity
 
 ---
 
@@ -59,6 +212,41 @@ export const sqliteConfig: TypeOrmModuleOptions = {
 };
 ```
 
+### 📝 Explicação da Configuração
+
+**Propriedades importantes:**
+
+```typescript
+type: 'sqlite'  // Tipo do banco (pode ser 'postgres', 'mysql', etc)
+```
+- Define qual driver usar
+- Fácil migrar para outro banco depois
+
+```typescript
+database: 'database.sqlite'  // Nome do arquivo do banco
+```
+- SQLite cria um arquivo único na raiz do projeto
+- Em produção com Postgres seria: `host`, `port`, `username`, `password`
+
+```typescript
+autoLoadEntities: true  // Carrega entidades automaticamente
+```
+- ✅ **Praticidade**: Não precisa listar todas as entidades manualmente
+- ✅ **DRY**: Entidade registrada no módulo já é carregada
+
+```typescript
+synchronize: false  // ⚠️ IMPORTANTE!
+```
+- `true` = TypeORM cria/atualiza tabelas automaticamente (**PERIGO em produção!**)
+- `false` = Usar migrations (controle total, seguro)
+
+```typescript
+migrations: ['dist/database/migrations/*.js']  // Onde estão as migrations compiladas
+migrationsRun: true  // Executa migrations automaticamente ao iniciar
+```
+- **`dist/`**: Migrations são executadas após build (arquivos `.js`)
+- **`migrationsRun: true`**: Aplica migrations pendentes ao subir a aplicação
+
 > **⚠️ Importante sobre `synchronize`:**
 > - `true`: TypeORM cria/atualiza tabelas automaticamente (APENAS para desenvolvimento/estudo)
 > - `false`: Usar migrations para controlar mudanças (RECOMENDADO para produção)
@@ -83,6 +271,18 @@ export const AppDataSource = new DataSource({
   logging: true, // Log de queries SQL
 });
 ```
+
+### 📝 Por que dois arquivos de configuração?
+
+| `sqlite.config.ts` | `data-source.ts` |
+|--------------------|------------------|
+| ✅ Usado pelo NestJS runtime | ✅ Usado pelo CLI do TypeORM |
+| ✅ `dist/` (arquivos `.js`) | ✅ `src/` (arquivos `.ts`) |
+| ✅ `autoLoadEntities` | ❌ Lista entidades manualmente |
+
+**Fluxos diferentes:**
+1. **Runtime** (app rodando): Usa `sqlite.config.ts`
+2. **Migrations** (CLI): Usa `data-source.ts`
 
 > Este arquivo é usado pelo CLI do TypeORM para gerar e executar migrations.
 
@@ -235,6 +435,42 @@ export class User {
   createdAt: Date;
 }
 ```
+
+### 📝 Explicação da Entidade
+
+**Decorator @Entity:**
+```typescript
+@Entity('users')  // Nome da tabela no banco
+```
+- Define que essa classe representa uma tabela
+- TypeORM cria automaticamente a tabela `users`
+
+**Chave Primária UUID:**
+```typescript
+@PrimaryGeneratedColumn('uuid')
+id: string;
+```
+- Gera IDs únicos automaticamente (ex: `550e8400-e29b-41d4-a716...`)
+- ✅ Mais seguro que auto-increment
+- ✅ Único globalmente
+
+**Coluna com Constraint:**
+```typescript
+@Column({ unique: true })
+email: string;
+```
+- `unique: true` = Não permite emails duplicados
+- Banco rejeita insert/update com email existente
+- TypeORM lança `QueryFailedError` em duplicatas
+
+**Timestamp Automático:**
+```typescript
+@CreateDateColumn()
+createdAt: Date;
+```
+- ✅ Preenchido automaticamente ao inserir
+- ✅ Não precisa setar manualmente
+- Equivalente SQL: `DEFAULT (datetime('now'))`
 
 ### 4. Criar o DTO de criação
 

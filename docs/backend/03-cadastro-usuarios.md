@@ -6,13 +6,136 @@ Implementar o registro de usuários com senha criptografada usando bcrypt.
 
 ---
 
-## 🧠 Conceitos
+## 🎯 O que vamos construir
 
-- **Hash de senha**: Criptografia unidirecional para segurança
-- **bcrypt**: Algoritmo de hash robusto e lento (dificulta ataques)
-- **Salt**: Valor aleatório adicionado ao hash
-- **Repository Pattern**: Acesso aos dados via TypeORM
-- **Injeção de Dependência**: `@InjectRepository`
+- **UsersController**: Endpoint `/users/register` para cadastro
+- **UsersService**: Lógica de negócio separada do controller
+- **Hash bcrypt**: Criptografia de senhas com salt automático
+- **Repository Pattern**: Acesso ao banco via TypeORM
+- **Injeção de Dependência**: NestJS gerencia instâncias automaticamente
+
+💡 **Próxima aula**: Implementaremos login com JWT para autenticação.
+
+---
+
+## 📋 Conceitos Importantes
+
+### Hash de Senha: Por que nunca salvar senha em texto puro?
+
+**Cenários de ataque:**
+
+```typescript
+// ❌ NUNCA FAZER ISSO!
+password: "senha123"  // Texto puro no banco
+```
+
+**O que acontece se o banco vazar?**
+- ❌ Atacante tem acesso a todas as senhas
+- ❌ Usuário usa mesma senha em outros sites
+- ❌ Consequências legais (LGPD, GDPR)
+
+**Solução: Hash unidirecional**
+```typescript
+// ✅ Hash bcrypt (não pode ser revertido)
+password: "$2b$10$N9qo8uLOickgx2ZMRZoMye..."
+```
+
+### Bcrypt: Algoritmo de Hash Seguro
+
+**Bcrypt** é um algoritmo projetado para ser lento e resistente a ataques:
+
+| MD5 / SHA1 | bcrypt |
+|------------|--------|
+| ❌ Muito rápido (bilhões/segundo) | ✅ Configurável (lento por design) |
+| ❌ Sem salt automático | ✅ Salt único por senha |
+| ❌ Vulnerável a rainbow tables | ✅ Resistente a rainbow tables |
+| ❌ Obsoleto | ✅ Ainda seguro em 2024+ |
+
+**Como funciona:**
+```typescript
+const password = "senha123";
+const saltRounds = 10;  // Custo computacional
+
+// Gera hash (leva ~100ms de propósito!)
+const hash = await bcrypt.hash(password, 10);
+// "$2b$10$N9qo8uLOickgx2ZMRZoMye..."
+//  ↑   ↑   ↑
+//  |   |   └── Hash + Salt embutido
+//  |   └────── Cost (2^10 = 1024 rounds)
+//  └────────── Algoritmo bcrypt versão 2b
+```
+
+**Salt Rounds (custo):**
+- `10` = ~100ms por hash (recomendado)
+- `12` = ~400ms (mais seguro, mais lento)
+- `15` = ~3s (overkill para a maioria dos casos)
+
+> **💡 Dica**: Quanto maior o cost, mais difícil fazer brute force, mas mais lento o login!
+
+### Repository Pattern
+
+O **Repository Pattern** separa a lógica de acesso a dados da lógica de negócio:
+
+```typescript
+// ❌ Acoplado (controller fala diretamente com banco)
+@Controller()
+export class UsersController {
+  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  
+  async register() {
+    return this.repo.save(...)  // ❌ Lógica no controller
+  }
+}
+
+// ✅ Desacoplado (service encapsula lógica)
+@Controller()
+export class UsersController {
+  constructor(private usersService: UsersService) {}
+  
+  async register() {
+    return this.usersService.create(...)  // ✅ Delega para service
+  }
+}
+```
+
+**Vantagens:**
+- ✅ **Testabilidade**: Mock do service facilmente
+- ✅ **Reutilização**: Service pode ser usado por outros controllers
+- ✅ **Manutenção**: Lógica centralizada
+- ✅ **Single Responsibility**: Controller só roteia, Service processa
+
+### Injeção de Dependência
+
+**NestJS** gerencia instâncias automaticamente via Injeção de Dependência:
+
+```typescript
+@Injectable()
+export class UsersService {
+  constructor(
+    @InjectRepository(User)  // ← NestJS injeta automaticamente
+    private repository: Repository<User>,
+  ) {}
+}
+```
+
+**Como funciona:**
+1. NestJS cria uma única instância de `UsersService` (singleton)
+2. Quando `UsersController` precisa, NestJS injeta automaticamente
+3. Não precisa `new UsersService()` manualmente
+
+**Sem DI (manual):**
+```typescript
+// ❌ Acoplado e difícil de testar
+const repo = new Repository(...);
+const service = new UsersService(repo);
+const controller = new UsersController(service);
+```
+
+**Com DI (automático):**
+```typescript
+// ✅ NestJS gerencia tudo
+constructor(private usersService: UsersService) {}
+```
 
 ---
 
@@ -92,6 +215,67 @@ export class UsersService {
   }
 }
 ```
+
+### 📝 Explicação do Service
+
+**1. Injeção do Repository:**
+```typescript
+constructor(
+  @InjectRepository(User)  // ← Decorator especial do TypeORM
+  private repository: Repository<User>,
+) {}
+```
+- `@InjectRepository(User)`: Diz ao NestJS qual entidade usar
+- `Repository<User>`: Tipagem TypeScript para métodos do TypeORM
+- NestJS injeta automaticamente quando `UsersModule` importa `TypeOrmModule.forFeature([User])`
+
+**2. Hash da Senha:**
+```typescript
+const hash = await bcrypt.hash(dto.password, 10);
+//                              ↑            ↑
+//                    senha pura    salt rounds
+```
+- `await`: Operação assíncrona (leva ~100ms)
+- `10`: Cost factor (2^10 = 1024 rounds) - quanto maior, mais seguro e mais lento
+- Retorna string de ~60 caracteres com salt embutido
+
+**Exemplo de hash gerado:**
+```
+$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
+└┬┘ └┬┘ └──────────────┬─────────────┘└───────────┬──────────┘
+ │   │                 │                            │
+ │   │                 └─ Salt (22 chars)           └─ Hash (31 chars)
+ │   └─ Cost (10 = 1024 rounds)
+ └─ Algoritmo (2b = bcrypt)
+```
+
+**3. Criar Instância (não salva ainda):**
+```typescript
+const user = this.repository.create({
+  ...dto,           // Spread: name, email, password
+  password: hash,   // Sobrescreve password com hash
+});
+```
+- `create()` apenas instancia um objeto `User`
+- Ainda não foi persistido no banco
+- TypeORM prepara o objeto para insert
+
+**4. Persistir no Banco:**
+```typescript
+return this.repository.save(user);
+```
+- `save()` executa INSERT no banco
+- Retorna o usuário com `id` e `createdAt` preenchidos
+- É assíncrono (retorna Promise)
+
+**5. Métodos de Busca:**
+```typescript
+findByEmail(email: string): Promise<User | null>
+findById(id: string): Promise<User | null>
+```
+- Usados na próxima aula para login
+- `findOne()` retorna `null` se não encontrar (não lança exception)
+- `where: { email }` equivale a SQL: `WHERE email = ?`
 
 ---
 
