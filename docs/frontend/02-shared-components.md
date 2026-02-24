@@ -485,7 +485,6 @@ handleClick(event: MouseEvent): void {
   &:hover:not(:disabled) {
     border-color: $primary-color;
     background-color: rgba($primary-color, 0.1);
-    box-shadow: 0 4px 12px rgba($primary-shadow, 0.3);
   }
 }
 
