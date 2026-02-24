@@ -1,19 +1,19 @@
 <div class="ponies-layout">
     <!-- Menu Lateral -->
     <nav class="sidebar">
-        <div class="sidebar-logo">
+        <div class="sidebar__logo">
             <img src="assets/images/logo.png" alt="Pony Collection" class="logo" />
         </div>
 
-        <div class="sidebar-menu">
-            <div class="sidebar-item active">
-                <button class="sidebar-item_button">
+        <div class="sidebar__menu">
+            <div class="sidebar__item active">
+                <button class="sidebar__item-button">
                     <svg-icon src="assets/icons/home.svg" class="icon" [svgStyle]="{ 'width.px': 20 }" />
                 </button>
             </div>
         </div>
 
-        <button class="sidebar-logout" (click)="onLogout()">
+        <button class="sidebar__logout" (click)="onLogout()">
             <svg-icon src="assets/icons/logout.svg" class="icon" [svgStyle]="{ 'width.px': 20 }" />
         </button>
     </nav>
@@ -23,12 +23,12 @@
     <main class="content">
         <!-- Header -->
         <header class="header">
-            <div class="header-info">
-                <h1 class="header-title">DEAR PONY</h1>
-                <p class="header-date">{{ currentDate() }}</p>
+            <div class="header__info">
+                <h1 class="header__title">DEAR PONY</h1>
+                <p class="header__date">{{ currentDate() }}</p>
             </div>
 
-            <div class="header-filter">
+            <div class="header__filter">
                 <pony-input icon="search" placeholder="Filtre pelo nome" (inputChange)="onSearchChange($event)" />
             </div>
         </header>

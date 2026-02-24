@@ -23,17 +23,18 @@ Desde o **Angular 15**, a abordagem recomendada é usar **guards funcionais** (`
 
 ### 📊 Comparação: Functional Guards vs Class Guards
 
-| Aspecto | Functional (Angular 15+) | Class (legado) |
-|---------|-------------------------|----------------|
-| **Sintaxe** | `export const authGuard: CanActivateFn` | `@Injectable() class AuthGuard implements CanActivate` |
-| **DI** | `inject()` function | `constructor()` |
-| **Boilerplate** | Mínimo | Muito (decorator, class, implements) |
-| **Testabilidade** | Mais fácil (função pura) | Requer TestBed |
-| **Composição** | Combina funções facilmente | Herança de classes |
-| **Tree-shaking** | Melhor | Pior |
-| **Recomendação** | ✅ Oficial desde Angular 15 | ❌ Deprecated pattern |
+| Aspecto           | Functional (Angular 15+)                | Class (legado)                                         |
+| ----------------- | --------------------------------------- | ------------------------------------------------------ |
+| **Sintaxe**       | `export const authGuard: CanActivateFn` | `@Injectable() class AuthGuard implements CanActivate` |
+| **DI**            | `inject()` function                     | `constructor()`                                        |
+| **Boilerplate**   | Mínimo                                  | Muito (decorator, class, implements)                   |
+| **Testabilidade** | Mais fácil (função pura)                | Requer TestBed                                         |
+| **Composição**    | Combina funções facilmente              | Herança de classes                                     |
+| **Tree-shaking**  | Melhor                                  | Pior                                                   |
+| **Recomendação**  | ✅ Oficial desde Angular 15             | ❌ Deprecated pattern                                  |
 
 **Vantagens:**
+
 - ✅ Mais simples e conciso
 - ✅ Melhor para composição de lógica
 - ✅ Usa função `inject()` para injeção de dependências
@@ -48,9 +49,9 @@ Desde o **Angular 15**, a abordagem recomendada é usar **guards funcionais** (`
 export class AuthGuard implements CanActivate {
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {}
-  
+
   canActivate(): boolean {
     return this.authService.isAuthenticated();
   }
@@ -69,16 +70,17 @@ Retornar `UrlTree` de um guard é preferível a chamar `router.navigate()`:
 
 ### 📊 Comparação: UrlTree vs navigate()
 
-| Aspecto | UrlTree (recomendado) | navigate() |
-|---------|----------------------|------------|
-| **Testabilidade** | ✅ Retorna valor testável | ❌ Efeito colateral difículta teste |
-| **Composição** | ✅ Guards podem ser combinados | ❌ Difículta composição |
-| **Responsabilidade** | ✅ Guard decide, Router navega | ❌ Guard decide E navega |
-| **Pureza** | ✅ Função pura (sem side effects) | ❌ Função impura |
-| **Recomendação** | ✅ Oficial desde Angular 7.1 | ❌ Legado |
-| **Uso** | `return router.createUrlTree(['/login'])` | `router.navigate(['/login']); return false;` |
+| Aspecto              | UrlTree (recomendado)                     | navigate()                                   |
+| -------------------- | ----------------------------------------- | -------------------------------------------- |
+| **Testabilidade**    | ✅ Retorna valor testável                 | ❌ Efeito colateral difículta teste          |
+| **Composição**       | ✅ Guards podem ser combinados            | ❌ Difículta composição                      |
+| **Responsabilidade** | ✅ Guard decide, Router navega            | ❌ Guard decide E navega                     |
+| **Pureza**           | ✅ Função pura (sem side effects)         | ❌ Função impura                             |
+| **Recomendação**     | ✅ Oficial desde Angular 7.1              | ❌ Legado                                    |
+| **Uso**              | `return router.createUrlTree(['/login'])` | `router.navigate(['/login']); return false;` |
 
 **Vantagens do UrlTree:**
+
 - ✅ **Sem efeitos colaterais**: A navegação é tratada pelo próprio Angular
 - ✅ **Mais testável**: Não há chamadas imperativas dentro do guard
 - ✅ **Composição melhor**: Guards podem ser combinados facilmente
@@ -91,9 +93,9 @@ Retornar `UrlTree` de um guard é preferível a chamar `router.navigate()`:
 export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
   const isAuth = inject(AuthService).isAuthenticated();
-  
+
   if (!isAuth) {
-    router.navigate(['/login']);  // Efeito colateral
+    router.navigate(["/login"]); // Efeito colateral
     return false;
   }
   return true;
@@ -103,15 +105,16 @@ export const authGuard: CanActivateFn = () => {
 export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
   const isAuth = inject(AuthService).isAuthenticated();
-  
+
   if (!isAuth) {
-    return router.createUrlTree(['/login']);  // Retorna instrução
+    return router.createUrlTree(["/login"]); // Retorna instrução
   }
   return true;
 };
 ```
 
 **Como funciona:**
+
 ```
 ┌─────────────────────────────────────┐
 │ Guard retorna UrlTree              │
@@ -145,55 +148,70 @@ web/src/app/
 Crie o arquivo `web/src/app/core/guards/auth.guard.ts`:
 
 ```typescript
-import { inject } from '@angular/core';
-import { Router, CanActivateFn, UrlTree, ActivatedRouteSnapshot } from '@angular/router';
-import { AuthService } from '@core/services/auth.service';
+import { inject } from "@angular/core";
+import {
+  Router,
+  CanActivateFn,
+  UrlTree,
+  ActivatedRouteSnapshot,
+} from "@angular/router";
+import { AuthService } from "@core/services/auth.service";
 
 export const authGuard: CanActivateFn = (route): boolean | UrlTree => {
-    const authService = inject(AuthService);
-    const router = inject(Router);
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-    const isAuthenticated = authService.isAuthenticated();
-    const isPublicRoute = Boolean(route.data?.['public']);
+  const isAuthenticated = authService.isAuthenticated();
+  const isPublicRoute = Boolean(route.data?.["public"]);
 
-    if (isPublicRoute) {
-        return allowPublicAccess(isAuthenticated, router);
-    }
+  if (isPublicRoute) {
+    return allowPublicAccess(isAuthenticated, router);
+  }
 
-    return requireAuthentication(isAuthenticated, router);
+  return requireAuthentication(isAuthenticated, router);
 };
 
-function allowPublicAccess(isAuthenticated: boolean, router: Router): boolean | UrlTree {
-    if (isAuthenticated) {
-        return router.createUrlTree(['/']);
-    }
+function allowPublicAccess(
+  isAuthenticated: boolean,
+  router: Router,
+): boolean | UrlTree {
+  if (isAuthenticated) {
+    return router.createUrlTree(["/"]);
+  }
 
-    return true;
+  return true;
 }
 
-function requireAuthentication(isAuthenticated: boolean, router: Router): boolean | UrlTree {
-    if (!isAuthenticated) {
-        return router.createUrlTree(['/login']);
-    }
-    return true;
+function requireAuthentication(
+  isAuthenticated: boolean,
+  router: Router,
+): boolean | UrlTree {
+  if (!isAuthenticated) {
+    return router.createUrlTree(["/login"]);
+  }
+  return true;
 }
 ```
 
 ### 📝 Explicação do Código
 
 **1. authGuard (função principal)**
+
 ```typescript
 export const authGuard: CanActivateFn = (route): boolean | UrlTree => {
 ```
+
 - **`CanActivateFn`**: Tipo funcional para guards (Angular 15+)
 - **Parâmetro `route`**: Do tipo `ActivatedRouteSnapshot`, contém dados da rota
 - **Retorno**: `boolean` (permite/bloqueia) ou `UrlTree` (redireciona)
 
 **2. Injeção de Dependências**
+
 ```typescript
 const authService = inject(AuthService);
 const router = inject(Router);
 ```
+
 - **`inject()`**: Função para DI em contextos funcionais (guards, funções auxiliares)
 - Substitui o `constructor()` das classes
 - Funciona apenas dentro de "injection context" (guards, components, inicialização)
@@ -205,16 +223,17 @@ const router = inject(Router);
 ```typescript
 // ✅ Funciona - Dentro de injection context
 export const authGuard: CanActivateFn = () => {
-  const service = inject(AuthService);  // OK
+  const service = inject(AuthService); // OK
 };
 
 // ❌ Não funciona - Fora de injection context
 function myHelper() {
-  const service = inject(AuthService);  // ERRO!
+  const service = inject(AuthService); // ERRO!
 }
 ```
 
 **Quando usar inject():**
+
 - Functional guards (`CanActivateFn`, `CanMatchFn`, etc.)
 - Functional interceptors
 - Factory functions
@@ -226,50 +245,62 @@ function myHelper() {
 ```typescript
 function myHelper(injector: Injector) {
   return runInInjectionContext(injector, () => {
-    const service = inject(AuthService);  // Agora funciona
+    const service = inject(AuthService); // Agora funciona
     return service.getData();
   });
 }
 ```
 
 **3. Verificação de Rota Pública**
+
 ```typescript
-const isPublicRoute = Boolean(route.data?.['public']);
+const isPublicRoute = Boolean(route.data?.["public"]);
 ```
+
 - Lê metadados da rota: `data: { public: true }`
 - Permite marcar rotas como públicas de forma declarativa
 - `Boolean()` converte `undefined` para `false`
 - `?.` optional chaining previne erro se `data` não existir
 
 **4. Lógica de Decisão**
+
 ```typescript
 if (isPublicRoute) {
-    return allowPublicAccess(isAuthenticated, router);
+  return allowPublicAccess(isAuthenticated, router);
 }
 return requireAuthentication(isAuthenticated, router);
 ```
+
 - **Rota pública**: Chama `allowPublicAccess()` (redireciona se já logado)
 - **Rota privada**: Chama `requireAuthentication()` (redireciona se não logado)
 
 **5. Funções Auxiliares**
 
 **`allowPublicAccess()`**: Para rotas públicas (ex: `/login`)
+
 ```typescript
-function allowPublicAccess(isAuthenticated: boolean, router: Router): boolean | UrlTree {
-    if (isAuthenticated) {
-        return router.createUrlTree(['/']);  // Já logado → vai para home
-    }
-    return true;  // Não logado → acessa login normalmente
+function allowPublicAccess(
+  isAuthenticated: boolean,
+  router: Router,
+): boolean | UrlTree {
+  if (isAuthenticated) {
+    return router.createUrlTree(["/"]); // Já logado → vai para home
+  }
+  return true; // Não logado → acessa login normalmente
 }
 ```
 
 **`requireAuthentication()`**: Para rotas privadas (ex: `/`)
+
 ```typescript
-function requireAuthentication(isAuthenticated: boolean, router: Router): boolean | UrlTree {
-    if (!isAuthenticated) {
-        return router.createUrlTree(['/login']);  // Não logado → vai para login
-    }
-    return true;  // Logado → acessa rota normalmente
+function requireAuthentication(
+  isAuthenticated: boolean,
+  router: Router,
+): boolean | UrlTree {
+  if (!isAuthenticated) {
+    return router.createUrlTree(["/login"]); // Não logado → vai para login
+  }
+  return true; // Logado → acessa rota normalmente
 }
 ```
 
@@ -316,12 +347,12 @@ export function createRoleGuard(role: string): CanActivateFn {
 
 ### 🎭 Comportamento do Guard
 
-| Rota | Autenticado | Resultado |
-|------|-------------|-----------|
-| `/login` (pública) | ❌ Não | ✅ Permite acesso |
-| `/login` (pública) | ✅ Sim | ↪️ Redireciona para `/` |
-| `/` (privada) | ❌ Não | ↪️ Redireciona para `/login` |
-| `/` (privada) | ✅ Sim | ✅ Permite acesso |
+| Rota               | Autenticado | Resultado                    |
+| ------------------ | ----------- | ---------------------------- |
+| `/login` (pública) | ❌ Não      | ✅ Permite acesso            |
+| `/login` (pública) | ✅ Sim      | ↪️ Redireciona para `/`      |
+| `/` (privada)      | ❌ Não      | ↪️ Redireciona para `/login` |
+| `/` (privada)      | ✅ Sim      | ✅ Permite acesso            |
 
 ---
 
@@ -330,53 +361,63 @@ export function createRoleGuard(role: string): CanActivateFn {
 Modifique `web/src/app/app.routes.ts`:
 
 ```typescript
-import { Routes } from '@angular/router';
-import { authGuard } from '@core/guards/auth.guard';  // ← IMPORTAR
+import { Routes } from "@angular/router";
+import { authGuard } from "@core/guards/auth.guard"; // ← IMPORTAR
 
 export const routes: Routes = [
-    {
-        path: 'login',
-        loadComponent: () =>
-            import('./features/auth/pages/login/login.component').then((m) => m.LoginComponent),
-        canActivate: [authGuard],      // ← ADICIONAR
-        data: { public: true },        // ← ADICIONAR
-    },
-    {
-        path: '',
-        loadComponent: () =>
-            import('./features/ponies/pages/list/list.component').then(
-                (m) => m.ListComponent,
-            ),
-        canActivate: [authGuard],      // ← ADICIONAR
-    },
+  {
+    path: "login",
+    loadComponent: () =>
+      import("./features/auth/pages/login/login.component").then(
+        (m) => m.LoginComponent,
+      ),
+    canActivate: [authGuard], // ← ADICIONAR
+    data: { public: true }, // ← ADICIONAR
+  },
+  {
+    path: "",
+    loadComponent: () =>
+      import("./features/ponies/pages/list/list.component").then(
+        (m) => m.ListComponent,
+      ),
+    canActivate: [authGuard], // ← ADICIONAR
+  },
 ];
 ```
 
 ### 📝 Explicação
 
 **1. Import do Guard**
+
 ```typescript
-import { authGuard } from '@core/guards/auth.guard';
+import { authGuard } from "@core/guards/auth.guard";
 ```
 
 **2. Aplicação nas Rotas**
+
 ```typescript
-canActivate: [authGuard]
+canActivate: [authGuard];
 ```
+
 - **`canActivate`**: Array de guards que controlam o acesso à rota
 - Executado ANTES da rota ser ativada
 - Se retornar `false` ou `UrlTree`, bloqueia/redireciona
 - Múltiplos guards executam em sequência
 
 **3. Metadados de Rota Pública**
+
 ```typescript
-data: { public: true }
+data: {
+  public: true;
+}
 ```
+
 - Define que a rota `/login` é de acesso público
 - O guard usa essa informação para decidir o comportamento
 - Abordagem declarativa (melhor que hardcoded paths)
 
 **4. Rota Privada (sem `data.public`)**
+
 ```typescript
 {
     path: '',
@@ -387,15 +428,16 @@ data: { public: true }
 
 ### 📊 Comparação: Tipos de Guards
 
-| Guard Type | Interface | Quando usar |
-|-----------|-----------|-------------|
-| **CanActivate** | `CanActivateFn` | Proteger acesso à rota |
-| **CanActivateChild** | `CanActivateChildFn` | Proteger rotas filhas |
-| **CanDeactivate** | `CanDeactivateFn` | Prevenir saída (ex: form não salvo) |
-| **CanMatch** | `CanMatchFn` | Lazy loading condicional |
-| **Resolve** | `ResolveFn` | Carregar dados antes da rota |
+| Guard Type           | Interface            | Quando usar                         |
+| -------------------- | -------------------- | ----------------------------------- |
+| **CanActivate**      | `CanActivateFn`      | Proteger acesso à rota              |
+| **CanActivateChild** | `CanActivateChildFn` | Proteger rotas filhas               |
+| **CanDeactivate**    | `CanDeactivateFn`    | Prevenir saída (ex: form não salvo) |
+| **CanMatch**         | `CanMatchFn`         | Lazy loading condicional            |
+| **Resolve**          | `ResolveFn`          | Carregar dados antes da rota        |
 
 **Nosso uso (CanActivate):**
+
 ```typescript
 // Protege acesso inicial à rota
 { path: '', canActivate: [authGuard] }
@@ -405,11 +447,11 @@ data: { public: true }
 
 ```typescript
 // CanDeactivate - Previne saída sem salvar
-export const unsavedChangesGuard: CanDeactivateFn<FormComponent> = 
-  (component) => {
-    return component.canDeactivate() || 
-           confirm('Deseja sair sem salvar?');
-  };
+export const unsavedChangesGuard: CanDeactivateFn<FormComponent> = (
+  component,
+) => {
+  return component.canDeactivate() || confirm("Deseja sair sem salvar?");
+};
 
 // CanMatch - Lazy loading apenas se admin
 export const adminMatchGuard: CanMatchFn = () => {
@@ -418,7 +460,7 @@ export const adminMatchGuard: CanMatchFn = () => {
 
 // Resolve - Carrega dados antes de ativar
 export const userResolver: ResolveFn<User> = (route) => {
-  const id = route.params['id'];
+  const id = route.params["id"];
   return inject(UserService).getUser(id);
 };
 ```
@@ -445,7 +487,7 @@ export const userResolver: ResolveFn<User> = (route) => {
 
 ```typescript
 export const roleGuard: CanActivateFn = (route) => {
-  const requiredRole = route.data['requiresRole'];  // Lê metadata
+  const requiredRole = route.data["requiresRole"]; // Lê metadata
   const authService = inject(AuthService);
   return authService.hasRole(requiredRole);
 };
@@ -456,10 +498,10 @@ export const roleGuard: CanActivateFn = (route) => {
 ```typescript
 export class MyComponent {
   private route = inject(ActivatedRoute);
-  
+
   ngOnInit() {
-    const title = this.route.snapshot.data['title'];
-    console.log(title);  // "Admin Panel"
+    const title = this.route.snapshot.data["title"];
+    console.log(title); // "Admin Panel"
   }
 }
 ```
@@ -473,106 +515,114 @@ export class MyComponent {
 Atualize `web/src/app/core/layout/main-layout/main-layout.component.ts`:
 
 ```typescript
-import { Component, output, signal, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';                        // ← ADICIONAR
-import { SvgIconComponent } from 'angular-svg-icon';
-import { PonyInputComponent } from '@app/shared/components/pony-input/pony-input.component';
-import { AuthService } from '@core/services/auth.service';      // ← ADICIONAR
+import { Component, output, signal, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { Router } from "@angular/router"; // ← ADICIONAR
+import { SvgIconComponent } from "angular-svg-icon";
+import { PonyInputComponent } from "@app/shared/components/pony-input/pony-input.component";
+import { AuthService } from "@core/services/auth.service"; // ← ADICIONAR
 
 @Component({
-    selector: 'main-layout',
-    standalone: true,
-    imports: [CommonModule, FormsModule, SvgIconComponent, PonyInputComponent],
-    templateUrl: './main-layout.component.html',
-    styleUrl: './main-layout.component.scss',
+  selector: "main-layout",
+  standalone: true,
+  imports: [CommonModule, FormsModule, SvgIconComponent, PonyInputComponent],
+  templateUrl: "./main-layout.component.html",
+  styleUrl: "./main-layout.component.scss",
 })
 export class MainLayoutComponent {
-    onSearchEvent = output<string>();
+  onSearchEvent = output<string>();
 
-    currentDate = signal(this.formatDate());
+  currentDate = signal(this.formatDate());
 
-    private authService = inject(AuthService);                  // ← ADICIONAR
-    private router = inject(Router);                            // ← ADICIONAR
+  private authService = inject(AuthService); // ← ADICIONAR
+  private router = inject(Router); // ← ADICIONAR
 
-    private formatDate(): string {
-        const now = new Date();
+  private formatDate(): string {
+    const now = new Date();
 
-        const days = [
-            'Domingo',
-            'Segunda-Feira',
-            'Terça-Feira',
-            'Quarta-Feira',
-            'Quinta-Feira',
-            'Sexta-Feira',
-            'Sábado',
-        ];
+    const days = [
+      "Domingo",
+      "Segunda-Feira",
+      "Terça-Feira",
+      "Quarta-Feira",
+      "Quinta-Feira",
+      "Sexta-Feira",
+      "Sábado",
+    ];
 
-        const months = [
-            'Janeiro',
-            'Fevereiro',
-            'Março',
-            'Abril',
-            'Maio',
-            'Junho',
-            'Julho',
-            'Agosto',
-            'Setembro',
-            'Outubro',
-            'Novembro',
-            'Dezembro',
-        ];
+    const months = [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
+    ];
 
-        const dayName = days[now.getDay()];
-        const day = now.getDate();
-        const monthName = months[now.getMonth()];
-        const year = now.getFullYear();
+    const dayName = days[now.getDay()];
+    const day = now.getDate();
+    const monthName = months[now.getMonth()];
+    const year = now.getFullYear();
 
-        return `${dayName}, ${day} ${monthName} ${year}`;
-    }
+    return `${dayName}, ${day} ${monthName} ${year}`;
+  }
 
-    onSearchChange(value: string): void {
-        this.onSearchEvent.emit(value);
-    }
+  onSearchChange(value: string): void {
+    this.onSearchEvent.emit(value);
+  }
 
-    onLogout(): void {                                          // ← ADICIONAR
-        this.authService.logout();
-        this.router.navigate(['/login']);
-    }
+  onLogout(): void {
+    // ← ADICIONAR
+    this.authService.logout();
+    this.router.navigate(["/login"]);
+  }
 }
 ```
 
 ### 📝 Explicação das Mudanças
 
 **1. Imports**
+
 ```typescript
-import { Router } from '@angular/router';
-import { AuthService } from '@core/services/auth.service';
+import { Router } from "@angular/router";
+import { AuthService } from "@core/services/auth.service";
 ```
+
 - **Router**: Para redirecionar após logout
 - **AuthService**: Para limpar o token de autenticação
 
 **2. Injeção de Dependências**
+
 ```typescript
 private authService = inject(AuthService);
 private router = inject(Router);
 ```
+
 - Usa `inject()` ao invés do constructor
 - São propriedades privadas do componente
 - Mais conciso que constructor DI
 
 **3. Método onLogout()**
+
 ```typescript
 onLogout(): void {
     this.authService.logout();          // 1. Limpa token do LocalStorage
     this.router.navigate(['/login']);   // 2. Redireciona para login
 }
 ```
+
 - **Passo 1**: Remove o JWT do `localStorage`
 - **Passo 2**: Navega para a tela de login
 
 > 🔍 **Nota**: Aqui usamos `navigate()` ao invés de `createUrlTree()` porque:
+>
 > - Estamos em um componente (não em um guard)
 > - É uma ação explícita do usuário (clique no botão)
 > - Não há problema com efeitos colaterais nesse contexto
@@ -580,14 +630,14 @@ onLogout(): void {
 
 ### 📊 Comparação: Constructor DI vs inject()
 
-| Aspecto | inject() (nossa escolha) | Constructor DI |
-|---------|-------------------------|----------------|
-| **Sintaxe** | `authService = inject(AuthService)` | `constructor(private authService: AuthService)` |
-| **Onde funciona** | Guards, components, services | Apenas classes |
-| **Verbosidade** | Menos linhas | Mais linhas |
-| **Flexibilidade** | Pode usar em funções | Apenas em classes |
-| **Disponível** | Angular 14+ | Sempre |
-| **Recomendação** | ✅ Moderno | ✅ Também válido |
+| Aspecto           | inject() (nossa escolha)            | Constructor DI                                  |
+| ----------------- | ----------------------------------- | ----------------------------------------------- |
+| **Sintaxe**       | `authService = inject(AuthService)` | `constructor(private authService: AuthService)` |
+| **Onde funciona** | Guards, components, services        | Apenas classes                                  |
+| **Verbosidade**   | Menos linhas                        | Mais linhas                                     |
+| **Flexibilidade** | Pode usar em funções                | Apenas em classes                               |
+| **Disponível**    | Angular 14+                         | Sempre                                          |
+| **Recomendação**  | ✅ Moderno                          | ✅ Também válido                                |
 
 **Ambos são válidos:**
 
@@ -652,19 +702,25 @@ Atualize `web/src/app/core/layout/main-layout/main-layout.component.html`:
 Localize o botão de logout e adicione o evento `(click)`:
 
 ```html
-<button class="sidebar-logout" (click)="onLogout()">
-    <svg-icon src="assets/icons/logout.svg" class="icon" [svgStyle]="{ 'width.px': 20 }" />
+<button class="sidebar__logout" (click)="onLogout()">
+  <svg-icon
+    src="assets/icons/logout.svg"
+    class="icon"
+    [svgStyle]="{ 'width.px': 20 }"
+  />
 </button>
 ```
 
 **Antes:**
+
 ```html
-<button class="sidebar-logout">
+<button class="sidebar__logout"></button>
 ```
 
 **Depois:**
+
 ```html
-<button class="sidebar-logout" (click)="onLogout()">
+<button class="sidebar__logout" (click)="onLogout()"></button>
 ```
 
 ---
@@ -685,7 +741,7 @@ Localize o botão de logout e adicione o evento `(click)`:
 ### Cenário 3: Logout Funcional
 
 1. Estando logado, clique no botão de logout (ícone na sidebar)
-2. **Resultado esperado**: 
+2. **Resultado esperado**:
    - Token removido do LocalStorage
    - Redirecionado para `/login`
    - Não consegue mais acessar rotas privadas
@@ -702,45 +758,52 @@ Localize o botão de logout e adicione o evento `(click)`:
 
 ### 1. Por que usar `UrlTree` ao invés de `navigate()`?
 
-| Aspecto | UrlTree (✅ Melhor) | navigate() |
-|---------|---------------------|------------|
-| **Testabilidade** | Retorna valor testável | Efeito colateral dificulta teste |
-| **Composição** | Guards podem ser combinados | Dificulta composição |
-| **Separação de responsabilidades** | Guard decide, Router navega | Guard decide E navega |
-| **Recomendação Angular** | Oficial desde v7.1 | Legado |
+| Aspecto                            | UrlTree (✅ Melhor)         | navigate()                       |
+| ---------------------------------- | --------------------------- | -------------------------------- |
+| **Testabilidade**                  | Retorna valor testável      | Efeito colateral dificulta teste |
+| **Composição**                     | Guards podem ser combinados | Dificulta composição             |
+| **Separação de responsabilidades** | Guard decide, Router navega | Guard decide E navega            |
+| **Recomendação Angular**           | Oficial desde v7.1          | Legado                           |
 
 **Exemplo de teste:**
+
 ```typescript
-it('should redirect to login', () => {
-    const result = authGuard(mockRoute);
-    expect(result).toEqual(router.createUrlTree(['/login']));
+it("should redirect to login", () => {
+  const result = authGuard(mockRoute);
+  expect(result).toEqual(router.createUrlTree(["/login"]));
 });
 ```
 
 ### 2. Guards Funcionais vs. Classes
 
 **❌ Abordagem antiga (Angular < 15):**
+
 ```typescript
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(private authService: AuthService, private router: Router) {}
-    
-    canActivate(): boolean {
-        // lógica...
-    }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {}
+
+  canActivate(): boolean {
+    // lógica...
+  }
 }
 ```
 
 **✅ Abordagem moderna (Angular 15+):**
+
 ```typescript
 export const authGuard: CanActivateFn = (route) => {
-    const authService = inject(AuthService);
-    const router = inject(Router);
-    // lógica...
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  // lógica...
 };
 ```
 
 **Vantagens:**
+
 - Menos boilerplate
 - Mais funcional (sem estado)
 - Mais fácil de testar
@@ -781,11 +844,11 @@ export const authGuard: CanActivateFn = (route) => {
 
 ## 📦 Resumo dos Arquivos Modificados
 
-| Arquivo | Ação | O que faz |
-|---------|------|-----------|
-| `auth.guard.ts` | ✨ CRIADO | Guard funcional que protege rotas |
-| `app.routes.ts` | ✏️ MODIFICADO | Aplica guard em todas as rotas |
-| `main-layout.component.ts` | ✏️ MODIFICADO | Adiciona método `onLogout()` |
+| Arquivo                      | Ação          | O que faz                         |
+| ---------------------------- | ------------- | --------------------------------- |
+| `auth.guard.ts`              | ✨ CRIADO     | Guard funcional que protege rotas |
+| `app.routes.ts`              | ✏️ MODIFICADO | Aplica guard em todas as rotas    |
+| `main-layout.component.ts`   | ✏️ MODIFICADO | Adiciona método `onLogout()`      |
 | `main-layout.component.html` | ✏️ MODIFICADO | Conecta botão ao método de logout |
 
 ---

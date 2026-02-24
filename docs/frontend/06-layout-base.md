@@ -47,36 +47,39 @@ O layout base segue uma arquitetura modular com **componentes reutilizáveis**:
 
 ### 📊 Comparação: Smart vs Dumb Components
 
-| Aspecto | Smart Component (List) | Dumb Component (MainLayout) |
-|---------|----------------------|----------------------------|
-| **Responsabilidade** | Lógica de negócio, estado | Apenas apresentação |
-| **Estado** | Gerencia signals, dados | Não possui estado próprio |
-| **Dependências** | Services, APIs | Apenas inputs/outputs |
-| **Comunicação** | Recebe eventos | Emite eventos (output) |
-| **Reutilização** | Específico do contexto | Altamente reutilizável |
-| **Testabilidade** | Requer mocks de services | Testa apenas I/O |
-| **Exemplo** | `filter = signal('')` | `onSearchEvent = output()` |
+| Aspecto              | Smart Component (List)    | Dumb Component (MainLayout) |
+| -------------------- | ------------------------- | --------------------------- |
+| **Responsabilidade** | Lógica de negócio, estado | Apenas apresentação         |
+| **Estado**           | Gerencia signals, dados   | Não possui estado próprio   |
+| **Dependências**     | Services, APIs            | Apenas inputs/outputs       |
+| **Comunicação**      | Recebe eventos            | Emite eventos (output)      |
+| **Reutilização**     | Específico do contexto    | Altamente reutilizável      |
+| **Testabilidade**    | Requer mocks de services  | Testa apenas I/O            |
+| **Exemplo**          | `filter = signal('')`     | `onSearchEvent = output()`  |
 
 **Nossa implementação:**
+
 - **MainLayout (Dumb)**: Renderiza UI, emite `onSearchEvent`
 - **List (Smart)**: Recebe evento, atualiza `filter` signal, aplica lógica
 
 ### 📊 Comparação: ng-content vs Template Outlet
 
-| Aspecto | ng-content (nossa escolha) | ng-template + Outlet |
-|---------|---------------------------|---------------------|
-| **Simplicidade** | Muito simples | Mais complexo |
-| **Uso** | `<ng-content></ng-content>` | `<ng-container *ngTemplateOutlet>` |
-| **Contexto** | Não passa dados | Pode passar contexto |
-| **Múltiplos slots** | `<ng-content select=".class">` | Vários outlets nomeados |
-| **Performance** | Melhor (menos overhead) | Ligeiramente mais lento |
-| **Quando usar** | Conteúdo simples, wrapper | Conteúdo dinâmico com dados |
+| Aspecto             | ng-content (nossa escolha)     | ng-template + Outlet               |
+| ------------------- | ------------------------------ | ---------------------------------- |
+| **Simplicidade**    | Muito simples                  | Mais complexo                      |
+| **Uso**             | `<ng-content></ng-content>`    | `<ng-container *ngTemplateOutlet>` |
+| **Contexto**        | Não passa dados                | Pode passar contexto               |
+| **Múltiplos slots** | `<ng-content select=".class">` | Vários outlets nomeados            |
+| **Performance**     | Melhor (menos overhead)        | Ligeiramente mais lento            |
+| **Quando usar**     | Conteúdo simples, wrapper      | Conteúdo dinâmico com dados        |
 
 **Por que ng-content?**
+
 ```html
 <!-- MainLayout (wrapper) -->
 <main-layout>
-  <h2>Conteúdo aqui</h2>  <!-- Projetado via ng-content -->
+  <h2>Conteúdo aqui</h2>
+  <!-- Projetado via ng-content -->
 </main-layout>
 
 <!-- Mais simples que: -->
@@ -187,29 +190,31 @@ O `pony-input` agora suporta **dois padrões de uso**:
 
 ```typescript
 // Padrão 1: ControlValueAccessor (Forms)
-this.onChange(this.value);        // Para ngModel/FormControl
+this.onChange(this.value); // Para ngModel/FormControl
 
 // Padrão 2: Event Emitter (Direct Communication)
 this.inputChange.emit(this.value); // Para (inputChange)="..."
 ```
 
 **Vantagens:**
+
 - **Versátil**: Um componente, múltiplos casos de uso
 - **Sem conflito**: Os dois padrões coexistem harmoniosamente
 - **Flexível**: Desenvolvedor escolhe qual usar
 
 ### 📊 Comparação: Event Patterns
 
-| Pattern | Formulários (ngModel) | Eventos Diretos (inputChange) |
-|---------|----------------------|------------------------------|
-| **Interface** | `ControlValueAccessor` | `@Output() EventEmitter` |
-| **Uso** | `[(ngModel)]="email"` | `(inputChange)="onSearch($event)"` |
-| **Validação** | Nativa do Angular Forms | Manual no componente |
-| **Two-way binding** | ✅ Sim (`[(ngModel)]`) | ❌ Não (apenas output) |
-| **Complexidade** | Mais setup (4 métodos) | Mais simples (1 método) |
-| **Quando usar** | Login, cadastro, forms completos | Busca, filtros, inputs simples |
+| Pattern             | Formulários (ngModel)            | Eventos Diretos (inputChange)      |
+| ------------------- | -------------------------------- | ---------------------------------- |
+| **Interface**       | `ControlValueAccessor`           | `@Output() EventEmitter`           |
+| **Uso**             | `[(ngModel)]="email"`            | `(inputChange)="onSearch($event)"` |
+| **Validação**       | Nativa do Angular Forms          | Manual no componente               |
+| **Two-way binding** | ✅ Sim (`[(ngModel)]`)           | ❌ Não (apenas output)             |
+| **Complexidade**    | Mais setup (4 métodos)           | Mais simples (1 método)            |
+| **Quando usar**     | Login, cadastro, forms completos | Busca, filtros, inputs simples     |
 
 **Nosso uso:**
+
 - **Login**: `[(ngModel)]="email"` → Usa ControlValueAccessor
 - **Search**: `(inputChange)="onSearch($event)"` → Usa Output direto
 
@@ -323,8 +328,9 @@ Pseudo-classe CSS que aplica estilos quando qualquer elemento filho recebe foco.
 ```scss
 .pony-box {
   border: 1px solid gray;
-  
-  &:focus-within {  // Ativa quando <input> dentro recebe foco
+
+  &:focus-within {
+    // Ativa quando <input> dentro recebe foco
     border-color: blue;
     box-shadow: 0 0 0 3px rgba(blue, 0.2);
   }
@@ -336,17 +342,18 @@ Pseudo-classe CSS que aplica estilos quando qualquer elemento filho recebe foco.
 ```scss
 // ❌ Problema: Não consegue estilizar o container pai
 .pony-box__input:focus {
-  border-color: blue;  // Só afeta o input
+  border-color: blue; // Só afeta o input
 }
 
 // ✅ Solução: :focus-within estiliza o container
 .pony-box:focus-within {
-  border-color: blue;  // Afeta todo o container
-  box-shadow: ...;     // Pode adicionar shadow ao redor
+  border-color: blue; // Afeta todo o container
+  box-shadow: ...; // Pode adicionar shadow ao redor
 }
 ```
 
 **Benefícios:**
+
 - Efeito visual unificado (ícone + input)
 - Border e shadow envolvem todo o componente
 - Melhor feedback visual para o usuário
@@ -479,6 +486,7 @@ onSearchEvent = output<string>();
 ```
 
 **Vantagens de output():**
+
 - Mais simples (sem decorator)
 - Melhor type inference
 - Alinhado com signals
@@ -486,14 +494,15 @@ onSearchEvent = output<string>();
 
 ### 📊 Comparação: Event Communication Patterns
 
-| Pattern | Uso | Vantagem | Desvantagem |
-|---------|-----|----------|------------|
-| **Output Events (nossa escolha)** | Parent-child direto | Simples, declarativo | Não funciona entre componentes distantes |
-| **Services com Subjects** | Comunicação global | Funciona entre qualquer componente | Mais complexo, precisa unsubscribe |
-| **State Management (NgRx/Signal Store)** | Apps grandes | Centralizado, previsível | Overhead grande para apps pequenos |
-| **Route Query Params** | Estado na URL | Compartilhável via link | Limitado a strings |
+| Pattern                                  | Uso                 | Vantagem                           | Desvantagem                              |
+| ---------------------------------------- | ------------------- | ---------------------------------- | ---------------------------------------- |
+| **Output Events (nossa escolha)**        | Parent-child direto | Simples, declarativo               | Não funciona entre componentes distantes |
+| **Services com Subjects**                | Comunicação global  | Funciona entre qualquer componente | Mais complexo, precisa unsubscribe       |
+| **State Management (NgRx/Signal Store)** | Apps grandes        | Centralizado, previsível           | Overhead grande para apps pequenos       |
+| **Route Query Params**                   | Estado na URL       | Compartilhável via link            | Limitado a strings                       |
 
 **Por que Output Events aqui?**
+
 - MainLayout e List têm relação parent-child direta
 - Comunicação simples (apenas string de search)
 - Não precisa persistir estado globalmente
@@ -504,16 +513,17 @@ onSearchEvent = output<string>();
 
 ```typescript
 // Alternativa moderna (mas mais verbosa)
-const formatter = new Intl.DateTimeFormat('pt-BR', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric'
+const formatter = new Intl.DateTimeFormat("pt-BR", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
 });
 formatter.format(new Date()); // "segunda-feira, 20 de fevereiro de 2026"
 ```
 
 **Nossa solução customizada:**
+
 - Controle total sobre formato (sem "de" entre palavras)
 - Arrays de dias/meses em português
 - Mais leve (sem i18n library)
@@ -532,13 +542,13 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
 <div class="ponies-layout">
   <!-- Menu Lateral -->
   <nav class="sidebar">
-    <div class="sidebar-logo">
+    <div class="sidebar__logo">
       <img src="assets/images/logo.png" alt="Pony Collection" class="logo" />
     </div>
 
-    <div class="sidebar-menu">
-      <div class="sidebar-item active">
-        <button class="sidebar-item_button">
+    <div class="sidebar__menu">
+      <div class="menu__item active">
+        <button class="item-button">
           <svg-icon
             src="assets/icons/home.svg"
             class="icon"
@@ -548,7 +558,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
       </div>
     </div>
 
-    <button class="sidebar-logout">
+    <button class="sidebar__logout">
       <svg-icon
         src="assets/icons/logout.svg"
         class="icon"
@@ -561,12 +571,12 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
   <main class="content">
     <!-- Header -->
     <header class="header">
-      <div class="header-info">
+      <div class="header__info">
         <h1 class="header-title">DEAR PONY</h1>
         <p class="header-date">{{ currentDate() }}</p>
       </div>
 
-      <div class="header-filter">
+      <div class="header__filter">
         <pony-input
           icon="search"
           placeholder="Filtre pelo nome"
@@ -625,7 +635,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
   border-bottom-right-radius: 16px;
 }
 
-.sidebar-logo {
+&__logo {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -637,7 +647,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
   }
 }
 
-.sidebar-menu {
+.sidebar__menu {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -647,7 +657,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
   position: relative;
 }
 
-.sidebar-item {
+.menu__item {
   height: 80px;
   width: calc(100% - 15px);
   border-radius: 16px 0 0 16px;
@@ -697,7 +707,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
     }
   }
 
-  &_button {
+  .item-button {
     width: 56px;
     height: 56px;
     display: flex;
@@ -718,7 +728,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
   }
 }
 
-.sidebar-logout {
+.sidebar__logout {
   width: 56px;
   height: 56px;
   margin-bottom: 20px;
@@ -761,7 +771,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
   padding-bottom: 24px;
 }
 
-.header-info {
+.header__info {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -783,7 +793,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
   margin: 0;
 }
 
-.header-filter {
+.header__filter {
   width: 100%;
   max-width: 259px;
 }
@@ -796,27 +806,34 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
 - **Transform scaleY(-1)**: Inverte o efeito arredondado para o topo
 - **Transitions**: Animações suaves em hover
 - **Shadow effects**: Sombras com cor primária
-|-----------|-------------------------|---------|---------------------------|
-| **Uso** | `grid-template-columns: 104px 1fr` | `display: flex` | `position: fixed; left: 0` |
-| **Alinhamento** | Bidimensional (linhas + colunas) | Unidimensional | Manual |
-| **Performance** | Excelente | Excelente | Boa |
-| **Melhor para** | Layouts principais | Componentes internos | Overlays, modals |
+  |-----------|-------------------------|---------|---------------------------|
+  | **Uso** | `grid-template-columns: 104px 1fr` | `display: flex` | `position: fixed; left: 0` |
+  | **Alinhamento** | Bidimensional (linhas + colunas) | Unidimensional | Manual |
+  | **Performance** | Excelente | Excelente | Boa |
+  | **Melhor para** | Layouts principais | Componentes internos | Overlays, modals |
 
 **Nossa escolha (CSS Grid):**
+
 ```scss
 .ponies-layout {
   display: grid;
-  grid-template-columns: 104px 1fr;  // Sidebar fixa + Content flexível
-  height: 100vh;                      // Fullscreen
+  grid-template-columns: 104px 1fr; // Sidebar fixa + Content flexível
+  height: 100vh; // Fullscreen
 }
 ```
 
 **Alternativa (Flexbox):**
+
 ```scss
 .ponies-layout {
   display: flex;
-  .sidebar { width: 104px; flex-shrink: 0; }
-  .content { flex: 1; }
+  .sidebar {
+    width: 104px;
+    flex-shrink: 0;
+  }
+  .content {
+    flex: 1;
+  }
 }
 ```
 
@@ -827,31 +844,32 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
 Criam "cantos arredondados invertidos" ao redor do item ativo:
 
 ```scss
-.sidebar-item.active {
-  background-color: $base-dark-2;  // Fundo do item
-  
+.menu__item.active {
+  background-color: $base-dark-2; // Fundo do item
+
   // Canto superior arredondado
   &:before {
     content: "";
     position: absolute;
     top: -50px;
     border-top-right-radius: 25px;
-    box-shadow: 0 -25px 0 0 $base-dark-2;  // Shadow "preenche" área
-    transform: scaleY(-1);  // Inverte verticalmente
+    box-shadow: 0 -25px 0 0 $base-dark-2; // Shadow "preenche" área
+    transform: scaleY(-1); // Inverte verticalmente
   }
-  
+
   // Canto inferior arredondado
   &:after {
     content: "";
     position: absolute;
     bottom: -50px;
     border-top-right-radius: 25px;
-    box-shadow: 0 -25px 0 0 $base-dark-2;  // Shadow "preenche" área
+    box-shadow: 0 -25px 0 0 $base-dark-2; // Shadow "preenche" área
   }
 }
 ```
 
 **Resultado visual:**
+
 ```
 ┌─────────┐     ← Pseudo-element :before
 │         │
@@ -861,20 +879,22 @@ Criam "cantos arredondados invertidos" ao redor do item ativo:
 ```
 
 **Técnica avançada:**
+
 - Usa `box-shadow` grande para "preencher" área ao invés de background
 - `transform: scaleY(-1)` reutiliza mesmo estilo para ambos os lados
 - `border-radius` + `transparent background` cria efeito de "recorte"
 
 ### 📊 Comparação: CSS Grid fr Unit vs Outros
 
-| Unit | Comportamento | Exemplo | Quando Usar |
-|------|--------------|---------|-------------|
-| **fr (nossa escolha)** | Fração do espaço disponível | `1fr` = 100% disponível | Layouts fluidos |
-| **%** | Porcentagem do container | `80%` = 80% do pai | Quando precisa de % específica |
-| **px** | Pixels fixos | `300px` = sempre 300px | Elementos de tamanho fixo |
-| **auto** | Baseado no conteúdo | `auto` = tamanho do conteúdo | Colunas que se ajustam |
+| Unit                   | Comportamento               | Exemplo                      | Quando Usar                    |
+| ---------------------- | --------------------------- | ---------------------------- | ------------------------------ |
+| **fr (nossa escolha)** | Fração do espaço disponível | `1fr` = 100% disponível      | Layouts fluidos                |
+| **%**                  | Porcentagem do container    | `80%` = 80% do pai           | Quando precisa de % específica |
+| **px**                 | Pixels fixos                | `300px` = sempre 300px       | Elementos de tamanho fixo      |
+| **auto**               | Baseado no conteúdo         | `auto` = tamanho do conteúdo | Colunas que se ajustam         |
 
 **Nossa implementação:**
+
 ```scss
 grid-template-columns: 104px 1fr;
 //                      ↑      ↑
@@ -937,10 +957,10 @@ export class ListComponent {
 ```typescript
 // ❌ RUIM - Estado em dois lugares
 // MainLayout
-filter = signal('');
+filter = signal("");
 
 // List
-filter = signal('');  // Duplicado! Pode dessincronizar
+filter = signal(""); // Duplicado! Pode dessincronizar
 ```
 
 **Solução: Estado apenas no Smart Component**
@@ -958,6 +978,7 @@ updateFilter(value: string) {
 ```
 
 **Fluxo de dados unidirecional:**
+
 ```
 ┌─────────────────────────────────────────┐
 │  List (Smart Component)                 │
@@ -977,19 +998,21 @@ updateFilter(value: string) {
 
 ### 📊 Comparação: State Management Approaches
 
-| Abordagem | Exemplo | Complexidade | Melhor Para |
-|-----------|---------|--------------|-------------|
-| **Local Signal (nossa escolha)** | `filter = signal('')` | Baixa | Estado de um componente |
-| **Service com Signal** | `filterService.filter()` | Média | Estado compartilhado entre poucos componentes |
-| **Signal Store** | `@ngrx/signals` | Média-Alta | Estado de feature (ex: ponies list + details) |
-| **NgRx Store** | `@ngrx/store` | Alta | Apps grandes, estado complexo |
+| Abordagem                        | Exemplo                  | Complexidade | Melhor Para                                   |
+| -------------------------------- | ------------------------ | ------------ | --------------------------------------------- |
+| **Local Signal (nossa escolha)** | `filter = signal('')`    | Baixa        | Estado de um componente                       |
+| **Service com Signal**           | `filterService.filter()` | Média        | Estado compartilhado entre poucos componentes |
+| **Signal Store**                 | `@ngrx/signals`          | Média-Alta   | Estado de feature (ex: ponies list + details) |
+| **NgRx Store**                   | `@ngrx/store`            | Alta         | Apps grandes, estado complexo                 |
 
 **Nossa escolha atual:**
+
 - Filtro é local à página de listagem
 - Não precisa ser compartilhado com outras features
 - Signal local é suficiente
 
 **Quando escalar:**
+
 - Se precisar compartilhar filtro entre múltiplas páginas → Service
 - Se adicionar sorting, paginação, seleção → Signal Store
 - Se app crescer muito → NgRx Store
