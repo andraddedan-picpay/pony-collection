@@ -548,7 +548,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
 
     <div class="sidebar__menu">
       <div class="sidebar__item active">
-        <button class="sidebar__item-button">
+        <button>
           <svg-icon
             src="assets/icons/home.svg"
             class="icon"
@@ -701,7 +701,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
       }
     }
 
-    &-button {
+    button {
       width: 56px;
       height: 56px;
       display: flex;
@@ -802,7 +802,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
 - **Transform scaleY(-1)**: Inverte o efeito arredondado para o topo
 - **Transitions**: Animações suaves em hover
 - **Shadow effects**: Sombras com cor primária
-- **3 níveis máximo**: `.sidebar` → `&__item` → `&-button` (padrão BEM)
+- **3 níveis máximo**: `.sidebar` → `&__item` (padrão BEM)
   |-----------|-------------------------|---------|---------------------------|
   | **Uso** | `grid-template-columns: 104px 1fr` | `display: flex` | `position: fixed; left: 0` |
   | **Alinhamento** | Bidimensional (linhas + colunas) | Unidimensional | Manual |
