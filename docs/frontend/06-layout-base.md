@@ -700,25 +700,25 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
         z-index: 0;
       }
     }
+  }
 
-    button {
-      width: 56px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: none;
-      border: none;
-      border-radius: 12px;
+  &__button {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 12px;
+    color: $primary-color;
+    cursor: pointer;
+    @include transition(all, 0.3s, ease);
+    z-index: 1;
+
+    &:hover {
+      background-color: rgba($primary-color, 0.1);
       color: $primary-color;
-      cursor: pointer;
-      @include transition(all, 0.3s, ease);
-      z-index: 1;
-
-      &:hover {
-        background-color: rgba($primary-color, 0.1);
-        color: $primary-color;
-      }
     }
   }
 
