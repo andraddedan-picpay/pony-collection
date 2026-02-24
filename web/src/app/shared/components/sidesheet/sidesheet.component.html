@@ -1,0 +1,41 @@
+@if (isOpen()) {
+    <div
+        class="backdrop"
+        (click)="handleBackdropClick($event)"
+        (keydown)="handleKeyDown($event)"
+        tabindex="-1"
+    >
+        <div
+            class="sidesheet"
+            role="dialog"
+            aria-modal="true"
+            [attr.aria-label]="title()"
+        >
+            <!-- Header -->
+            <div class="sidesheet__header">
+                <h2 class="sidesheet__title">{{ title() }}</h2>
+                <button
+                    class="sidesheet__close"
+                    (click)="handleClose()"
+                    aria-label="Fechar"
+                    type="button"
+                >
+                    <svg-icon
+                        src="assets/icons/close.svg"
+                        class="icon"
+                        [svgStyle]="{ 'width.px': 15, 'height.px': 15 }"
+                    ></svg-icon>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="sidesheet__content">
+                <ng-content></ng-content>
+            </div>
+
+            <div class="sidesheet__footer">
+                <ng-content select="[sidesheet-footer]"></ng-content>
+            </div>
+        </div>
+    </div>
+}

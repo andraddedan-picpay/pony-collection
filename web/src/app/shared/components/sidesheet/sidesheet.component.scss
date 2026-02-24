@@ -1,0 +1,131 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba($base-shadow, $opacity-50);
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+    display: flex;
+    justify-content: flex-end;
+    animation: fadeIn 0.3s ease;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.sidesheet {
+    background: $base-dark-1;
+    width: 407px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    animation: slideIn 0.3s ease;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem 2rem;
+    }
+
+    &__title {
+        font-family: $text-family;
+        font-size: $font-size-4xl;
+        font-weight: 600;
+        color: $text-color;
+        margin: 0;
+        line-height: 140%;
+        letter-spacing: 0;
+
+    }
+
+    &__close {
+        width: 48px;
+        height: 48px;
+        background: none;
+        border: 1px solid $primary-color;
+        color: $primary-color;
+        cursor: pointer;
+        padding: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        @include transition(all, 0.2s, ease);
+
+        .icon {
+            transform: translateY(2px);
+        }
+
+        &:hover {
+            color: $text-color;
+            border-color: $text-color;
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
+
+        svg {
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    &__content {
+        flex: 1;
+        padding: 0 2rem;
+        overflow-y: auto;
+
+        // Custom scrollbar
+        &::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: rgba($grayscale-03, 0.1);
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: rgba($grayscale-03, 0.3);
+            border-radius: 4px;
+
+            &:hover {
+                background: rgba($grayscale-03, 0.5);
+            }
+        }
+    }
+
+    &__footer {
+        padding: 30px 20px 40px 20px;
+    }
+}
+
+// Animações
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}

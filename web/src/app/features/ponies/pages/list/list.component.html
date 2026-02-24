@@ -1,26 +1,73 @@
 <main-layout (onSearchEvent)="updateFilter($event)">
-
     <div class="breadcrumb">
         <span>Poneis</span>
     </div>
 
+    <!-- Botões de teste -->
+    <br />
+    <div style="display: flex; gap: 1rem; margin-bottom: 2rem">
+        <pony-button
+            variant="secondary"
+            (click)="openDetails()"
+        >
+            Sidesheet
+        </pony-button>
+    </div>
+
     <div class="container">
         @switch (state()) {
-        @case (DataStateEnum.LOADING) {
-        <p>Carregando...</p>
-        }
-        @case (DataStateEnum.SUCCESS) {
-        <p>Dados</p>
-        }
-        @case (DataStateEnum.EMPTY) {
-        <feedback (onRetry)="getData()" imageName="empty" [title]="'SEM\nDADOS PARA EXIBIR.'"
-            buttonText="Tentar novamente" />
-        }
-        @case (DataStateEnum.ERROR) {
-        <feedback (onRetry)="getData()" imageName="error" [title]="'OPA!\nALGO DEU ERRADO.'"
-            buttonText="Tentar novamente"
-            message="Não foi possível carregar as informações esperadas. Aguarde alguns instantes e tente novamente." />
-        }
+            @case (DataStateEnum.LOADING) {
+                <p>Carregando...</p>
+            }
+            @case (DataStateEnum.SUCCESS) {
+                <p>Dados</p>
+            }
+            @case (DataStateEnum.EMPTY) {
+                <feedback
+                    (onRetry)="getData()"
+                    imageName="empty"
+                    [title]="'SEM\nDADOS PARA EXIBIR.'"
+                    buttonText="Tentar novamente"
+                />
+            }
+            @case (DataStateEnum.ERROR) {
+                <feedback
+                    (onRetry)="getData()"
+                    imageName="error"
+                    [title]="'OPA!\nALGO DEU ERRADO.'"
+                    buttonText="Tentar novamente"
+                    message="Não foi possível carregar as informações esperadas. Aguarde alguns instantes e tente novamente."
+                />
+            }
         }
     </div>
 </main-layout>
+
+<!-- Sidesheet de Detalhes -->
+<sidesheet
+    [(isOpen)]="showDetails"
+    [title]="'Detalhes'"
+>
+    <div>
+        <p>Detalhes aparecererão aqui</p>
+    </div>
+
+    <div
+        sidesheet-footer
+        style="display: flex; justify-content: space-between"
+    >
+        <pony-button
+            variant="secondary"
+            (click)="closeDetails()"
+            width="172px"
+        >
+            Fechar
+        </pony-button>
+        <pony-button
+            variant="primary"
+            width="172px"
+        >
+            Entendi
+        </pony-button>
+    </div>
+</sidesheet>

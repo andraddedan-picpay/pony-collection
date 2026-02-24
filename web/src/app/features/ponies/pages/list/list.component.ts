@@ -1,16 +1,26 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MainLayoutComponent } from '@app/core/layout/main-layout/main-layout.component';
-import { FeedbackComponent } from '@app/shared/components/feedback/feedback.component';
+import { MainLayoutComponent } from '@core/layout/main-layout/main-layout.component';
+import { FeedbackComponent } from '@shared/components/feedback/feedback.component';
+import { PonySidesheetComponent } from '@shared/components/sidesheet/sidesheet.component';
+import { PonyButtonComponent } from '@shared/components/pony-button/pony-button.component';
+
 import { PonyService } from '../../services/pony.service';
 import { Pony } from '../../models/pony.model';
-import { DataStateEnum } from '@app/core/models/data-state.enum';
+import { DataStateEnum } from '@core/models/data-state.enum';
 
 @Component({
     selector: 'app-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MainLayoutComponent, FeedbackComponent],
+    imports: [
+        CommonModule,
+        FormsModule,
+        MainLayoutComponent,
+        FeedbackComponent,
+        PonySidesheetComponent,
+        PonyButtonComponent,
+    ],
     templateUrl: './list.component.html',
     styleUrl: './list.component.scss',
 })
@@ -22,6 +32,9 @@ export class ListComponent implements OnInit {
     ponyList = signal<Pony[]>([]);
 
     public readonly DataStateEnum = DataStateEnum;
+
+    // Controle da sidesheet via signal
+    showDetails = signal<boolean>(false);
 
     state = computed<DataStateEnum>(() => {
         if (this.isLoading()) return DataStateEnum.LOADING;
@@ -53,5 +66,13 @@ export class ListComponent implements OnInit {
                 this.isLoading.set(false);
             },
         });
+    }
+
+    openDetails(): void {
+        this.showDetails.set(true);
+    }
+
+    closeDetails(): void {
+        this.showDetails.set(false);
     }
 }
