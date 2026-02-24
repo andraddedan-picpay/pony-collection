@@ -116,7 +116,7 @@ Crie `web/src/app/shared/components/feedback/feedback.component.html`:
     <p class="feedback__message">{{ message() }}</p>
     }
 
-    <pony-button class="feedback__button" (click)="handleRetry()">
+    <pony-button  width="192px" class="feedback__button" (click)="handleRetry()">
         {{ buttonText() }}
     </pony-button>
 </div>
