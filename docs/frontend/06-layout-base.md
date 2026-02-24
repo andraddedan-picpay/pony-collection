@@ -547,8 +547,8 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
     </div>
 
     <div class="sidebar__menu">
-      <div class="menu__item active">
-        <button class="item-button">
+      <div class="sidebar__item active">
+        <button class="sidebar__item-button">
           <svg-icon
             src="assets/icons/home.svg"
             class="icon"
@@ -572,8 +572,8 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
     <!-- Header -->
     <header class="header">
       <div class="header__info">
-        <h1 class="header-title">DEAR PONY</h1>
-        <p class="header-date">{{ currentDate() }}</p>
+        <h1 class="header__title">DEAR PONY</h1>
+        <p class="header__date">{{ currentDate() }}</p>
       </div>
 
       <div class="header__filter">
@@ -609,13 +609,9 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
 @use "styles/variables" as *;
 @use "styles/mixins" as *;
 
-// ========================================
-// ESTRUTURA PRINCIPAL
-// ========================================
-
 .ponies-layout {
   display: grid;
-  grid-template-columns: 104px 1fr; // Sidebar + Content
+  grid-template-columns: 104px 1fr;
   height: 100vh;
   overflow: hidden;
 }
@@ -625,7 +621,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
 // ========================================
 
 .sidebar {
-  background-color: $base-dark-01;
+  background-color: $base-dark-1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -633,83 +629,103 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
   width: 104px;
   border-top-right-radius: 16px;
   border-bottom-right-radius: 16px;
-}
 
-&__logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 18px;
+  &__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 18px;
 
-  .logo {
-    width: 56px;
-    height: auto;
+    .logo {
+      width: 56px;
+      height: auto;
+    }
   }
-}
 
-.sidebar__menu {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-  width: 104px;
-  position: relative;
-}
+  &__menu {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    width: 104px;
+    position: relative;
+  }
 
-.menu__item {
-  height: 80px;
-  width: calc(100% - 15px);
-  border-radius: 16px 0 0 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 15px;
-  position: relative;
+  &__item {
+    height: 80px;
+    width: calc(100% - 15px);
+    border-radius: 16px 0 0 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 15px;
+    position: relative;
 
-  &.active {
-    color: $text-color;
-    background-color: $base-dark-2;
-
-    button {
-      background-color: $primary-color;
-      box-shadow: 0 8px 24px 0px rgba($primary-shadow, 0.4);
+    &.active {
       color: $text-color;
+      background-color: $base-dark-2;
+
+      button {
+        background-color: $primary-color;
+        box-shadow: 0 8px 24px 0px rgba($primary-shadow, 0.4);
+        color: $text-color;
+      }
+
+      &:before {
+        content: "";
+        position: absolute;
+        background-color: transparent;
+        height: 50px;
+        right: 0;
+        width: calc(100% - 15px);
+        bottom: -50px;
+        border-top-right-radius: 25px;
+        box-shadow: 0 -25px 0 0 $base-dark-2;
+        z-index: 0;
+        top: -50px;
+        transform: scaleY(-1);
+      }
+
+      &:after {
+        content: "";
+        position: absolute;
+        background-color: transparent;
+        height: 50px;
+        right: 0;
+        width: calc(100% - 15px);
+        bottom: -50px;
+        border-top-right-radius: 25px;
+        box-shadow: 0 -25px 0 0 $base-dark-2;
+        z-index: 0;
+      }
     }
 
-    // Efeito arredondado superior (invertido)
-    &:before {
-      content: "";
-      position: absolute;
-      background-color: transparent;
-      height: 50px;
-      right: 0;
-      width: calc(100% - 15px);
-      top: -50px;
-      border-top-right-radius: 25px;
-      box-shadow: 0 -25px 0 0 $base-dark-2;
-      z-index: 0;
-      transform: scaleY(-1); // Inverte o efeito para o topo
-    }
+    &-button {
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      border-radius: 12px;
+      color: $primary-color;
+      cursor: pointer;
+      @include transition(all, 0.3s, ease);
+      z-index: 1;
 
-    // Efeito arredondado inferior
-    &:after {
-      content: "";
-      position: absolute;
-      background-color: transparent;
-      height: 50px;
-      right: 0;
-      width: calc(100% - 15px);
-      bottom: -50px;
-      border-top-right-radius: 25px;
-      box-shadow: 0 -25px 0 0 $base-dark-2;
-      z-index: 0;
+      &:hover {
+        background-color: rgba($primary-color, 0.1);
+        color: $primary-color;
+      }
     }
   }
 
-  .item-button {
+  &__logout {
     width: 56px;
     height: 56px;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -719,36 +735,15 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
     color: $primary-color;
     cursor: pointer;
     @include transition(all, 0.3s, ease);
-    z-index: 1;
 
     &:hover {
       background-color: rgba($primary-color, 0.1);
-      color: $primary-color;
     }
   }
 }
 
-.sidebar__logout {
-  width: 56px;
-  height: 56px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  border-radius: 12px;
-  color: $primary-color;
-  cursor: pointer;
-  @include transition(all, 0.3s, ease);
-
-  &:hover {
-    background-color: rgba($primary-color, 0.1);
-  }
-}
-
 // ========================================
-// CONTEÚDO PRINCIPAL
+// CONTENT
 // ========================================
 
 .content {
@@ -756,7 +751,6 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
   flex-direction: column;
   height: 100vh;
   padding: 24px;
-  background-color: $base-dark-2;
   overflow: scroll;
 }
 
@@ -769,43 +763,46 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
   justify-content: space-between;
   align-items: center;
   padding-bottom: 24px;
-}
+  background-color: $base-dark-2;
 
-.header__info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-.header-title {
-  font-family: $logo-family;
-  font-size: $font-size-4xl;
-  font-weight: 700;
-  color: $text-color;
-  letter-spacing: 2px;
-  margin: 0;
-}
+  &__filter {
+    width: 100%;
+    max-width: 259px;
+  }
 
-.header-date {
-  font-family: $text-family;
-  font-size: $font-size-sm;
-  color: $text-color;
-  margin: 0;
-}
+  &__title {
+    font-family: $logo-family;
+    font-size: $font-size-4xl;
+    font-weight: 700;
+    color: $text-color;
+    letter-spacing: 2px;
+    margin: 0;
+  }
 
-.header__filter {
-  width: 100%;
-  max-width: 259px;
+  &__date {
+    font-family: $text-family;
+    font-size: $font-size-sm;
+    color: $text-color;
+    margin: 0;
+  }
 }
 ```
 
 **💡 Destaques dos Estilos:**
 
 - **Grid Layout**: Sidebar fixa (104px) + conteúdo fluido (1fr)
-- **Efeitos arredondados**: Pseudo-elementos `:before` e `:after` criam os cantos arredondados no item ativo
+- **BEM Aninhado**: Todos elementos (`&__logo`, `&__menu`, `&__item`, `&__logout`) dentro do bloco `.sidebar`
+- **Efeitos arredondados**: Pseudo-elementos `:before` e `:after` no `.sidebar__item.active`
 - **Transform scaleY(-1)**: Inverte o efeito arredondado para o topo
 - **Transitions**: Animações suaves em hover
 - **Shadow effects**: Sombras com cor primária
+- **3 níveis máximo**: `.sidebar` → `&__item` → `&-button` (padrão BEM)
   |-----------|-------------------------|---------|---------------------------|
   | **Uso** | `grid-template-columns: 104px 1fr` | `display: flex` | `position: fixed; left: 0` |
   | **Alinhamento** | Bidimensional (linhas + colunas) | Unidimensional | Manual |
@@ -844,7 +841,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
 Criam "cantos arredondados invertidos" ao redor do item ativo:
 
 ```scss
-.menu__item.active {
+.sidebar__item.active {
   background-color: $base-dark-2; // Fundo do item
 
   // Canto superior arredondado

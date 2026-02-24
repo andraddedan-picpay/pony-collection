@@ -355,10 +355,10 @@ Previne:
 .login-form {
   @include flex-column;
   gap: 20px;
-}
 
-.login-form__group {
-  width: 100%;
+  &__group {
+    width: 100%;
+  }
 }
 ```
 
