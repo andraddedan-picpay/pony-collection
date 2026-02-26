@@ -1,0 +1,113 @@
+<sidesheet
+    [(isOpen)]="showDetails"
+    [title]="'Cadastrar'"
+>
+    <form
+        [formGroup]="ponyForm"
+        class="create-pony"
+    >
+        <div class="create-pony__field">
+            <label for="name">Nome *</label>
+            <pony-input
+                id="name"
+                type="text"
+                formControlName="name"
+                [borderless]="true"
+                placeholder="Twilight Sparkle"
+            />
+            @if (formControls['name'].invalid && formControls['name'].touched) {
+                <span class="create-pony__error">Nome é obrigatório (mínimo 3 caracteres)</span>
+            }
+        </div>
+
+        <div class="create-pony__field">
+            <label for="imageUrl">Imagem</label>
+            <pony-input
+                id="imageUrl"
+                type="file"
+                [borderless]="true"
+                placeholder="/twilight.png"
+                (fileChange)="onFileSelected($event)"
+            />
+        </div>
+
+        <div class="create-pony__field">
+            <label for="element">Elemento *</label>
+            <pony-input
+                id="element"
+                type="text"
+                formControlName="element"
+                [borderless]="true"
+                placeholder="Magia"
+            />
+            @if (formControls['element'].invalid && formControls['element'].touched) {
+                <span class="create-pony__error">Elemento é obrigatório</span>
+            }
+        </div>
+
+        <div class="create-pony__field">
+            <label for="personality">Personalidade *</label>
+            <pony-input
+                id="personality"
+                type="text"
+                formControlName="personality"
+                [borderless]="true"
+                placeholder="Inteligente, organizada, curiosa e um pouco ans.."
+            />
+            @if (formControls['personality'].invalid && formControls['personality'].touched) {
+                <span class="create-pony__error">Personalidade é obrigatória</span>
+            }
+        </div>
+
+        <div class="create-pony__field">
+            <label for="talent">Talento *</label>
+            <pony-input
+                id="talent"
+                type="text"
+                formControlName="talent"
+                [borderless]="true"
+                placeholder="Magia poderosa e amor por estudos"
+            />
+            @if (formControls['talent'].invalid && formControls['talent'].touched) {
+                <span class="create-pony__error">Talento é obrigatório</span>
+            }
+        </div>
+
+        <div class="create-pony__field">
+            <label for="summary">Resumo *</label>
+            <pony-textarea
+                id="summary"
+                formControlName="summary"
+                [borderless]="true"
+                placeholder="Começa como uma estudiosa solitária e vira a líder do grupo."
+            />
+            @if (formControls['summary'].invalid && formControls['summary'].touched) {
+                <span class="create-pony__error">Resumo é obrigatório (mínimo 10 caracteres)</span>
+            }
+        </div>
+    </form>
+
+    <div
+        sidesheet-footer
+        class="create-pony__footer"
+    >
+        <pony-button
+            variant="secondary"
+            type="button"
+            (click)="closeForm()"
+            width="172px"
+        >
+            Cancelar
+        </pony-button>
+        <pony-button
+            variant="primary"
+            type="button"
+            (click)="onSubmit()"
+            [disabled]="isLoading()"
+            width="172px"
+            [loading]="isLoading()"
+        >
+            Cadastrar
+        </pony-button>
+    </div>
+</sidesheet>

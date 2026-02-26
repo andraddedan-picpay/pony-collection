@@ -29,4 +29,41 @@ export class PonyService {
             }),
         );
     }
+
+    createPony(pony: Omit<Pony, 'id'>): Observable<Pony> {
+        const endpoint = `${this.apiUrl}/ponies`;
+        const token = LocalStorageHelper.get<string>(LocalStorageKeys.TOKEN);
+
+        const options = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        return this.http.post<Pony>(endpoint, pony, options).pipe(
+            catchError((error) => {
+                return throwError(() => error);
+            }),
+        );
+    }
+
+    uploadImage(file: File): Observable<{ imageUrl: string }> {
+        const endpoint = `${this.apiUrl}/ponies/upload`;
+        const token = LocalStorageHelper.get<string>(LocalStorageKeys.TOKEN);
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const options = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        return this.http.post<{ imageUrl: string }>(endpoint, formData, options).pipe(
+            catchError((error) => {
+                return throwError(() => error);
+            }),
+        );
+    }
 }

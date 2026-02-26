@@ -3,17 +3,6 @@
         <span>Poneis</span>
     </div>
 
-    <!-- Botões de teste -->
-    <br />
-    <div style="display: flex; gap: 1rem; margin-bottom: 2rem">
-        <pony-button
-            variant="secondary"
-            (click)="openDetails()"
-        >
-            Sidesheet
-        </pony-button>
-    </div>
-
     <div class="container">
         @switch (state()) {
             @case (DataStateEnum.LOADING) {
@@ -41,33 +30,19 @@
             }
         }
     </div>
+
+    <button
+        class="create-pony"
+        (click)="createPony.openForm()"
+        aria-label="Formulário de cadastro"
+        type="button"
+    >
+        <svg-icon
+            src="assets/icons/plus.svg"
+            class="icon"
+            [svgStyle]="{ 'width.px': 20, 'height.px': 20 }"
+        ></svg-icon>
+    </button>
 </main-layout>
 
-<!-- Sidesheet de Detalhes -->
-<sidesheet
-    [(isOpen)]="showDetails"
-    [title]="'Detalhes'"
->
-    <div>
-        <p>Detalhes aparecererão aqui</p>
-    </div>
-
-    <div
-        sidesheet-footer
-        style="display: flex; justify-content: space-between"
-    >
-        <pony-button
-            variant="secondary"
-            (click)="closeDetails()"
-            width="172px"
-        >
-            Fechar
-        </pony-button>
-        <pony-button
-            variant="primary"
-            width="172px"
-        >
-            Entendi
-        </pony-button>
-    </div>
-</sidesheet>
+<create-pony #createPony (ponyCreated)="getData()" />

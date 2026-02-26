@@ -33,3 +33,16 @@
     align-items: center;
     justify-content: center;
 }
+
+.create-pony {
+    width: 48px;
+    height: 48px;
+    position: fixed;
+    border-radius: 8px;
+    bottom: 50px;
+    right: 50px;
+    padding: 14px;
+    background-color: $primary-color;
+    color: $text-color;
+    box-shadow: 4px 4px 12px $base-shadow;
+}
