@@ -1,20 +1,62 @@
-<div class="pony-box">
-    @if (icon) {
-    <svg-icon
-        src="assets/icons/{{icon}}.svg"
-        class="pony-box__icon"
-        [svgStyle]="{ 'width.px': 20, 'height.px': 20 }" />
-    }
+<div
+    [class]="[
+        'pony-box',
+        borderless && 'pony-box--borderless',
+        type === 'file' && 'pony-box--file',
+    ]"
+>
+    @switch (type) {
+        @case ('file') {
+            <!-- Input file oculto -->
+            <input
+                #fileInput
+                type="file"
+                [disabled]="disabled"
+                [name]="name"
+                [required]="required"
+                (change)="onInput($event)"
+                (blur)="onBlur()"
+                class="pony-box__input--hidden"
+            />
 
-    <input
-        [type]="type"
-        [placeholder]="placeholder"
-        [disabled]="disabled"
-        [name]="name"
-        [required]="required"
-        [value]="value"
-        (input)="onInput($event)"
-        (blur)="onBlur()"
-        class="pony-box__input"
-    />
+            <!-- Área de upload customizada -->
+            <div
+                class="pony-box__upload-area"
+                (click)="triggerFileInput(fileInput)"
+                [class.disabled]="disabled"
+            >
+                <span class="pony-box__upload-text">
+                    {{ fileName || placeholder || 'Escolher arquivo' }}
+                </span>
+                <svg-icon
+                    src="assets/icons/upload.svg"
+                    class="pony-box__icon"
+                    [svgStyle]="{ 'width.px': 20, 'height.px': 20 }"
+                />
+            </div>
+        }
+        @default {
+            <!-- Ícone opcional -->
+            @if (icon) {
+                <svg-icon
+                    src="assets/icons/{{ icon }}.svg"
+                    class="pony-box__icon"
+                    [svgStyle]="{ 'width.px': 20, 'height.px': 20 }"
+                />
+            }
+
+            <!-- Input padrão -->
+            <input
+                [type]="type"
+                [placeholder]="placeholder"
+                [disabled]="disabled"
+                [name]="name"
+                [required]="required"
+                [value]="value"
+                (input)="onInput($event)"
+                (blur)="onBlur()"
+                class="pony-box__input"
+            />
+        }
+    }
 </div>

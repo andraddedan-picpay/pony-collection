@@ -19,6 +19,7 @@ import { SvgIconComponent } from 'angular-svg-icon';
 })
 export class PonyInputComponent implements ControlValueAccessor {
     @Input() icon?: string;
+    @Input() borderless?: boolean = false;
     @Input() type: string = 'text';
     @Input() placeholder: string = '';
     @Input() disabled: boolean = false;
@@ -26,8 +27,10 @@ export class PonyInputComponent implements ControlValueAccessor {
     @Input() required: boolean = false;
 
     @Output() inputChange = new EventEmitter<string>();
+    @Output() fileChange = new EventEmitter<Event>();
 
     value: string = '';
+    fileName: string = '';
 
     private onChange: (value: string) => void = () => {};
     private onTouched: () => void = () => {};
@@ -51,11 +54,23 @@ export class PonyInputComponent implements ControlValueAccessor {
     onInput(event: Event): void {
         const input = event.target as HTMLInputElement;
         this.value = input.value;
+
+        const isFileInput = this.type === 'file' && input.files?.length;
+
+        if (isFileInput) {
+            this.fileName = input.files?.[0]?.name || '';
+            this.fileChange.emit(event);
+        }
+
         this.onChange(this.value);
         this.inputChange.emit(this.value);
     }
 
     onBlur(): void {
         this.onTouched();
+    }
+
+    triggerFileInput(fileInput: HTMLInputElement): void {
+        fileInput.click();
     }
 }

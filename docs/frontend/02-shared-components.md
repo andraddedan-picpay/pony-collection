@@ -365,11 +365,16 @@ handleClick(event: MouseEvent): void {
     loading() && 'btn-loading'
   ]"
   [disabled]="disabled() || loading()"
-  (click)="handleClick($event)">
+  (click)="handleClick($event)"
+>
   @if (loading()) {
-    <svg-icon src="assets/icons/loading.svg" class="btn-loading-icon" [svgStyle]="{ 'width.px': 20, 'height.px': 20 }"></svg-icon>
+  <svg-icon
+    src="assets/icons/loading.svg"
+    class="btn-loading-icon"
+    [svgStyle]="{ 'width.px': 20, 'height.px': 20 }"
+  ></svg-icon>
   } @else {
-    <ng-content></ng-content>
+  <ng-content></ng-content>
   }
 </button>
 ```
@@ -460,7 +465,7 @@ handleClick(event: MouseEvent): void {
 
 // Variants
 .btn-primary {
-  background: linear-gradient(135deg, $primary-color 0%, #C850D0 100%);
+  background: linear-gradient(135deg, $primary-color 0%, #c850d0 100%);
   color: $text-color;
 
   &:hover:not(:disabled) {
@@ -534,14 +539,21 @@ ng generate component shared/components/pony-input --skip-tests
 **src/app/shared/components/pony-input/pony-input.component.ts**
 
 ```typescript
-import { Component, Input, forwardRef } from "@angular/core";
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  forwardRef,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { SvgIconComponent } from "angular-svg-icon";
 
 @Component({
   selector: "pony-input",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SvgIconComponent],
   templateUrl: "./pony-input.component.html",
   styleUrl: "./pony-input.component.scss",
   providers: [
@@ -553,13 +565,19 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
   ],
 })
 export class PonyInputComponent implements ControlValueAccessor {
+  @Input() icon?: string;
+  @Input() borderless?: boolean = false;
   @Input() type: string = "text";
   @Input() placeholder: string = "";
   @Input() disabled: boolean = false;
   @Input() name: string = "";
   @Input() required: boolean = false;
 
+  @Output() inputChange = new EventEmitter<string>();
+  @Output() fileChange = new EventEmitter<Event>();
+
   value: string = "";
+  fileName: string = "";
 
   private onChange: (value: string) => void = () => {};
   private onTouched: () => void = () => {};
@@ -583,11 +601,24 @@ export class PonyInputComponent implements ControlValueAccessor {
   onInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.value = input.value;
+
+    const isFileInput = this.type === "file" && input.files?.length;
+
+    if (isFileInput) {
+      this.fileName = input.files?.[0]?.name || "";
+      this.fileChange.emit(event);
+    }
+
     this.onChange(this.value);
+    this.inputChange.emit(this.value);
   }
 
   onBlur(): void {
     this.onTouched();
+  }
+
+  triggerFileInput(fileInput: HTMLInputElement): void {
+    fileInput.click();
   }
 }
 ```
@@ -603,17 +634,65 @@ export class PonyInputComponent implements ControlValueAccessor {
 **src/app/shared/components/pony-input/pony-input.component.html**
 
 ```html
-<input
-  [type]="type"
-  [placeholder]="placeholder"
-  [disabled]="disabled"
-  [name]="name"
-  [required]="required"
-  [value]="value"
-  (input)="onInput($event)"
-  (blur)="onBlur()"
-  class="pony-input"
-/>
+<div
+  [class]="[
+    'pony-box',
+    borderless && 'pony-box--borderless',
+    type === 'file' && 'pony-box--file',
+  ]"
+>
+  @switch (type) { @case ('file') {
+  <!-- Input file oculto -->
+  <input
+    #fileInput
+    type="file"
+    [disabled]="disabled"
+    [name]="name"
+    [required]="required"
+    (change)="onInput($event)"
+    (blur)="onBlur()"
+    class="pony-box__input--hidden"
+  />
+
+  <!-- Área de upload customizada -->
+  <div
+    class="pony-box__upload-area"
+    (click)="triggerFileInput(fileInput)"
+    [class.disabled]="disabled"
+  >
+    <span class="pony-box__upload-text">
+      {{ fileName || placeholder || 'Escolher arquivo' }}
+    </span>
+    <svg-icon
+      src="assets/icons/upload.svg"
+      class="pony-box__icon"
+      [svgStyle]="{ 'width.px': 20, 'height.px': 20 }"
+    />
+  </div>
+  } @default {
+  <!-- Ícone opcional -->
+  @if (icon) {
+  <svg-icon
+    src="assets/icons/{{ icon }}.svg"
+    class="pony-box__icon"
+    [svgStyle]="{ 'width.px': 20, 'height.px': 20 }"
+  />
+  }
+
+  <!-- Input padrão -->
+  <input
+    [type]="type"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [name]="name"
+    [required]="required"
+    [value]="value"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+    class="pony-box__input"
+  />
+  } }
+</div>
 ```
 
 ### 2.4 Criar os Estilos
@@ -624,35 +703,87 @@ export class PonyInputComponent implements ControlValueAccessor {
 @use "styles/variables" as *;
 @use "styles/mixins" as *;
 
-.pony-input {
+.pony-box {
   width: 100%;
-  padding: 1rem 1.25rem;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   background-color: $base-form;
   border: 1px solid rgba($grayscale-03, 0.3);
   border-radius: 12px;
-  color: $text-color;
-  font-family: $text-family;
-  font-size: $font-size-base;
-  outline: none;
+  padding: 12px 16px;
   @include transition(all, 0.3s, ease);
 
-  &::placeholder {
-    color: $grayscale-03;
-  }
-
-  &:focus {
+  &:focus-within {
     border-color: $primary-color;
-    background-color: rgba($base-form, 0.8);
     box-shadow: 0 0 0 3px rgba($primary-shadow, 0.2);
   }
 
-  &:hover:not(:disabled) {
-    border-color: rgba($primary-color, 0.5);
+  &__icon {
+    color: $grayscale-03;
+    flex-shrink: 0;
+    display: flex;
   }
 
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  &__input {
+    background: none;
+    border: none;
+    outline: none;
+    color: $text-color;
+    font-family: $text-family;
+    font-size: $font-size-base;
+    width: 100%;
+
+    &::placeholder {
+      color: $grayscale-03;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &--borderless {
+    border: none;
+  }
+
+  &--file {
+    cursor: pointer;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  &__input--hidden {
+    display: none;
+  }
+
+  &__upload-area {
+    width: 100%;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    @include transition(all, 0.2s, ease);
+
+    &.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__upload-text {
+    color: $grayscale-03;
+    font-family: $text-family;
+    font-size: $font-size-base;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
   }
 }
 ```
@@ -662,6 +793,26 @@ export class PonyInputComponent implements ControlValueAccessor {
 - **Focus**: Borda roxa com sombra externa
 - **Hover**: Borda semi-transparente roxa
 - **Disabled**: Opacidade reduzida
+
+### 2.5 Criar o Ícone de Upload
+
+Crie o arquivo **public/assets/icons/upload.svg**:
+
+```svg
+<svg width="18" height="20" viewBox="0 0 18 20" fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg">
+    <path
+        d="M6.0787 19.8647C6.03564 19.8647 5.99343 19.8611 5.95236 19.8541L5.816 19.853C5.61181 19.853 5.41644 19.7698 5.27501 19.6225L0.209017 14.3465C0.0749002 14.2068 4.3256e-06 14.0207 4.34253e-06 13.827L5.14595e-06 4.63705C5.36406e-06 2.14207 2.02432 4.44626e-05 4.48001 4.46773e-05L12.468 4.53756e-05C15.0512 4.56014e-05 17.052 2.03951 17.052 4.63705L17.052 15.374C17.052 17.8352 14.9553 19.853 12.468 19.853L6.2048 19.8542C6.1638 19.8611 6.12167 19.8647 6.0787 19.8647ZM6.829 18.3547L12.468 18.353C14.1395 18.353 15.552 16.9936 15.552 15.374L15.552 4.63705C15.552 2.86159 14.2162 1.50005 12.468 1.50005L4.48 1.50004C2.87229 1.50004 1.50001 2.95213 1.50001 4.63705L1.501 12.8817L2.37683 12.8787C2.7103 12.8791 3.08961 12.8798 3.51129 12.8807C5.2816 12.8845 6.72595 14.2713 6.82346 16.0173L6.8287 16.2057L6.829 18.3547ZM8.9117 13.1741C8.53201 13.1741 8.21821 12.892 8.16855 12.5259L8.1617 12.4241L8.162 7.66975L6.60455 9.23096C6.31228 9.52447 5.8374 9.52547 5.54389 9.23319C5.27707 8.96749 5.25198 8.55088 5.46922 8.25681L5.54166 8.17253L8.38066 5.32154L8.42442 5.28099C8.43479 5.27212 8.44541 5.26352 8.45626 5.25522L8.38066 5.32154C8.41745 5.28459 8.45713 5.25228 8.49898 5.2246C8.5135 5.21521 8.529 5.20574 8.54486 5.19683C8.55831 5.18904 8.57152 5.18214 8.58488 5.17566C8.60128 5.16795 8.61813 5.16053 8.63529 5.15372C8.65226 5.14675 8.66998 5.14048 8.68786 5.13489C8.70148 5.13087 8.71521 5.12701 8.72909 5.12353C8.74913 5.11828 8.76924 5.11411 8.78947 5.11078C8.80141 5.1091 8.81349 5.10742 8.82564 5.10603C8.84916 5.103 8.87291 5.10139 8.89667 5.1009C8.90156 5.1012 8.90663 5.10115 8.9117 5.10115L8.92667 5.10089C8.9511 5.10136 8.97552 5.10302 8.99982 5.10586L8.9117 5.10115C8.95256 5.10115 8.99266 5.10441 9.03174 5.1107C9.0537 5.11383 9.0754 5.1183 9.09691 5.12375C9.10795 5.12698 9.11936 5.13017 9.13064 5.13361C9.15246 5.13976 9.17381 5.14732 9.19486 5.15588C9.20608 5.16101 9.21719 5.16587 9.22816 5.17098C9.24574 5.17853 9.26306 5.18741 9.28008 5.197C9.29513 5.20618 9.31026 5.21545 9.32503 5.22522C9.33687 5.2323 9.34824 5.24028 9.35942 5.24862L9.36715 5.25522C9.378 5.26352 9.38861 5.27212 9.39899 5.28099L9.44364 5.32163L12.2816 8.17263C12.5739 8.46619 12.5728 8.94106 12.2792 9.23329C12.0123 9.49894 11.5956 9.5222 11.3025 9.30367L11.2186 9.23086L9.662 7.66675L9.6617 12.4241C9.6617 12.8384 9.32592 13.1741 8.9117 13.1741ZM5.329 17.5137L5.3287 16.2057C5.3287 15.1992 4.51436 14.3829 3.50799 14.3807L2.321 14.3807L5.329 17.5137Z"
+        fill="currentColor" />
+</svg>
+
+```
+
+**💡 Explicação:**
+
+- **currentColor**: Herda a cor do texto (CSS property)
+- **Usado no input file**: Exibido na área de upload customizada
+- **Design**: Ícone de documento com seta para cima (upload)
 
 ---
 
