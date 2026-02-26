@@ -9,7 +9,10 @@ import {
   Post,
   Put,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -17,11 +20,14 @@ import {
   ApiResponse,
   ApiBody,
   ApiParam,
+  ApiConsumes,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { PoniesService } from './ponies.service';
 import { UpdatePonyDto } from './dto/update-pony.dto';
 import { CreatePonyDto } from './dto/create-pony.dto';
+import { UploadFileDto } from './dto/upload-file.dto';
+import { UploadResponseDto } from './dto/upload-response.dto';
 import { Pony } from './pony.entity';
 
 @ApiTags('Ponies')
@@ -30,6 +36,28 @@ import { Pony } from './pony.entity';
 @Controller('ponies')
 export class PoniesController {
   constructor(private readonly poniesService: PoniesService) {}
+
+  @Post('upload')
+  @ApiOperation({ summary: 'Upload de imagem do pony' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: UploadFileDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Imagem enviada com sucesso',
+    type: UploadResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Arquivo inválido',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Não autorizado',
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  uploadImage(@UploadedFile() file: Express.Multer.File): UploadResponseDto {
+    return this.poniesService.processImageUpload(file);
+  }
 
   @Post()
   @ApiOperation({ summary: 'Criar novo pony' })
