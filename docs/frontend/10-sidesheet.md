@@ -516,7 +516,7 @@ Crie `web/src/app/shared/components/sidesheet/sidesheet.component.scss`:
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 1.5rem 2rem;
+        padding: 15px 20px;
     }
 
     &__title {
@@ -559,7 +559,7 @@ Crie `web/src/app/shared/components/sidesheet/sidesheet.component.scss`:
 
     &__content {
         flex: 1;
-        padding: 0 2rem;
+        padding: 0 20px;
         overflow-y: auto;
 
         // Custom scrollbar
@@ -582,7 +582,7 @@ Crie `web/src/app/shared/components/sidesheet/sidesheet.component.scss`:
     }
 
     &__footer {
-        padding: 30px 20px 40px 20px;
+        padding: 15px 20px;
     }
 }
 
