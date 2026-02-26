@@ -1,0 +1,54 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+
+.pony-box {
+    width: 100%;
+    min-height: 48px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background-color: $base-form;
+    border: 1px solid rgba($grayscale-03, 0.3);
+    border-radius: 12px;
+    padding: 12px 16px;
+    @include transition(all, 0.3s, ease);
+
+    &:focus-within {
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px rgba($primary-shadow, 0.2);
+    }
+
+    &__textarea {
+        background: none;
+        border: none;
+        outline: none;
+        color: $text-color;
+        font-family: $text-family;
+        font-size: $font-size-base;
+        width: 100%;
+        resize: vertical;
+        line-height: 1.5;
+
+        &::placeholder {
+            color: $grayscale-03;
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            resize: none;
+        }
+    }
+
+    &--textarea {
+        height: 70px;
+
+        textarea {
+            height: 100%;
+        }
+    }
+
+    &--borderless {
+        border: none;
+    }
+}

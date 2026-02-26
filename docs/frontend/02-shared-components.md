@@ -1,8 +1,8 @@
-# 📘 Aula 2 — Componentes Reutilizáveis [Button & Input]
+# 📘 Aula 2 — Componentes Reutilizáveis [Button, Input & Textarea]
 
 ## Objetivo
 
-Implementar componentes compartilhados base [Button e Input] com o tema, permitindo que sejam reutilizáveis para toda a aplicação.
+Implementar componentes compartilhados base [Button, Input e Textarea] com o tema, permitindo que sejam reutilizáveis para toda a aplicação.
 
 ---
 
@@ -10,6 +10,7 @@ Implementar componentes compartilhados base [Button e Input] com o tema, permiti
 
 - **`PonyButtonComponent`**: Botão reutilizável com variantes (primary/secondary), estados (loading/disabled) e ícones SVG
 - **`PonyInputComponent`**: Input customizado compatível com Reactive Forms e Template-driven Forms
+- **`PonyTextareaComponent`**: Textarea com suporte a redimensionamento vertical e maxLength
 - **Design System**: Componentes consistentes usando variáveis SCSS
 - **ControlValueAccessor**: Integração nativa com formulários Angular
 
@@ -816,6 +817,309 @@ Crie o arquivo **public/assets/icons/upload.svg**:
 
 ---
 
+## 📝 3. Componente Pony Textarea
+
+### 3.1 Criar o Componente
+
+```bash
+ng generate component shared/components/pony-textarea --skip-tests
+```
+
+### 3.2 Implementar o TypeScript
+
+**src/app/shared/components/pony-textarea/pony-textarea.component.ts**
+
+```typescript
+import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+@Component({
+    selector: 'pony-textarea',
+    standalone: true,
+    imports: [CommonModule],
+    templateUrl: './pony-textarea.component.html',
+    styleUrl: './pony-textarea.component.scss',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => PonyTextareaComponent),
+            multi: true,
+        },
+    ],
+})
+export class PonyTextareaComponent implements ControlValueAccessor {
+    @Input() borderless?: boolean = false;
+    @Input() placeholder: string = '';
+    @Input() disabled: boolean = false;
+    @Input() name: string = '';
+    @Input() required: boolean = false;
+    @Input() rows: number = 4;
+    @Input() maxLength?: number;
+
+    @Output() textareaChange = new EventEmitter<string>();
+
+    value: string = '';
+
+    private onChange: (value: string) => void = () => {};
+    private onTouched: () => void = () => {};
+
+    writeValue(value: string): void {
+        this.value = value || '';
+    }
+
+    registerOnChange(fn: (value: string) => void): void {
+        this.onChange = fn;
+    }
+
+    registerOnTouched(fn: () => void): void {
+        this.onTouched = fn;
+    }
+
+    setDisabledState(isDisabled: boolean): void {
+        this.disabled = isDisabled;
+    }
+
+    onInput(event: Event): void {
+        const textarea = event.target as HTMLTextAreaElement;
+        this.value = textarea.value;
+        this.onChange(this.value);
+        this.textareaChange.emit(this.value);
+    }
+
+    onBlur(): void {
+        this.onTouched();
+    }
+}
+```
+
+**💡 Explicação:**
+
+- Implementa `ControlValueAccessor` para integração com formulários
+- Suporta variante `borderless` (sem borda)
+- Input `rows` controla altura inicial do textarea
+- Input `maxLength` limita caracteres (opcional)
+- Emite evento `textareaChange` a cada alteração
+
+### 📝 Explicação Detalhada do TypeScript
+
+**1. Inputs Específicos do Textarea:**
+
+```typescript
+@Input() rows: number = 4;
+@Input() maxLength?: number;
+```
+
+- **`rows`**: Define número de linhas visíveis (altura padrão)
+- **`maxLength`**: Limite de caracteres (opcional)
+- **`borderless`**: Remove bordas (útil para UIs minimalistas)
+
+**2. Output para Tracking de Mudanças:**
+
+```typescript
+@Output() textareaChange = new EventEmitter<string>();
+```
+
+- **Uso**: Monitorar mudanças em tempo real
+- **Diferença de ngModel**: Pode usar ambos simultaneamente
+- **Exemplo**: `(textareaChange)="onDescriptionChange($event)"`
+
+**3. Método onInput com Type Assertion:**
+
+```typescript
+onInput(event: Event): void {
+    const textarea = event.target as HTMLTextAreaElement;
+    this.value = textarea.value;
+    this.onChange(this.value);
+    this.textareaChange.emit(this.value);
+}
+```
+
+- **Type Assertion**: `as HTMLTextAreaElement` garante acesso a `.value`
+- **Duplo Emit**: Atualiza `ngModel` E emite evento customizado
+- **Por quê?**: Flexibilidade para usar qualquer um dos dois
+
+---
+
+### 3.3 Criar o Template
+
+**src/app/shared/components/pony-textarea/pony-textarea.component.html**
+
+```html
+<div [class]="['pony-box', 'pony-box--textarea', borderless && 'pony-box--borderless']">
+    <textarea
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [name]="name"
+        [required]="required"
+        [rows]="rows"
+        [attr.maxlength]="maxLength"
+        [value]="value"
+        (input)="onInput($event)"
+        (blur)="onBlur()"
+        class="pony-box__textarea"
+    ></textarea>
+</div>
+```
+
+**💡 Explicação:**
+
+- Usa estrutura `.pony-box` consistente com `pony-input`
+- `[attr.maxlength]` define atributo HTML nativo
+- Modificador `--textarea` para estilos específicos
+- Textarea permite redimensionamento vertical (CSS)
+
+### 📝 Explicação Detalhada do Template
+
+**1. Class Binding Array:**
+
+```html
+[class]="['pony-box', 'pony-box--textarea', borderless && 'pony-box--borderless']"
+```
+
+- **Base**: `pony-box` (estilos compartilhados)
+- **Modificador**: `--textarea` (altura específica)
+- **Condicional**: `--borderless` (só se `borderless=true`)
+
+**2. Attribute Binding vs Property Binding:**
+
+```html
+[rows]="rows"              <!-- Property binding (JS property) -->
+[attr.maxlength]="maxLength"  <!-- Attribute binding (HTML attribute) -->
+```
+
+**Por que `attr.maxlength`?**
+
+- Textarea nativo usa atributo HTML `maxlength`, não property JS
+- `[maxlength]="5"` não funciona corretamente
+- `[attr.maxlength]="5"` renderiza `<textarea maxlength="5">`
+
+**3. Resize Vertical:**
+
+- CSS `resize: vertical` permite redimensionar altura
+- Disabled tem `resize: none` (bloqueia redimensionamento)
+
+---
+
+### 3.4 Criar os Estilos
+
+**src/app/shared/components/pony-textarea/pony-textarea.component.scss**
+
+```scss
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+
+.pony-box {
+    width: 100%;
+    min-height: 48px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background-color: $base-form;
+    border: 1px solid rgba($grayscale-03, 0.3);
+    border-radius: 12px;
+    padding: 12px 16px;
+    @include transition(all, 0.3s, ease);
+
+    &:focus-within {
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px rgba($primary-shadow, 0.2);
+    }
+
+    &__textarea {
+        background: none;
+        border: none;
+        outline: none;
+        color: $text-color;
+        font-family: $text-family;
+        font-size: $font-size-base;
+        width: 100%;
+        resize: vertical;
+        line-height: 1.5;
+
+        &::placeholder {
+            color: $grayscale-03;
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            resize: none;
+        }
+    }
+
+    &--textarea {
+        height: 70px;
+
+        textarea {
+            height: 100%;
+        }
+    }
+
+    &--borderless {
+        border: none;
+    }
+}
+```
+
+**💡 Explicação:**
+
+- **`resize: vertical`**: Permite redimensionar apenas verticalmente
+- **`line-height: 1.5`**: Espaçamento legível entre linhas
+- **`align-items: flex-start`**: Alinha conteúdo no topo (importante para textarea)
+- **Disabled**: Remove resize e reduz opacidade
+
+### 📝 Explicação Detalhada dos Estilos
+
+**1. Altura Mínima vs Altura Fixa:**
+
+```scss
+.pony-box {
+    min-height: 48px;  // ✅ Permite crescer
+
+    &--textarea {
+        height: 70px;   // Altura padrão para textarea
+    }
+}
+```
+
+**Por que altura fixa em textarea?**
+
+- Define tamanho padrão consistente
+- `rows` do HTML controla isso também
+- Usuário pode redimensionar com `resize: vertical`
+
+**2. Resize Control:**
+
+```scss
+resize: vertical;      // ✅ Só vertical (UX melhor)
+resize: both;         // ❌ Quebra layout
+resize: none;         // ❌ Inflexível (exceto disabled)
+```
+
+**3. Line Height:**
+
+```scss
+line-height: 1.5;  // 150% do font-size
+```
+
+- **Por quê?**: Melhora legibilidade em textos longos
+- **WCAG guideline**: Mínimo 1.5 para parágrafos
+- **Comparação**: Default é ~1.2 (apertado demais)
+
+**4. Focus-within:**
+
+```scss
+&:focus-within {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-shadow, 0.2);
+}
+```
+
+- **`:focus-within`**: Estiliza parent quando child tem focus
+- **Vantagem**: Borda no container, não no textarea
+- **UX**: Feedback visual consistente
+
 ---
 
 ## 🎓 Conceitos Avançados
@@ -1209,15 +1513,19 @@ export class NewComponent {
 
 ## 📦 Resumo dos Arquivos Criados
 
-| Arquivo                      | Responsabilidade                         |
-| ---------------------------- | ---------------------------------------- |
-| `pony-button.component.ts`   | Lógica do botão (signals, outputs)       |
-| `pony-button.component.html` | Template (ng-content, @if)               |
-| `pony-button.component.scss` | Estilos (variantes, animações)           |
-| `pony-input.component.ts`    | Input customizado (ControlValueAccessor) |
-| `pony-input.component.html`  | Template simplificado                    |
-| `pony-input.component.scss`  | Estilos (focus, hover, disabled)         |
-| `assets/icons/loading.svg`   | Ícone de loading animado                 |
+| Arquivo                         | Responsabilidade                         |
+| ------------------------------- | ---------------------------------------- |
+| `pony-button.component.ts`      | Lógica do botão (signals, outputs)       |
+| `pony-button.component.html`    | Template (ng-content, @if)               |
+| `pony-button.component.scss`    | Estilos (variantes, animações)           |
+| `pony-input.component.ts`       | Input customizado (ControlValueAccessor) |
+| `pony-input.component.html`     | Template com suporte a file upload       |
+| `pony-input.component.scss`     | Estilos (focus, hover, disabled)         |
+| `pony-textarea.component.ts`    | Textarea com ControlValueAccessor        |
+| `pony-textarea.component.html`  | Template com resize vertical             |
+| `pony-textarea.component.scss`  | Estilos (line-height, resize)            |
+| `assets/icons/loading.svg`      | Ícone de loading animado                 |
+| `assets/icons/upload.svg`       | Ícone de upload para input file          |
 
 ---
 
@@ -1227,6 +1535,7 @@ export class NewComponent {
 - ✅ `PonyButtonComponent` criado com variantes
 - ✅ Estados de loading e disabled implementados
 - ✅ `PonyInputComponent` criado com ControlValueAccessor
+- ✅ `PonyTextareaComponent` criado com resize vertical
 - ✅ Componentes usam design tokens (variáveis SCSS)
 - ✅ Animações CSS (loading spinner)
 - ✅ Signal Inputs e Outputs funcionando
@@ -1240,13 +1549,15 @@ export class NewComponent {
 Nesta aula você aprendeu:
 
 ✅ Como criar componentes reutilizáveis usando Signals API  
-✅ Implementar `ControlValueAccessor` para inputs customizados  
+✅ Implementar `ControlValueAccessor` para inputs e textareas customizados  
 ✅ Trabalhar com `angular-svg-icon` para ícones SVG  
 ✅ Aplicar variáveis do design system (theme.md)  
 ✅ Criar animações CSS (loading, hover, focus)  
 ✅ Usar `ng-content` para projeção de conteúdo  
 ✅ Diferenças entre Signal Inputs e @Input() decorator  
-✅ Conceitos de Content Projection e ControlValueAccessor
+✅ Conceitos de Content Projection e ControlValueAccessor  
+✅ CSS `resize` e `line-height` para textareas  
+✅ Diferenças entre Property Binding e Attribute Binding
 
 ---
 

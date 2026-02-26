@@ -1,0 +1,14 @@
+<div [class]="['pony-box', 'pony-box--textarea', borderless && 'pony-box--borderless']">
+    <textarea
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [name]="name"
+        [required]="required"
+        [rows]="rows"
+        [attr.maxlength]="maxLength"
+        [value]="value"
+        (input)="onInput($event)"
+        (blur)="onBlur()"
+        class="pony-box__textarea"
+    ></textarea>
+</div>
