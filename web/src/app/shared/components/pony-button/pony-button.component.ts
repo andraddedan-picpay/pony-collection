@@ -21,6 +21,7 @@ export class PonyButtonComponent {
     click = output<MouseEvent>();
 
     handleClick(event: MouseEvent): void {
+        event.stopPropagation();
         const canClick = !this.disabled() && !this.loading();
         if (canClick) this.click.emit(event);
     }

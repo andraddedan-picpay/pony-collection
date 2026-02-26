@@ -286,6 +286,7 @@ export class PonyButtonComponent {
   click = output<MouseEvent>();
 
   handleClick(event: MouseEvent): void {
+    event.stopPropagation();
     const canClick = !this.disabled() && !this.loading();
     if (canClick) this.click.emit(event);
   }
@@ -336,11 +337,13 @@ click = output<MouseEvent>();
 
 ```typescript
 handleClick(event: MouseEvent): void {
+  event.stopPropagation();
   const canClick = !this.disabled() && !this.loading();
   if (canClick) this.click.emit(event);
 }
 ```
 
+- **`event.stopPropagation()`**: Impede que o evento se propague para elementos pais (evita cliques duplicados)
 - **Guarda**: Só emite evento se não estiver `disabled` ou `loading`
 - **Por quê?**: Evita ações indesejadas durante requisições HTTP
 - **Segurança**: Lógica no componente, não apenas CSS
@@ -362,17 +365,11 @@ handleClick(event: MouseEvent): void {
     loading() && 'btn-loading'
   ]"
   [disabled]="disabled() || loading()"
-  (click)="handleClick($event)"
->
+  (click)="handleClick($event)">
   @if (loading()) {
-  <svg-icon
-    src="assets/icons/loading.svg"
-    class="btn-loading-icon"
-    [svgStyle]="{ 'width.px': 20, 'height.px': 20 }"
-  >
-  </svg-icon>
+    <svg-icon src="assets/icons/loading.svg" class="btn-loading-icon" [svgStyle]="{ 'width.px': 20, 'height.px': 20 }"></svg-icon>
   } @else {
-  <ng-content></ng-content>
+    <ng-content></ng-content>
   }
 </button>
 ```
@@ -450,10 +447,6 @@ handleClick(event: MouseEvent): void {
   outline: none;
   @include transition(all, 0.3s, ease);
 
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
-  }
-
   &:active:not(:disabled) {
     transform: translateY(0);
   }
@@ -467,12 +460,11 @@ handleClick(event: MouseEvent): void {
 
 // Variants
 .btn-primary {
-  background: linear-gradient(135deg, $primary-color 0%, #c850d0 100%);
+  background: linear-gradient(135deg, $primary-color 0%, #C850D0 100%);
   color: $text-color;
-  box-shadow: 0px 8px 24px 0px $primary-shadow;
 
   &:hover:not(:disabled) {
-    box-shadow: 0 6px 24px rgba($primary-shadow, 0.6);
+    box-shadow: 0px 4px 12px 0px rgba($primary-shadow, 0.6);
   }
 }
 
@@ -502,6 +494,7 @@ handleClick(event: MouseEvent): void {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -510,10 +503,10 @@ handleClick(event: MouseEvent): void {
 
 **💡 Explicação:**
 
-- **Primary**: Gradiente roxo/rosa com sombra destacada
+- **Primary**: Gradiente roxo/rosa com sombra no hover
 - **Secondary**: Fundo sólido com borda sutil
 - **Loading**: Animação de rotação infinita
-- **Hover**: Elevação (translateY) e sombra intensificada
+- **Hover**: Sombra intensificada no botão primary
 
 ### 1.5 Criar o Ícone de Loading
 
