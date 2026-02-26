@@ -393,7 +393,6 @@ Crie `web/src/app/shared/components/sidesheet/sidesheet.component.html`:
                 <ng-content></ng-content>
             </div>
 
-            <!-- Footer -->
             <div class="sidesheet__footer">
                 <ng-content select="[sidesheet-footer]"></ng-content>
             </div>
@@ -527,6 +526,7 @@ Crie `web/src/app/shared/components/sidesheet/sidesheet.component.scss`:
         margin: 0;
         line-height: 140%;
         letter-spacing: 0;
+
     }
 
     &__close {
@@ -554,6 +554,11 @@ Crie `web/src/app/shared/components/sidesheet/sidesheet.component.scss`:
 
         &:active {
             transform: scale(0.95);
+        }
+
+        svg {
+            width: 24px;
+            height: 24px;
         }
     }
 
