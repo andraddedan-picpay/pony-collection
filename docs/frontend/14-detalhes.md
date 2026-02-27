@@ -1018,4 +1018,3 @@ export class PonyService {
 - [RxJS Subscribe](https://rxjs.dev/guide/subscription)
 - [Non-null Assertion Operator](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#non-null-assertion-operator-postfix-)
 - [Template Literals (ES6)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
-
