@@ -750,7 +750,7 @@ Considere usar `Intl.DateTimeFormat` ou bibliotecas como `date-fns` com i18n.
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: 24px;
+  padding: 15px 25px 0 25px;
   overflow: scroll;
 }
 
