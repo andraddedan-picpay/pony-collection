@@ -544,7 +544,7 @@ Crie `web/src/app/shared/components/sidesheet/sidesheet.component.scss`:
         @include transition(all, 0.2s, ease);
 
         .icon {
-            transform: translateY(2px);
+            transform: translateY(1px);
         }
 
         &:hover {
