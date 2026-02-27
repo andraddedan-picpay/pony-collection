@@ -11,6 +11,7 @@ import { SvgIconComponent } from 'angular-svg-icon';
 import { CreatePonyComponent } from '../../components/create-pony/create-pony.component';
 import { PonyCardComponent } from '../../components/pony-card/pony-card.component';
 import { SnackbarService } from '@app/core/services/snackbar.service';
+import { PonyDetailsComponent } from '../../components/pony-details/pony-details.component';
 
 @Component({
     selector: 'app-list',
@@ -23,6 +24,7 @@ import { SnackbarService } from '@app/core/services/snackbar.service';
         SvgIconComponent,
         CreatePonyComponent,
         PonyCardComponent,
+        PonyDetailsComponent,
     ],
     templateUrl: './list.component.html',
     styleUrl: './list.component.scss',

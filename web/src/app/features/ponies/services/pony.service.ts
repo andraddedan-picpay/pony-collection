@@ -82,4 +82,21 @@ export class PonyService {
             }),
         );
     }
+
+    getPonyById(ponyId: string): Observable<Pony> {
+        const endpoint = `${this.apiUrl}/ponies/${ponyId}`;
+        const token = LocalStorageHelper.get<string>(LocalStorageKeys.TOKEN);
+
+        const options = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        return this.http.get<Pony>(endpoint, options).pipe(
+            catchError((error) => {
+                return throwError(() => error);
+            }),
+        );
+    }
 }

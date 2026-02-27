@@ -18,6 +18,7 @@
                         [imageUrl]="pony.imageUrl"
                         [isFavorite]="pony.isFavorite"
                         (onHeartClick)="toggleFavorite(pony)"
+                        (viewDetailsEvent)="ponyDetails.openDetails(pony.id)"
                     />
                 </div>
             }
@@ -58,6 +59,8 @@
         ></svg-icon>
     </button>
 </main-layout>
+
+<pony-details #ponyDetails />
 
 <create-pony
     #createPony

@@ -1,0 +1,69 @@
+<sidesheet
+    [(isOpen)]="showDetails"
+    [title]="'Detalhes'"
+>
+    <div class="pony-details">
+        @if (isLoading()) {
+            <div class="pony-details__loading">
+                <p>Carregando...</p>
+            </div>
+        } @else if (ponyDetails()) {
+            <div class="pony-details__box">
+                <svg-icon
+                    [src]="`assets/icons/heart${ponyDetails()!.isFavorite ? '-filled' : ''}.svg`"
+                    class="pony-details__heart"
+                    [svgStyle]="{ 'width.px': 34, 'height.px': 34 }"
+                />
+                <div class="pony-details__image">
+                    <img
+                        [src]="ponyDetails()!.imageUrl"
+                        [alt]="ponyDetails()!.name"
+                    />
+                </div>
+                <div class="pony-details__info">
+                    <h2>{{ ponyDetails()!.name }}</h2>
+                    <p><strong>Elemento:</strong> {{ ponyDetails()!.element }}</p>
+                    <p><strong>Personalidade:</strong> {{ ponyDetails()!.personality }}</p>
+                    <p><strong>Talento:</strong> {{ ponyDetails()!.talent }}</p>
+                    <p><strong>Resumo:</strong> {{ ponyDetails()!.summary }}</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div
+        sidesheet-footer
+        class="pony-details__footer"
+    >
+        <button
+            class="pony-details__trash"
+            (click)="removePony()"
+            aria-label="Deletar Pony"
+            type="button"
+        >
+            <svg-icon
+                src="assets/icons/trash.svg"
+                class="icon"
+                [svgStyle]="{ 'width.px': 20 }"
+            />
+        </button>
+        <pony-button
+            variant="secondary"
+            type="button"
+            (click)="closeDetails()"
+            width="144px"
+        >
+            Atualizar
+        </pony-button>
+        <pony-button
+            variant="primary"
+            type="button"
+            (click)="closeDetails()"
+            [disabled]="isLoading()"
+            width="144px"
+            [loading]="isLoading()"
+        >
+            Fechar
+        </pony-button>
+    </div>
+</sidesheet>
