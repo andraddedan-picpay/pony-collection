@@ -42,9 +42,10 @@ filteredPonyList = computed(() => {
 
 ```scss
 .pony-list {
+    margin-top: 70px;
     display: flex;
     flex-wrap: wrap;  // Quebra linha quando não cabe
-    gap: 100px 25px;  // Espaçamento entre cards
+    gap: 80px 25px;  // Espaçamento entre cards
 }
 ```
 
@@ -663,10 +664,10 @@ Atualize `web/src/app/features/ponies/pages/list/list.component.scss`:
 
 // ← NOVO: Grid de cards
 .pony-list {
-    margin-top: 80px;
+    margin-top: 70px;
     display: flex;
     flex-wrap: wrap;
-    gap: 100px 25px;  // row-gap column-gap
+    gap: 80px 25px;  // row-gap column-gap
 }
 
 .create-pony {
@@ -721,9 +722,10 @@ Atualize `web/src/app/features/ponies/pages/list/list.component.scss`:
 **3. Grid Responsivo:**
 ```scss
 .pony-list {
+    margin-top: 70px;
     display: flex;
     flex-wrap: wrap;    // Quebra linha
-    gap: 100px 25px;    // Vertical: 100px, Horizontal: 25px
+    gap: 80px 25px;    // Vertical: 100px, Horizontal: 25px
 }
 ```
 
@@ -891,16 +893,18 @@ pony.name.toLowerCase().includes(filterValue)
 ```scss
 // ✅ Simples e eficaz
 .pony-list {
+    margin-top: 70px;
     display: flex;
     flex-wrap: wrap;
-    gap: 100px 25px;
+    gap: 80px 25px;
 }
 
 // ❌ Desnecessariamente complexo
 .pony-list {
+    margin-top: 70px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(144px, 1fr));
-    gap: 100px 25px;
+    gap: 80px 25px;
 }
 ```
 
