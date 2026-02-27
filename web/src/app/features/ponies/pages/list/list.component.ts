@@ -10,6 +10,7 @@ import { DataStateEnum } from '@core/models/data-state.enum';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { CreatePonyComponent } from '../../components/create-pony/create-pony.component';
 import { PonyCardComponent } from '../../components/pony-card/pony-card.component';
+import { SnackbarService } from '@app/core/services/snackbar.service';
 
 @Component({
     selector: 'app-list',
@@ -39,9 +40,7 @@ export class ListComponent implements OnInit {
         const filterValue = this.filter().toLowerCase().trim();
         if (!filterValue) return this.ponyList();
 
-        return this.ponyList().filter((pony) =>
-            pony.name.toLowerCase().includes(filterValue),
-        );
+        return this.ponyList().filter((pony) => pony.name.toLowerCase().includes(filterValue));
     });
 
     state = computed<DataStateEnum>(() => {
@@ -52,6 +51,7 @@ export class ListComponent implements OnInit {
     });
 
     private ponyService = inject(PonyService);
+    private snackbarService = inject(SnackbarService);
 
     ngOnInit(): void {
         this.getData();
@@ -73,6 +73,23 @@ export class ListComponent implements OnInit {
             error: () => {
                 this.hasError.set(true);
                 this.isLoading.set(false);
+            },
+        });
+    }
+
+    toggleFavorite(pony: Pony): void {
+        const isFavorite = !pony.isFavorite;
+
+        this.ponyService.updatePony(pony.id, { isFavorite }).subscribe({
+            next: (updatedPony) => {
+                const updatedList = this.ponyList().map((pony) =>
+                    pony.id === updatedPony.id ? updatedPony : pony,
+                );
+
+                this.ponyList.set(updatedList);
+            },
+            error: () => {
+                this.snackbarService.error('Erro ao favoritar pony');
             },
         });
     }

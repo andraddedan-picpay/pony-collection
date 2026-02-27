@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
-import { Pony } from '../models/pony.model';
+import { Pony, UpdatePony } from '../models/pony.model';
 import { LocalStorageHelper, LocalStorageKeys } from '@app/core/helpers';
 
 @Injectable({
@@ -15,7 +15,6 @@ export class PonyService {
     getPonyList(): Observable<Pony[]> {
         const endpoint = `${this.apiUrl}/ponies`;
         const token = LocalStorageHelper.get<string>(LocalStorageKeys.TOKEN);
-        // const token = '';
 
         const options = {
             headers: {
@@ -61,6 +60,23 @@ export class PonyService {
         };
 
         return this.http.post<{ imageUrl: string }>(endpoint, formData, options).pipe(
+            catchError((error) => {
+                return throwError(() => error);
+            }),
+        );
+    }
+
+    updatePony(ponyId: string, updateData: UpdatePony): Observable<Pony> {
+        const endpoint = `${this.apiUrl}/ponies/${ponyId}`;
+        const token = LocalStorageHelper.get<string>(LocalStorageKeys.TOKEN);
+
+        const options = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        return this.http.put<Pony>(endpoint, updateData, options).pipe(
             catchError((error) => {
                 return throwError(() => error);
             }),

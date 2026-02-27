@@ -17,6 +17,7 @@
                         [ponyName]="pony.name"
                         [imageUrl]="pony.imageUrl"
                         [isFavorite]="pony.isFavorite"
+                        (onHeartClick)="toggleFavorite(pony)"
                     />
                 </div>
             }
