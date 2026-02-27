@@ -5,5 +5,6 @@ export interface Pony {
     personality: string;
     talent: string;
     summary: string;
-    imageUrl?: string;
+    imageUrl: string;
+    isFavorite: boolean;
 }

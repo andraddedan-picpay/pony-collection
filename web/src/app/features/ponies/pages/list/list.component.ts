@@ -9,6 +9,7 @@ import { Pony } from '../../models/pony.model';
 import { DataStateEnum } from '@core/models/data-state.enum';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { CreatePonyComponent } from '../../components/create-pony/create-pony.component';
+import { PonyCardComponent } from '../../components/pony-card/pony-card.component';
 
 @Component({
     selector: 'app-list',
@@ -20,6 +21,7 @@ import { CreatePonyComponent } from '../../components/create-pony/create-pony.co
         FeedbackComponent,
         SvgIconComponent,
         CreatePonyComponent,
+        PonyCardComponent,
     ],
     templateUrl: './list.component.html',
     styleUrl: './list.component.scss',
@@ -33,10 +35,19 @@ export class ListComponent implements OnInit {
 
     public readonly DataStateEnum = DataStateEnum;
 
+    filteredPonyList = computed(() => {
+        const filterValue = this.filter().toLowerCase().trim();
+        if (!filterValue) return this.ponyList();
+
+        return this.ponyList().filter((pony) =>
+            pony.name.toLowerCase().includes(filterValue),
+        );
+    });
+
     state = computed<DataStateEnum>(() => {
         if (this.isLoading()) return DataStateEnum.LOADING;
         if (this.hasError()) return DataStateEnum.ERROR;
-        if (this.ponyList().length === 0) return DataStateEnum.EMPTY;
+        if (this.filteredPonyList().length === 0) return DataStateEnum.EMPTY;
         return DataStateEnum.SUCCESS;
     });
 
@@ -52,6 +63,7 @@ export class ListComponent implements OnInit {
 
     getData(): void {
         this.isLoading.set(true);
+        this.hasError.set(false);
 
         this.ponyService.getPonyList().subscribe({
             next: (ponies: Pony[]) => {

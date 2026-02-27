@@ -1,0 +1,31 @@
+<div class="pony-card">
+    <img
+        [src]="imageUrl()"
+        [alt]="`${ponyName()} image`"
+        class="pony-card__image"
+        (click)="handleViewDetails()"
+    />
+
+    <h3
+        class="pony-card__name"
+        (click)="handleViewDetails()"
+    >
+        {{ ponyName() }}
+    </h3>
+
+    @if (isFavorite()) {
+        <svg-icon
+            src="assets/icons/heart-filled.svg"
+            class="pony-card__heart"
+            [svgStyle]="{ 'width.px': 20, 'height.px': 20 }"
+            (click)="handleHeartClick()"
+        />
+    } @else {
+        <svg-icon
+            src="assets/icons/heart.svg"
+            class="pony-card__heart"
+            [svgStyle]="{ 'width.px': 20, 'height.px': 20 }"
+            (click)="handleHeartClick()"
+        />
+    }
+</div>

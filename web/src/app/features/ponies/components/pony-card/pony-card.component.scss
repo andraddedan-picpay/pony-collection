@@ -1,0 +1,40 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+
+.pony-card {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    height: 237px;
+    background: $base-dark-1;
+    border-radius: 16px;
+    align-items: center;
+    position: relative;
+
+    &__image {
+        width: 150px;
+        height: auto;
+        margin-top: -65px;
+        cursor: pointer;
+    }
+
+    &__name {
+        position: absolute;
+        bottom: 50px;
+        font-family: $text-family;
+        font-size: $font-size-base;
+        font-weight: 600;
+        color: $text-color;
+        line-height: 140%;
+        letter-spacing: 0;
+        cursor: pointer;
+    }
+
+    &__heart {
+        color: $primary-color;
+        position: absolute;
+        right: 18px;
+        bottom: 18px;
+        cursor: pointer;
+    }
+}

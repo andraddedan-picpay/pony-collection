@@ -6,27 +6,40 @@
     <div class="container">
         @switch (state()) {
             @case (DataStateEnum.LOADING) {
-                <p>Carregando...</p>
+                <div class="loading">
+                    <p>Carregando...</p>
+                </div>
             }
             @case (DataStateEnum.SUCCESS) {
-                <p>Dados</p>
+                <div class="pony-list">
+                    <pony-card
+                        *ngFor="let pony of filteredPonyList()"
+                        [ponyName]="pony.name"
+                        [imageUrl]="pony.imageUrl"
+                        [isFavorite]="pony.isFavorite"
+                    />
+                </div>
             }
             @case (DataStateEnum.EMPTY) {
-                <feedback
-                    (onRetry)="getData()"
-                    imageName="empty"
-                    [title]="'SEM\nDADOS PARA EXIBIR.'"
-                    buttonText="Tentar novamente"
-                />
+                <div class="feedback">
+                    <feedback
+                        (onRetry)="getData()"
+                        imageName="empty"
+                        [title]="'SEM\nDADOS PARA EXIBIR.'"
+                        buttonText="Tentar novamente"
+                    />
+                </div>
             }
             @case (DataStateEnum.ERROR) {
-                <feedback
-                    (onRetry)="getData()"
-                    imageName="error"
-                    [title]="'OPA!\nALGO DEU ERRADO.'"
-                    buttonText="Tentar novamente"
-                    message="Não foi possível carregar as informações esperadas. Aguarde alguns instantes e tente novamente."
-                />
+                <div class="feedback">
+                    <feedback
+                        (onRetry)="getData()"
+                        imageName="error"
+                        [title]="'OPA!\nALGO DEU ERRADO.'"
+                        buttonText="Tentar novamente"
+                        message="Não foi possível carregar as informações esperadas. Aguarde alguns instantes e tente novamente."
+                    />
+                </div>
             }
         }
     </div>
@@ -45,4 +58,7 @@
     </button>
 </main-layout>
 
-<create-pony #createPony (ponyCreated)="getData()" />
+<create-pony
+    #createPony
+    (ponyCreated)="getData()"
+/>
