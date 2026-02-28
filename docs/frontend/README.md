@@ -313,15 +313,23 @@ web/
 
 **Objetivo:** Criar a base do frontend
 
+**Parte A: Setup Inicial**
 * Criar projeto Angular (última versão)
-* Configurar SCSS
+* Configurar SCSS básico
 * Estrutura de pastas (core, shared, features)
-* Configurar variáveis do theme.md
 * Importar fontes (Barlow e BigShouldersInlineDisplay)
 
-✔️ Resultado: Projeto Angular estruturado e rodando
+**Arquivo:** [01a-setup-projeto.md](01a-setup-projeto.md)
 
-**Arquivo:** [01-setup-projeto.md](01-setup-projeto.md)
+**Parte B: Design System**
+* Configurar variáveis do theme.md
+* Sistema de cores e tipografia
+* Mixins e utilities SCSS
+* Padronização visual
+
+**Arquivo:** [01b-setup-projeto.md](01b-setup-projeto.md)
+
+✔️ Resultado: Projeto Angular estruturado e rodando com design system
 
 ---
 
@@ -363,18 +371,25 @@ web/
 
 **Objetivo:** Integrar login com API real
 
+**Parte A: Lógica de Autenticação**
 * Configurar CORS no backend NestJS
 * Criar models (User, LoginRequest, LoginResponse)
 * Implementar LocalStorage helper
 * Criar AuthService (login, logout, tokens)
 * Integrar login com backend real
-* Criar AuthGuard para proteção de rotas
-* Criar HTTP Interceptor para JWT
 * Tratamento básico de erros (alert temporário)
 
-✔️ Resultado: Sistema de autenticação completo
+**Arquivo:** [04a-autenticacao.md](04a-autenticacao.md)
 
-**Arquivo:** [04-autenticacao.md](04-autenticacao.md)
+**Parte B: Guards e Interceptors**
+* Criar AuthGuard para proteção de rotas
+* Criar HTTP Interceptor para JWT
+* Conceitos avançados de segurança
+* Fluxo completo de autenticação
+
+**Arquivo:** [04b-autenticacao.md](04b-autenticacao.md)
+
+✔️ Resultado: Sistema de autenticação completo
 
 ---
 
@@ -382,33 +397,49 @@ web/
 
 **Objetivo:** Implementar notificações toast elegantes
 
+**Parte A: Service e Componente**
 * Criar SnackbarService com Signals
 * Implementar componente Snackbar visual
 * Tipos de mensagens (success, error, warning, info)
 * Auto-dismiss configurável
 * Animações de entrada/saída
+
+**Arquivo:** [05a-snackbar.md](05a-snackbar.md)
+
+**Parte B: Integração e Testes**
 * Integração global no app
 * Substituir alerts do login por snackbars
+* Testes de todos os cenários
+* Conceitos de state management
+
+**Arquivo:** [05b-snackbar.md](05b-snackbar.md)
 
 ✔️ Resultado: Sistema de notificações completo e reutilizável
 
-**Arquivo:** [05-sistema-feedback-snackbar.md](05-sistema-feedback-snackbar.md)
-
 ---
 
-### 📘 Aula 6 — Listagem de Ponies
+### 📘 Aula 6 — Layout Base da Aplicação
 
-**Objetivo:** Exibir lista de personagens
+**Objetivo:** Criar estrutura principal com navegação
 
-* Criar ListComponent
-* Criar PoniesService
-* Integrar com API
-* Criar PonyCard component
-* Implementar loading state
-* Implementar empty state
-* Grid layout
+**Parte A: Componentes Base**
+* Criar MainLayoutComponent
+* Implementar SidebarComponent
+* Implementar HeaderComponent
+* Content projection com ng-content
+* SCSS modular e responsivo
 
-✔️ Resultado: Lista de ponies funcional
+**Arquivo:** [06a-layout-base.md](06a-layout-base.md)
+
+**Parte B: Integração e Rotas**
+* Integrar layout com rotas
+* Criar smart components
+* Navegação entre páginas
+* Teste completo do layout
+
+**Arquivo:** [06b-layout-base.md](06b-layout-base.md)
+
+✔️ Resultado: Layout base funcional com navegação
 
 ---
 
@@ -456,19 +487,30 @@ web/
 
 ---
 
-### 📘 Aula 10 — Logout e Melhorias Finais
+### 📘 Aula 10 — Componente Sidesheet Reutilizável
 
-**Objetivo:** Finalizar autenticação e polish
+**Objetivo:** Criar componente de painel lateral
 
-* Implementar logout
-* Header com informações do usuário
-* Confirmação antes de sair
-* Limpeza de estado ao deslogar
-* Melhorias de UX
-* Tratamento de erros HTTP
-* Mensagens de feedback
+**Parte A: Criação do Componente**
+* Criar componente Sidesheet reutilizável
+* Two-way binding com model()
+* Renderer2 para manipulação DOM
+* Content projection com ng-content
+* Animações (fadeIn, slideIn)
+* Acessibilidade (ARIA, focus trap)
 
-✔️ Resultado: Aplicação completa e polida
+**Arquivo:** [10a-sidesheet-componente.md](10a-sidesheet-componente.md)
+
+**Parte B: Integração e Testes**
+* Integrar Sidesheet na lista
+* 6 cenários de teste detalhados
+* Conceitos avançados (signals, effects, Renderer2)
+* Comparações técnicas (model vs Input/Output)
+* Checklist completo de verificação
+
+**Arquivo:** [10b-sidesheet-integracao.md](10b-sidesheet-integracao.md)
+
+✔️ Resultado: Componente Sidesheet completo e testado
 
 ---
 

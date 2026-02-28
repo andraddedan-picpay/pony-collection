@@ -279,3 +279,31 @@ Permite testar todos os endpoints diretamente pelo navegador, com suporte a aute
 * Remover
 
 ✔️ Resultado: CRUD completo
+
+---
+
+### 📘 Aula 7 — Upload de Imagens
+
+**Objetivo:** Implementar upload de arquivos com Multer
+
+**Parte A: Configuração e Endpoints**
+* Instalar e configurar Multer
+* Criar pasta uploads e servir arquivos estáticos
+* Implementar endpoint POST /ponies/:id/upload
+* Validação de tipos de arquivo (jpg, png, webp)
+* Limitar tamanho de arquivo (5MB)
+* Atualizar imageUrl no banco
+
+**Arquivo:** [07a-upload-imagens.md](07a-upload-imagens.md)
+
+**Parte B: Testes e Melhorias**
+* Servir arquivos estáticos
+* Testar upload via Swagger
+* Testar upload via cURL
+* Melhorias: validação, erro handling
+* Segurança e boas práticas
+* Documentação Swagger
+
+**Arquivo:** [07b-upload-imagens.md](07b-upload-imagens.md)
+
+✔️ Resultado: Sistema de upload completo e seguro
