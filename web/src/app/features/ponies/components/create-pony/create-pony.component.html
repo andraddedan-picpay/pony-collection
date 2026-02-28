@@ -1,6 +1,6 @@
 <sidesheet
     [(isOpen)]="showDetails"
-    [title]="'Cadastrar'"
+    [title]="title()"
 >
     <form
         [formGroup]="ponyForm"
@@ -21,12 +21,13 @@
         </div>
 
         <div class="create-pony__field">
-            <label for="imageUrl">Imagem</label>
+            <label for="imageUrl">Imagem{{ editingPony() ? '' : ' *' }}</label>
             <pony-input
                 id="imageUrl"
                 type="file"
                 [borderless]="true"
-                placeholder="/twilight.png"
+                [placeholder]="imagePlaceholder()"
+                [class.editing-mode]="editingPony()"
                 (fileChange)="onFileSelected($event)"
             />
         </div>
@@ -107,7 +108,7 @@
             width="172px"
             [loading]="isLoading()"
         >
-            Cadastrar
+            {{ buttonText() }}
         </pony-button>
     </div>
 </sidesheet>

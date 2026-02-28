@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal, output, inject } from '@angular/core';
+import { Component, signal, output, inject, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PonyButtonComponent } from '@app/shared/components/pony-button/pony-button.component';
 import { PonySidesheetComponent } from '@app/shared/components/sidesheet/sidesheet.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { PonyService } from '../../services/pony.service';
 import { Pony } from '../../models/pony.model';
+import { CreatePonyComponent } from '../create-pony/create-pony.component';
 
 @Component({
     selector: 'pony-details',
@@ -22,6 +23,9 @@ import { Pony } from '../../models/pony.model';
 })
 export class PonyDetailsComponent {
     private ponyService = inject(PonyService);
+
+    // Input para referência do create-pony
+    createPonyRef = input.required<CreatePonyComponent>();
 
     showDetails = signal<boolean>(false);
     isLoading = signal<boolean>(false);
@@ -62,6 +66,14 @@ export class PonyDetailsComponent {
     closeDetails(): void {
         this.showDetails.set(false);
         this.ponyDetails.set(null);
+    }
+
+    editPony(): void {
+        const pony = this.ponyDetails();
+        if (!pony) return;
+
+        this.closeDetails();
+        this.createPonyRef().openEditForm(pony);
     }
 
     removePony(): void {

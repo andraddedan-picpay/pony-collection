@@ -42,6 +42,11 @@
                 outline-offset: -2px;
             }
         }
+
+        // Estilo para placeholder do file input em modo de edição
+        pony-input.editing-mode ::ng-deep .pony-box__upload-text {
+            color: $text-color;
+        }
     }
 
     &__error {

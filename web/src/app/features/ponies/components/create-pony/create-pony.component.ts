@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal, inject, output } from '@angular/core';
+import { Component, signal, inject, output, computed } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PonyButtonComponent } from '@app/shared/components/pony-button/pony-button.component';
 import { PonyInputComponent } from '@app/shared/components/pony-input/pony-input.component';
 import { PonySidesheetComponent } from '@app/shared/components/sidesheet/sidesheet.component';
-import { PonyTextareaComponent } from "@app/shared/components/pony-textarea/pony-textarea.component";
+import { PonyTextareaComponent } from '@app/shared/components/pony-textarea/pony-textarea.component';
 import { PonyService } from '../../services/pony.service';
 import { SnackbarService } from '@core/services/snackbar.service';
 import { FileHelper } from '@core/helpers';
+import { Pony } from '../../models/pony.model';
 
 @Component({
     selector: 'create-pony',
@@ -28,15 +29,20 @@ export class CreatePonyComponent {
     private ponyService = inject(PonyService);
     private snackbarService = inject(SnackbarService);
 
-    // Controle da sidesheet via signal
     showDetails = signal<boolean>(false);
     isLoading = signal<boolean>(false);
     selectedFile = signal<File | null>(null);
+    editingPony = signal<Pony | null>(null);
 
-    // Event para notificar quando pony for criado
+    title = computed(() => (this.editingPony() ? 'Atualizar' : 'Cadastrar'));
+    buttonText = computed(() => (this.editingPony() ? 'Atualizar' : 'Cadastrar'));
+    imagePlaceholder = computed(() => {
+        const pony = this.editingPony();
+        return pony ? pony.imageUrl : 'twilight.png';
+    });
+
     ponyCreated = output<void>();
 
-    // Formulário reativo
     ponyForm: FormGroup;
 
     constructor() {
@@ -51,8 +57,23 @@ export class CreatePonyComponent {
     }
 
     openForm(): void {
+        this.editingPony.set(null);
         this.showDetails.set(true);
         this.ponyForm.reset();
+        this.selectedFile.set(null);
+    }
+
+    openEditForm(pony: Pony): void {
+        this.editingPony.set(pony);
+        this.showDetails.set(true);
+        this.ponyForm.patchValue({
+            name: pony.name,
+            imageUrl: pony.imageUrl,
+            element: pony.element,
+            personality: pony.personality,
+            talent: pony.talent,
+            summary: pony.summary,
+        });
         this.selectedFile.set(null);
     }
 
@@ -60,6 +81,7 @@ export class CreatePonyComponent {
         this.showDetails.set(false);
         this.ponyForm.reset();
         this.selectedFile.set(null);
+        this.editingPony.set(null);
     }
 
     onSubmit(): void {
@@ -68,26 +90,44 @@ export class CreatePonyComponent {
             return;
         }
 
+        const file = this.selectedFile();
+        const editingPony = this.editingPony();
+
+        if (!editingPony && !file) {
+            this.snackbarService.error('A imagem é obrigatória para cadastrar um novo pony.');
+            return;
+        }
+
         this.isLoading.set(true);
 
-        // Se há arquivo selecionado, faz upload primeiro
-        const file = this.selectedFile();
         if (file) {
-            this.ponyService.uploadImage(file).subscribe({
-                next: (response) => {
-                    // Atualiza o formulário com a URL da imagem
-                    this.ponyForm.patchValue({ imageUrl: response.imageUrl });
-                    // Cria o pony com a URL da imagem
-                    this.createPony();
-                },
-                error: (error) => {
-                    console.error('Erro ao fazer upload:', error);
-                    this.snackbarService.error('Erro ao enviar imagem. Tente novamente.');
-                    this.isLoading.set(false);
-                },
-            });
+            this.handleFileUpload(file);
+            return;
+        }
+
+        this.savePony();
+    }
+
+    private handleFileUpload(file: File): void {
+        this.ponyService.uploadImage(file).subscribe({
+            next: (response) => {
+                this.ponyForm.patchValue({ imageUrl: response.imageUrl });
+                this.savePony();
+            },
+            error: (error) => {
+                console.error('Erro ao fazer upload:', error);
+                this.snackbarService.error('Erro ao enviar imagem. Tente novamente.');
+                this.isLoading.set(false);
+            },
+        });
+    }
+
+    private savePony(): void {
+        const editingPony = this.editingPony();
+
+        if (editingPony) {
+            this.updatePony(editingPony.id);
         } else {
-            // Sem arquivo, cria o pony diretamente
             this.createPony();
         }
     }
@@ -110,6 +150,24 @@ export class CreatePonyComponent {
         });
     }
 
+    private updatePony(ponyId: string): void {
+        const formData = this.ponyForm.value;
+
+        this.ponyService.updatePony(ponyId, formData).subscribe({
+            next: (pony) => {
+                this.snackbarService.success(`${pony.name} atualizado com sucesso!`);
+                this.ponyCreated.emit();
+                this.closeForm();
+                this.isLoading.set(false);
+            },
+            error: (error) => {
+                console.error('Erro ao atualizar pony:', error);
+                this.snackbarService.error('Erro ao atualizar pony. Tente novamente.');
+                this.isLoading.set(false);
+            },
+        });
+    }
+
     onFileSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
 
@@ -127,7 +185,6 @@ export class CreatePonyComponent {
             return;
         }
 
-        // Apenas guarda o arquivo para fazer upload no submit
         this.selectedFile.set(file);
     }
 

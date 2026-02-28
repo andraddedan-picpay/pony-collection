@@ -60,7 +60,10 @@
     </button>
 </main-layout>
 
-<pony-details #ponyDetails />
+<pony-details
+    #ponyDetails
+    [createPonyRef]="createPony"
+/>
 
 <create-pony
     #createPony
