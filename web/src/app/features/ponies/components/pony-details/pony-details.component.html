@@ -4,8 +4,23 @@
 >
     <div class="pony-details">
         @if (isLoading()) {
-            <div class="pony-details__loading">
-                <p>Carregando...</p>
+            <div class="pony-details__box">
+                <svg-icon
+                    [src]="`assets/icons/heart.svg`"
+                    class="pony-details__heart pony-details__heart--skeleton"
+                    [svgStyle]="{ 'width.px': 34, 'height.px': 34 }"
+                />
+
+                <div class="skeleton__image-box">
+                    <div class="skeleton skeleton__image"></div>
+                </div>
+                <div>
+                    <div class="skeleton skeleton__title"></div>
+                    <div class="skeleton skeleton__text skeleton__text--medium"></div>
+                    <div class="skeleton skeleton__text skeleton__text--full"></div>
+                    <div class="skeleton skeleton__text skeleton__text--large"></div>
+                    <div class="skeleton skeleton__text skeleton__text--multiline"></div>
+                </div>
             </div>
         } @else if (ponyDetails()) {
             <div class="pony-details__box">
@@ -51,6 +66,7 @@
             variant="secondary"
             type="button"
             (click)="closeDetails()"
+            [disabled]="isLoading()"
             width="144px"
         >
             Atualizar
@@ -59,9 +75,7 @@
             variant="primary"
             type="button"
             (click)="closeDetails()"
-            [disabled]="isLoading()"
             width="144px"
-            [loading]="isLoading()"
         >
             Fechar
         </pony-button>

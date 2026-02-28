@@ -31,19 +31,32 @@ export class PonyDetailsComponent {
 
     openDetails(ponyId: string): void {
         this.showDetails.set(true);
+        this.getPonyDetails(ponyId);
+    }
+
+    getPonyDetails(ponyId: string): void {
         this.isLoading.set(true);
         this.ponyDetails.set(null);
 
-        this.ponyService.getPonyById(ponyId).subscribe({
-            next: (pony) => {
-                this.ponyDetails.set(pony);
+        const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 700));
+
+        Promise.all([
+            minLoadingTime,
+            new Promise((resolve, reject) => {
+                this.ponyService.getPonyById(ponyId).subscribe({
+                    next: (pony) => resolve(pony),
+                    error: (error) => reject(error),
+                });
+            }),
+        ])
+            .then(([_, pony]) => {
+                this.ponyDetails.set(pony as Pony);
                 this.isLoading.set(false);
-            },
-            error: () => {
+            })
+            .catch(() => {
                 this.isLoading.set(false);
                 this.closeDetails();
-            },
-        });
+            });
     }
 
     closeDetails(): void {

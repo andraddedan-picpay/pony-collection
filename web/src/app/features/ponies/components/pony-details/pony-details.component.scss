@@ -22,6 +22,11 @@
         position: absolute;
         top: 15px;
         right: 25px;
+        color: $primary-color;
+
+        &--skeleton {
+            color: $grayscale-03;
+        }
     }
 
     &__image {
@@ -75,5 +80,71 @@
     &__footer {
         display: flex;
         justify-content: space-between;
+    }
+}
+
+.skeleton {
+    background: linear-gradient(90deg,
+            $base-dark-2 0%,
+            lighten($base-dark-2, 2%) 50%,
+            $base-dark-2 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.75s infinite;
+    border-radius: 8px;
+
+    &__image-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 18px;
+    }
+
+    &__image {
+        width: 197px;
+        height: 248px;
+        border-radius: 34px;
+        margin-top: -80px;
+    }
+
+    &__title {
+        height: 20px;
+        width: 120px;
+        margin: 0 auto 46px;
+        border-radius: 16px;
+    }
+
+    &__text {
+        height: 20px;
+        margin-top: 15px;
+        border-radius: 16px;
+
+        &--full {
+            width: 100%;
+        }
+
+        &--large {
+            width: 85%;
+        }
+
+        &--medium {
+            width: 70%;
+        }
+
+        &--multiline {
+            width: 100%;
+            height: 84px;
+            margin-top: 20px;
+            border-radius: 16px;
+        }
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
     }
 }
