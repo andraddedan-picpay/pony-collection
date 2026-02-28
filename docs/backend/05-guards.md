@@ -1,5 +1,7 @@
 # 📘 Aula 5 — Guards e Proteção de Rotas
 
+**Progresso do Curso Backend:** `[██████████████░░░░░░] 71% concluído`
+
 ## 🎯 Objetivo
 
 Criar um sistema de Guards para proteger rotas e validar o token JWT.

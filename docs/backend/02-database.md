@@ -1,5 +1,7 @@
 # 📘 Aula 2 — Banco de Dados e Entidades
 
+**Progresso do Curso Backend:** `[██████░░░░░░░░░░░░░░] 29% concluído`
+
 ## 🎯 Objetivo
 
 Configurar persistência de dados com SQLite usando TypeORM e criar as entidades do domínio da aplicação.

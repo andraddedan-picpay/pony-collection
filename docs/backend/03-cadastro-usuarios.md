@@ -1,5 +1,7 @@
 # 📘 Aula 3 — Cadastro de Usuários
 
+**Progresso do Curso Backend:** `[█████████░░░░░░░░░░░] 43% concluído`
+
 ## 🎯 Objetivo
 
 Implementar o registro de usuários com senha criptografada usando bcrypt.

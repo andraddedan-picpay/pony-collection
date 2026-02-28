@@ -1,5 +1,7 @@
 # 📘 Aula 1 — Setup do Projeto
 
+**Progresso do Curso Backend:** `[███░░░░░░░░░░░░░░░░░] 14% concluído`
+
 ## 🎯 Objetivo
 
 Criar a base do projeto NestJS e subir a API rodando com documentação Swagger.

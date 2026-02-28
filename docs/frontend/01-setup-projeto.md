@@ -1,5 +1,7 @@
 # 📘 Aula 1 — Setup do Projeto Angular
 
+**Progresso do Curso Frontend:** `[█░░░░░░░░░░░░░░░░░░░] 5% concluído`
+
 ## Objetivo
 
 Criar a estrutura base do projeto Angular com SCSS, organização de pastas profissional e integração das variáveis do Design System.

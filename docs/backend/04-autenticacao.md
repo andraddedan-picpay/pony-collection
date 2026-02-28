@@ -1,5 +1,5 @@
 # 📘 Aula 4 — Autenticação com JWT
-
+**Progresso do Curso Backend:** `[███████████░░░░░░░░░] 57% concluído`
 ## 🎯 Objetivo
 
 Implementar login de usuários com geração de token JWT para autenticação stateless.

@@ -1,5 +1,7 @@
 # 📘 Aula 14 — Detalhes do Pônei
 
+**Progresso do Curso Frontend:** `[█████████████████░░░] 84% concluído`
+
 ## Objetivo
 
 Implementar o **componente de detalhes** que exibe informações completas de um pony individual, integrando com a API através do método `getPonyById()`, gerenciando estados de loading e erro com **signals**, e utilizando o **Sidesheet** criado anteriormente para apresentar as informações de forma elegante.

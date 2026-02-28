@@ -1,5 +1,7 @@
 # 📘 Aula 8 — Componente de Feedback Reutilizável
 
+**Progresso do Curso Frontend:** `[█████████░░░░░░░░░░░] 47% concluído`
+
 ## Objetivo
 
 Criar um **componente de feedback visual reutilizável** para exibir mensagens de erro, lista vazia ou qualquer outro estado que precise de feedback ao usuário.

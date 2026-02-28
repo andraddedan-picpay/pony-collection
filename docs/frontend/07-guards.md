@@ -1,5 +1,7 @@
 # 📘 Aula 7 — Guard de Rotas e Logout
 
+**Progresso do Curso Frontend:** `[████████░░░░░░░░░░░░] 42% concluído`
+
 ## Objetivo
 
 Implementar a proteção de rotas com **guards funcionais** (padrão moderno do Angular 15+) e adicionar funcionalidade de logout na aplicação. Ao final desta aula, o sistema estará protegido contra acessos não autorizados, redirecionando usuários conforme seu estado de autenticação.

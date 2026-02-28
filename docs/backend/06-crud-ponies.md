@@ -1,5 +1,7 @@
 # 📘 Aula 6 — CRUD de Ponies
 
+**Progresso do Curso Backend:** `[█████████████████░░░] 86% concluído`
+
 ## 🎯 Objetivo
 
 Implementar o CRUD completo de personagens (Ponies) com rotas protegidas por JWT.

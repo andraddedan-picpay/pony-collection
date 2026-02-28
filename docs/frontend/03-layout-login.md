@@ -1,5 +1,7 @@
 # 📘 Aula 3 — Layout da Tela de Login
 
+**Progresso do Curso Frontend:** `[████░░░░░░░░░░░░░░░░] 21% concluído`
+
 ## Objetivo
 
 Criar a interface visual completa da tela de login usando os componentes reutilizáveis (pony-button e pony-input), aplicando o design system e criando um layout atraente.

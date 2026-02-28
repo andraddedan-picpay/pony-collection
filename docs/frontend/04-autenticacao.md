@@ -1,5 +1,7 @@
 # 📘 Aula 4 — Autenticação e Integração com Backend
 
+**Progresso do Curso Frontend:** `[█████░░░░░░░░░░░░░░░] 26% concluído`
+
 ## Objetivo
 
 Integrar a tela de login com o backend NestJS, implementando autenticação completa com JWT, configuração de CORS e armazenamento seguro de tokens.

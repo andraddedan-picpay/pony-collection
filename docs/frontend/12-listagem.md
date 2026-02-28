@@ -1,5 +1,7 @@
 # 📘 Aula 12 — Listagem e Filtro
 
+**Progresso do Curso Frontend:** `[███████████████░░░░░] 74% concluído`
+
 ## Objetivo
 
 Implementar a **listagem de ponies com filtro em tempo real**, utilizando **computed signals** para criar um sistema de busca reativo e performático, exibindo cards com informações visuais dos ponies.

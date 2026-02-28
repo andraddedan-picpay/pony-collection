@@ -1,5 +1,7 @@
 # 📘 Aula 6 — Layout Base da Aplicação
 
+**Progresso do Curso Frontend:** `[███████░░░░░░░░░░░░░] 37% concluído`
+
 ## Objetivo
 
 Criar a estrutura de layout principal da aplicação após o login, com menu lateral, header com busca e área de listagem de ponies, inspirada na arquitetura do dashboard.

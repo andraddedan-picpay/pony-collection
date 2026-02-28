@@ -1,5 +1,7 @@
 # 📘 Aula 9 — Integração com API e Gerenciamento de Estado
 
+**Progresso do Curso Frontend:** `[███████████░░░░░░░░░] 53% concluído`
+
 ## Objetivo
 
 Implementar o **serviço de ponies** para consumir a API REST, integrar com a página de listagem usando **computed signals** para gerenciar estados de forma profissional, e utilizar o componente de feedback criado na aula anterior.

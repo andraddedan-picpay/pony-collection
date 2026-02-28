@@ -1,5 +1,7 @@
 # 📘 Aula 5 — Sistema de Feedback com Snackbar
 
+**Progresso do Curso Frontend:** `[██████░░░░░░░░░░░░░░] 32% concluído`
+
 ## Objetivo
 
 Implementar um sistema completo de notificações toast (snackbar) para fornecer feedback visual ao usuário em ações importantes da aplicação, como sucesso em operações, erros e avisos.

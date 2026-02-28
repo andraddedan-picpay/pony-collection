@@ -1,5 +1,7 @@
 # 📘 Aula 16 — Edição de Ponies e Reutilização de Formulário
 
+**Progresso do Curso Frontend:** `[███████████████████░] 95% concluído`
+
 ## Objetivo
 
 Implementar a funcionalidade de **edição de ponies** reutilizando o componente de cadastro existente. Aprenderemos a criar um formulário que funciona em **dois modos** (criação e edição) usando **computed signals**, **component references** e **comunicação entre componentes**.

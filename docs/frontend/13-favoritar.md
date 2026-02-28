@@ -1,5 +1,7 @@
 # 📘 Aula 13 — Favoritar um Pônei
 
+**Progresso do Curso Frontend:** `[████████████████░░░░] 79% concluído`
+
 ## Objetivo
 
 Implementar a funcionalidade de **favoritar/desfavoritar pôneis**, permitindo que o usuário marque seus ponies favoritos com **feedback visual instantâneo** e persistência no backend, utilizando **atualização local otimista** para melhor experiência do usuário.

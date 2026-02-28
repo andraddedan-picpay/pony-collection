@@ -1,5 +1,7 @@
 # 📘 Aula 10 — Componente Sidesheet com Two-Way Binding
 
+**Progresso do Curso Frontend:** `[████████████░░░░░░░░] 58% concluído`
+
 ## Objetivo
 
 Criar um **componente Sidesheet reutilizável** usando **`model()` do Angular 17+** para two-way binding, permitindo que o componente gerencie seu próprio estado enquanto ainda pode ser controlado externamente pelo componente pai. Implementar acessibilidade, animações CSS e best practices para manipulação DOM segura com **Renderer2**.

@@ -1,5 +1,7 @@
 # 📘 Aula 15 — Skeleton Loading
 
+**Progresso do Curso Frontend:** `[██████████████████░░] 89% concluído`
+
 ## Objetivo
 
 Implementar **skeleton loading** no componente de detalhes para melhorar a experiência do usuário durante o carregamento de dados, substituindo o simples "Carregando..." por placeholders animados que replicam a estrutura visual do conteúdo final, e aplicar o padrão de **minimum loading time** para evitar "flashes" visuais desconfortáveis.

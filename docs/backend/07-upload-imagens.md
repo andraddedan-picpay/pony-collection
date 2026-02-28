@@ -1,5 +1,7 @@
 # 📘 Aula 7 — Upload de Imagens
 
+**Progresso do Curso Backend:** `[████████████████████] 100% concluído`
+
 ## 🎯 Objetivo
 
 Implementar upload de imagens com validação, armazenamento local e acesso via URL pública.
