@@ -665,16 +665,3 @@ Nesta aula você aprendeu:
 ✅ Entender viewport units (vh, vw) para layouts fullscreen  
 ✅ Usar mixins SCSS para reutilização de estilos  
 ✅ Aplicar design system com variáveis e border-radius consistente
-
----
-
-## 📝 Próximos Passos
-
-Na próxima aula, vamos **integrar com o backend real**:
-
-- Criar serviço de autenticação
-- Fazer chamadas HTTP
-- Configurar CORS no backend
-- Implementar sistema de feedback com Snackbar
-- Armazenar token de autenticação
-- Criar guards para proteger rotas

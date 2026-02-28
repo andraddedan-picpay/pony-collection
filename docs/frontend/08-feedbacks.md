@@ -351,17 +351,6 @@ assets/images/
 
 ---
 
-## 🚀 Próximos Passos
-
-- Criar **enum `DataStateEnum`** para estados da aplicação
-- Criar **model `Pony`** para tipagem dos dados
-- Criar **service `PonyService`** para consumir a API REST
-- Implementar **computed signals** para gerenciar estados reativamente
-- Integrar o `FeedbackComponent` na listagem de ponies
-- Usar **@switch** com enums para controlar a UI
-
----
-
 ## 📚 Referências
 
 - [Angular Signals](https://angular.io/guide/signals)

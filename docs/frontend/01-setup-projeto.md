@@ -1059,9 +1059,3 @@ button[_ngcontent-ng-c123] { ... }  /* Escopo isolado */
 - ✅ Reset CSS aplicado
 - ✅ Dev server rodando (`npm start`)
 - ✅ Página acessível em `http://localhost:4200`
-
----
-
-## 📝 Próximos Passos
-
-- Criar componentes compartilhados para uso na tela de login

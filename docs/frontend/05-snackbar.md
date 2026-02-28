@@ -1157,13 +1157,3 @@ Possíveis melhorias para o sistema de Snackbar:
 5. **Templates Customizados**: Permitir HTML customizado
 6. **Max Messages**: Limitar quantidade exibida
 7. **Position Options**: Múltiplas posições configuráveis
-
----
-
-## 📝 Próximos Passos
-
-Na próxima aula, vamos usar o Snackbar em mais lugares:
-- Listagem de ponies
-- Operações CRUD
-- Tratamento de erros global
-- Interceptor para erros HTTP
