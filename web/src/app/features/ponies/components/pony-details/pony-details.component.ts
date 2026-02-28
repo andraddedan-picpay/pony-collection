@@ -7,6 +7,7 @@ import { SvgIconComponent } from 'angular-svg-icon';
 import { PonyService } from '../../services/pony.service';
 import { Pony } from '../../models/pony.model';
 import { CreatePonyComponent } from '../create-pony/create-pony.component';
+import { SnackbarService } from '@core/services/snackbar.service';
 
 @Component({
     selector: 'pony-details',
@@ -23,6 +24,7 @@ import { CreatePonyComponent } from '../create-pony/create-pony.component';
 })
 export class PonyDetailsComponent {
     private ponyService = inject(PonyService);
+    private snackbarService = inject(SnackbarService);
 
     // Input para referência do create-pony
     createPonyRef = input.required<CreatePonyComponent>();
@@ -31,7 +33,7 @@ export class PonyDetailsComponent {
     isLoading = signal<boolean>(false);
     ponyDetails = signal<Pony | null>(null);
 
-    ponyCreated = output<void>();
+    onPonyChange = output<void>();
 
     openDetails(ponyId: string): void {
         this.showDetails.set(true);
@@ -77,6 +79,26 @@ export class PonyDetailsComponent {
     }
 
     removePony(): void {
-        // Lógica para remover o pony
+        const pony = this.ponyDetails();
+        if (!pony) return;
+
+        if (!confirm(`Tem certeza que deseja remover ${pony.name}?`)) {
+            return;
+        }
+
+        this.isLoading.set(true);
+
+        this.ponyService.deletePony(pony.id).subscribe({
+            next: () => {
+                this.snackbarService.success(`${pony.name} removido com sucesso!`);
+                this.onPonyChange.emit(); // Notifica lista para recarregar
+                this.closeDetails();
+            },
+            error: (error) => {
+                console.error('Erro ao remover pony:', error);
+                this.snackbarService.error('Erro ao remover pony. Tente novamente.');
+                this.isLoading.set(false);
+            },
+        });
     }
 }

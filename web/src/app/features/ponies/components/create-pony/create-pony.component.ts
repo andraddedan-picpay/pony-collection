@@ -41,7 +41,7 @@ export class CreatePonyComponent {
         return pony ? pony.imageUrl : 'twilight.png';
     });
 
-    ponyCreated = output<void>();
+    onPonyChange = output<void>();
 
     ponyForm: FormGroup;
 
@@ -138,7 +138,7 @@ export class CreatePonyComponent {
         this.ponyService.createPony(formData).subscribe({
             next: (pony) => {
                 this.snackbarService.success(`${pony.name} cadastrado com sucesso!`);
-                this.ponyCreated.emit();
+                this.onPonyChange.emit();
                 this.closeForm();
                 this.isLoading.set(false);
             },
@@ -156,7 +156,7 @@ export class CreatePonyComponent {
         this.ponyService.updatePony(ponyId, formData).subscribe({
             next: (pony) => {
                 this.snackbarService.success(`${pony.name} atualizado com sucesso!`);
-                this.ponyCreated.emit();
+                this.onPonyChange.emit();
                 this.closeForm();
                 this.isLoading.set(false);
             },

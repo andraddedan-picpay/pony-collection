@@ -63,9 +63,10 @@
 <pony-details
     #ponyDetails
     [createPonyRef]="createPony"
+    (onPonyChange)="getData()"
 />
 
 <create-pony
     #createPony
-    (ponyCreated)="getData()"
+    (onPonyChange)="getData()"
 />

@@ -69,11 +69,17 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        cursor: pointer;
 
-        &:hover {
+        &:hover:not(:disabled) {
             color: $text-color;
             border: 1px solid $text-color;
             transition: all .25s;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
     }
 

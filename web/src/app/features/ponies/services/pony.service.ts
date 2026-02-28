@@ -99,4 +99,21 @@ export class PonyService {
             }),
         );
     }
+
+    deletePony(ponyId: string): Observable<void> {
+        const endpoint = `${this.apiUrl}/ponies/${ponyId}`;
+        const token = LocalStorageHelper.get<string>(LocalStorageKeys.TOKEN);
+
+        const options = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        return this.http.delete<void>(endpoint, options).pipe(
+            catchError((error) => {
+                return throwError(() => error);
+            }),
+        );
+    }
 }

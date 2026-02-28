@@ -55,6 +55,7 @@
             (click)="removePony()"
             aria-label="Deletar Pony"
             type="button"
+            [disabled]="isLoading()"
         >
             <svg-icon
                 src="assets/icons/trash.svg"
@@ -75,6 +76,7 @@
             variant="primary"
             type="button"
             (click)="closeDetails()"
+            [disabled]="isLoading()"
             width="144px"
         >
             Fechar
